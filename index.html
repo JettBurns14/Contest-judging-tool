@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>WIP Judging tool</title>
+        <meta charset="utf-8">
+        <!--<link rel="stylesheet" type="text/css" href="">-->
+        <style>
+            #entry-title {
+              text-align: center;
+            }
+            #entry-viewer-iframe {
+              border: none;
+              width: 100%;
+              height: 700px;
+            }
+        </style>
+    </head>
+    <body>
+      <h1 id="entry-title"></h1>
+      <iframe id="entry-viewer-iframe"></iframe>
+      <!-- add loading spinner -->
+    </body>
+    <script>
+
+    /*
+    1) Input ID of contest. *
+    2) Load all spinoffs into `entries` array. *
+    3) Display an entry, maybe pick in random order. *
+    4) Entry's code on left, canvas on right. Maybe w embeds *
+    5) Enter score below, submit. 
+    6) Store submission in another array,
+       remove this entry from `entries` array.
+    7) Pick another entry from `entries`, repeat.
+    */
+
+    // https://www.khanacademy.org/computer-programming/contest-gingerbread-house/5611465022767104
+    var CONTEST_ID = 6312160950943744;
+    var ENTRIES = [];
+    var SUBMITTED = [];
+
+    var title = document.getElementById('entry-title');
+    var viewerIframe = document.getElementById('entry-viewer-iframe');
+
+    // Push entry IDs into `ENTRIES_IDS`
+    function storeEntries(data) {
+        for (var i = 0; i < data.scratchpads.length; ++i) {
+            ENTRIES.push({
+              url: data.scratchpads[i].url,
+              title: data.scratchpads[i].title
+            });
+        }
+        // If all entries loaded...
+        if (data.scratchpads.length === ENTRIES.length) {
+            let randomEntry = ENTRIES[Math.floor(Math.random() * ENTRIES.length)];
+            console.log(Math.floor(Math.random() * ENTRIES.length))
+            console.log(randomEntry);
+
+            viewerIframe.setAttribute('src', `${randomEntry.url}/embedded`);
+            title.textContent = randomEntry.title
+        }
+    };
+
+    // Get spinoffs with API
+    var s = document.createElement('script');
+    s.setAttribute('src', 'https://www.khanacademy.org/api/internal/scratchpads/' + CONTEST_ID + '/top-forks?callback=storeEntries&projection={"scratchpads":[{"url":1,"title":1}]}&\x5f=' + Date.now());
+    document.body.appendChild(s);
+    </script>
+</html>
