@@ -11,7 +11,28 @@
             #entry-viewer-iframe {
               border: none;
               width: 100%;
-              height: 700px;
+              min-height: 404px;
+            }
+            #entry-form {
+              width: 30%;
+              margin: 20px auto;
+            }
+            #submit-form-button {
+              width: 100%;
+              height: 30px;
+              background: rgb(0, 155, 64);
+              border-radius: 10px;
+              color: white;
+            }
+            .form-field-div {
+              margin-bottom: 15px;
+            }
+            .form-field-div label {
+              display: block;
+            }
+            .form-input {
+              padding-bottom: 20px;
+              width: 100%;
             }
         </style>
     </head>
@@ -19,31 +40,29 @@
         <h1 id="entry-title"></h1>
         <iframe id="entry-viewer-iframe"></iframe>
         <!-- add loading spinner -->
-        
+
         <form id="entry-form">
-            <div>
+            <div class="form-field-div">
                 <label>Criteria 1</label>
-                <input type="text" name="form_field_1" placeholder="Criteria 1"/>
+                <input class="form-input" type="text" name="form_field_1" placeholder="Criteria 1"/>
             </div>
 
-            <div>
+            <div class="form-field-div">
                 <label>Criteria 2</label>
-                <input type="text" name="form_field_2" placeholder="Criteria 2"/>
+                <input class="form-input" type="text" name="form_field_2" placeholder="Criteria 2"/>
             </div>
 
-            <div>
+            <div class="form-field-div">
                 <label>Criteria 3</label>
-                <input type="text" name="form_field_3" placeholder="Criteria 3"/>
+                <input class="form-input" type="text" name="form_field_3" placeholder="Criteria 3"/>
             </div>
 
-            <div>
+            <div class="form-field-div">
                 <label>Criteria 4</label>
-                <input type="text" name="form_field_4" placeholder="Criteria 4"/>
+                <input class="form-input" type="text" name="form_field_4" placeholder="Criteria 4"/>
             </div>
 
-            <div>
-                <button type="submit"id="submit-form">Submit</button>
-            </div>
+            <button type="submit" id="submit-form-button">Submit</button>
         </form>
     </body>
     <script>
@@ -53,7 +72,7 @@
     2) Load all spinoffs into `entries` array. *
     3) Display an entry, maybe pick in random order. *
     4) Entry's code on left, canvas on right. Maybe w embeds *
-    5) Enter score below, submit. 
+    5) Enter score below, submit.
     6) Store submission in another array,
        remove this entry from `entries` array.
     7) Pick another entry from `entries`, repeat.
