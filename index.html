@@ -5,34 +5,127 @@
         <meta charset="utf-8">
         <!--<link rel="stylesheet" type="text/css" href="">-->
         <style>
+            body {
+                padding: 0px 0px 50px 0px;
+                font-family: Helvetica, Arial;
+            }
             #entry-title {
-              text-align: center;
+                text-align: center;
+            }
+            #entry-info {
+                text-align: center;
             }
             #entry-viewer-iframe {
-              border: none;
-              width: 100%;
-              min-height: 404px;
+                border: none;
+                width: 100%;
+                min-height: 404px;
             }
             #entry-form {
-              width: 30%;
-              margin: 20px auto;
+                width: 60%;
+                margin: 20px auto;
             }
             #submit-form-button {
-              width: 100%;
-              height: 30px;
-              background: rgb(0, 155, 64);
-              border-radius: 10px;
-              color: white;
+                font-size: 16px;
+                float: right;
+                width: 20%;
+                height: 30px;
+                background: rgb(38, 201, 171);
+                border: 1px solid rgb(26, 176, 146);
+                border-radius: 5px;
+                color: white;
             }
             .form-field-div {
-              margin-bottom: 15px;
+                margin-bottom: 15px;
             }
             .form-field-div label {
-              display: block;
+                display: block;
             }
             .form-input {
-              padding-bottom: 20px;
-              width: 100%;
+                padding-bottom: 20px;
+                width: 100%;
+            }
+
+            /* Slider */
+            .sliderContainer {
+                width: 100%;
+                margin: 80px auto;
+                display: block;
+                position: relative;
+            }
+            .sliderContainer h3 {
+                text-align: center;
+                margin: 0px 0px 100px;
+            }
+            .label {
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+            .slider {
+                margin: 0px auto;
+                width: 100%;
+                display: block;
+                -webkit-appearance: none;
+                height: 10px;
+                border-radius: 5px;
+            }
+            .slider:focus {
+                outline: none;
+            }
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 20px;
+                height: 20px;
+                background: white;
+                border: 2px #b7b8ba solid;
+                border-radius: 10px;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+                appearance: none;
+            }
+            .slider::-webkit-slider-thumb:hover {
+                transform: scale(1.2);
+                cursor: pointer;
+            }
+            .sliderTicks {
+                margin: 0px auto;
+                display: block;
+                right: 0px;
+                left: 0px;
+                top: 8px;
+                width: 97%;
+                height: 0px;
+                position: relative;
+                z-index: -1;
+            }
+            .tick {
+                position: absolute;
+                font-size: 14px;
+                color: rgb(202, 205, 210);
+                text-indent: -4.5px;
+                line-height: 52px;
+                height: 14px;
+                border-left: 1px solid rgb(229, 229, 229);
+            }
+            .current-value {
+                position: absolute;
+                font-size: 26px;
+                margin-left: -44px;
+                bottom: 34px;
+                border: 1px #e5e5e5 solid;
+                border-radius: 4px;
+                width: 88px;
+                height: 46px;
+                text-align: center;
+                line-height: 44px;
+            }
+            .current-value::after {
+                background: url('https://breakthroughjuniorchallenge.org/i/scoring_arrow.png') no-repeat;
+                width: 17px;
+                height: 9px;
+                margin-left: -8px;
+                position: absolute;
+                left: 50%;
+                bottom: -9px;
+                content: "";
             }
         </style>
     </head>
@@ -43,23 +136,20 @@
 
         <form id="entry-form">
             <div class="form-field-div">
-                <label>Criteria 1</label>
-                <input class="form-input" type="text" name="form_field_1" placeholder="Criteria 1"/>
+                <div class="sliderContainer" id="creativity-slider"></div>
+            </div>
             </div>
 
             <div class="form-field-div">
-                <label>Criteria 2</label>
-                <input class="form-input" type="text" name="form_field_2" placeholder="Criteria 2"/>
+                <div class="sliderContainer" id="complexity-slider"></div>
             </div>
 
             <div class="form-field-div">
-                <label>Criteria 3</label>
-                <input class="form-input" type="text" name="form_field_3" placeholder="Criteria 3"/>
+                <div class="sliderContainer" id="clean-code-slider"></div>
             </div>
 
             <div class="form-field-div">
-                <label>Criteria 4</label>
-                <input class="form-input" type="text" name="form_field_4" placeholder="Criteria 4"/>
+                <div class="sliderContainer" id="originality-slider"></div>
             </div>
 
             <button type="submit" id="submit-form-button">Submit</button>
@@ -109,5 +199,119 @@
     var s = document.createElement('script');
     s.setAttribute('src', 'https://www.khanacademy.org/api/internal/scratchpads/' + CONTEST_ID + '/top-forks?callback=storeEntries&projection={"scratchpads":[{"url":1,"title":1}]}&\x5f=' + Date.now());
     document.body.appendChild(s);
+    
+    
+    function Slider({ title, id, max, color, borderColor, leftLabel, rightLabel }) {
+        this.title = title;
+        this.id = id;
+        this.max = max;
+        this.min = 0;
+        this.value = max / 2;
+        this.color = color;
+        this.border = borderColor;
+        this.leftLabel = leftLabel;
+        this.rightLabel = rightLabel;
+    };
+    Slider.prototype.create = function() {
+
+        var container = document.getElementById(this.id);
+
+        var title = document.createElement('h3');
+        title.textContent = this.title;
+
+        var leftLabel = document.createElement('span');
+        leftLabel.style.float = 'left';
+        leftLabel.className = 'label';
+        var rightLabel = document.createElement('span');
+        rightLabel.style.float = "right";
+        rightLabel.className = 'label';
+        var leftLabelTxt = document.createTextNode(this.leftLabel);
+        var rightLabelTxt = document.createTextNode(this.rightLabel);
+        leftLabel.appendChild(leftLabelTxt);
+        rightLabel.appendChild(rightLabelTxt);
+
+        var slider = document.createElement('input');
+        slider.className = 'slider';
+        slider.type = 'range';
+        slider.min = this.min;
+        slider.max = this.max;
+        slider.value = this.value;
+        slider.style.background = this.color;
+        slider.style.border = '1px solid ' + this.border;
+
+        var currentValue = document.createElement('div');
+        currentValue.className = 'current-value';
+        currentValue.style.left = slider.value * 10 + '%';
+        currentValue.textContent = slider.value / 2;
+        slider.oninput = function() {
+            currentValue.style.left = slider.value * 10 + '%';
+            currentValue.textContent = slider.value / 2;
+        }
+
+        var ticks = document.createElement('div');
+        ticks.className = 'sliderTicks';
+
+        for (var i = this.min; i < this.max / 2 + 1; ++i) {
+            var tickVal = document.createElement('div');
+            tickVal.className = 'tick tickBottom';
+            tickVal.style.left = (i * this.max * 2) + '%';
+
+            var vals = document.createTextNode(i);
+            tickVal.appendChild(vals);
+
+            ticks.appendChild(tickVal);
+        }
+
+        container.appendChild(title);
+        container.appendChild(leftLabel);
+        container.appendChild(rightLabel);
+        container.appendChild(currentValue);
+        container.appendChild(slider);
+        container.appendChild(ticks);
+    };
+
+    var creativitySlider = new Slider({
+        title: 'Creativity',
+        id: 'creativity-slider',
+        max: 10,
+        color: '#b9e986',
+        borderColor: '#7ed320',
+        leftLabel: 'Unimaginative',
+        rightLabel: 'Inventive'
+    });
+    creativitySlider.create();
+
+    var complexitySlider = new Slider({
+        title: 'Complexity',
+        id: 'complexity-slider',
+        max: 10,
+        color: '#c6aef8',
+        borderColor: '#8e5bf4',
+        leftLabel: 'Uninformative',
+        rightLabel: 'Enlightening'
+    });
+    complexitySlider.create();
+
+    var cleanCodeSlider = new Slider({
+        title: 'Clean Code',
+        id: 'clean-code-slider',
+        max: 10,
+        color: '#ffc86e',
+        borderColor: '#fea839',
+        leftLabel: 'Messy',
+        rightLabel: 'Elegant'
+    });
+    cleanCodeSlider.create();
+
+    var originalitySlider = new Slider({
+        title: 'Originality',
+        id: 'originality-slider',
+        max: 10,
+        color: '#ed8995',
+        borderColor: '#d0011b',
+        leftLabel: 'Basic',
+        rightLabel: 'Sophisticated'
+    });
+    originalitySlider.create();
     </script>
 </html>
