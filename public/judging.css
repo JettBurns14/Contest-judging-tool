@@ -1,0 +1,122 @@
+body {
+    padding: 0px 0px 50px 0px;
+    font-family: Helvetica, Arial;
+}
+#entry-title {
+    text-align: center;
+}
+#entry-info {
+    text-align: center;
+}
+#entry-viewer-iframe {
+    border: none;
+    width: 100%;
+    min-height: 404px;
+}
+#entry-form {
+    width: 60%;
+    margin: 20px auto;
+}
+#submit-form-button {
+    font-size: 16px;
+    float: right;
+    width: 20%;
+    height: 30px;
+    background: rgb(38, 201, 171);
+    border: 1px solid rgb(26, 176, 146);
+    border-radius: 5px;
+    color: white;
+}
+.form-field-div {
+    margin-bottom: 15px;
+}
+.form-field-div label {
+    display: block;
+}
+.form-input {
+    padding-bottom: 20px;
+    width: 100%;
+}
+
+/* Slider */
+.sliderContainer {
+    width: 100%;
+    margin: 80px auto;
+    display: block;
+    position: relative;
+}
+.sliderContainer h3 {
+    text-align: center;
+    margin: 0px 0px 100px;
+}
+.label {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+.slider {
+    margin: 0px auto;
+    width: 100%;
+    display: block;
+    -webkit-appearance: none;
+    height: 10px;
+    border-radius: 5px;
+}
+.slider:focus {
+    outline: none;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px #b7b8ba solid;
+    border-radius: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    appearance: none;
+}
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+.sliderTicks {
+    margin: 0px auto;
+    display: block;
+    right: 0px;
+    left: 0px;
+    top: 8px;
+    width: 97%;
+    height: 0px;
+    position: relative;
+    z-index: -1;
+}
+.tick {
+    position: absolute;
+    font-size: 14px;
+    color: rgb(202, 205, 210);
+    text-indent: -4.5px;
+    line-height: 52px;
+    height: 14px;
+    border-left: 1px solid rgb(229, 229, 229);
+}
+.current-value {
+    position: absolute;
+    font-size: 26px;
+    margin-left: -44px;
+    bottom: 34px;
+    border: 1px #e5e5e5 solid;
+    border-radius: 4px;
+    width: 88px;
+    height: 46px;
+    text-align: center;
+    line-height: 44px;
+}
+.current-value::after {
+    background: url('https://breakthroughjuniorchallenge.org/i/scoring_arrow.png') no-repeat;
+    width: 17px;
+    height: 9px;
+    margin-left: -8px;
+    position: absolute;
+    left: 50%;
+    bottom: -9px;
+    content: "";
+}
