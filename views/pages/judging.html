@@ -4,7 +4,8 @@
         <title>WIP Judging tool</title>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/judging.css">
-        <link rel="shortcut icon" href="/public/winston-icon.png" type="image/png">
+        <!-- Try to store in repo and access. -->
+        <link rel="shortcut icon" href="https://cdn.kastatic.org/images/badges/sun/golden-winston-70x70.png" type="image/png">
     </head>
     <body>
         <h1 id="entry-title"></h1>
@@ -33,6 +34,8 @@
             <button type="submit" id="submit-form-button">Submit</button>
         </form>
     </body>
+
+    <script src="/contest.js"></script>
     <script>
     /*
     1) Input ID of contest. *
@@ -45,7 +48,6 @@
     7) Pick another entry from `entries`, repeat.
     */
     // https://www.khanacademy.org/computer-programming/contest-gingerbread-house/5611465022767104
-    var CONTEST_ID = process.env.CONTEST_PROGRAM_ID;
     var ENTRIES = [];
     var SUBMITTED = [];
     var title = document.getElementById('entry-title');
