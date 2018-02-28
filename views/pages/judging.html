@@ -4,9 +4,11 @@
         <title>WIP Judging tool</title>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/judging.css">
+        <link rel="shortcut icon" href="/public/winston-icon.png" type="image/png">
     </head>
     <body>
         <h1 id="entry-title"></h1>
+        <p id="entry-info"></p>
         <iframe id="entry-viewer-iframe"></iframe>
         <!-- add loading spinner -->
 
@@ -43,10 +45,11 @@
     7) Pick another entry from `entries`, repeat.
     */
     // https://www.khanacademy.org/computer-programming/contest-gingerbread-house/5611465022767104
-    var CONTEST_ID = 6312160950943744;
+    var CONTEST_ID = process.env.CONTEST_PROGRAM_ID;
     var ENTRIES = [];
     var SUBMITTED = [];
     var title = document.getElementById('entry-title');
+    var info = document.getElementById('entry-info');
     var viewerIframe = document.getElementById('entry-viewer-iframe');
     // Push entry IDs into `ENTRIES_IDS`
     function storeEntries(data) {
@@ -58,11 +61,14 @@
         }
         // If all entries loaded...
         if (data.scratchpads.length === ENTRIES.length) {
-            let randomEntry = ENTRIES[Math.floor(Math.random() * ENTRIES.length)];
-            console.log(Math.floor(Math.random() * ENTRIES.length))
-            console.log(randomEntry);
+            let randomEntryIndex = Math.floor(Math.random() * ENTRIES.length);
+            let randomEntry = ENTRIES[randomEntryIndex];
+            
+            console.log(Math.floor(Math.random() * ENTRIES.length));
+            
             viewerIframe.setAttribute('src', `${randomEntry.url}/embedded`);
-            title.textContent = randomEntry.title
+            title.textContent = randomEntry.title;
+            info.textContent = `${randomEntryIndex}/${ENTRIES.length}`;
         }
     };
     // Get spinoffs with API
