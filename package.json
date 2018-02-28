@@ -5,9 +5,9 @@
   "engines": {
     "node": "7.5.0"
   },
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
-    "start": "node index.html"
+    "start": "node index.js"
   },
   "dependencies": {
     "ejs": "2.5.6",
