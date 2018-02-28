@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>WIP Judging tool</title>
+        <meta charset="utf-8">
+        <!--<link rel="stylesheet" type="text/css" href="">-->
+    </head>
+    <body>
+        <h1 id="entry-title"></h1>
+        <iframe id="entry-viewer-iframe"></iframe>
+        <!-- add loading spinner -->
+
+        <form id="entry-form">
+            <div class="form-field-div">
+                <div class="sliderContainer" id="creativity-slider"></div>
+            </div>
+            </div>
+
+            <div class="form-field-div">
+                <div class="sliderContainer" id="complexity-slider"></div>
+            </div>
+
+            <div class="form-field-div">
+                <div class="sliderContainer" id="clean-code-slider"></div>
+            </div>
+
+            <div class="form-field-div">
+                <div class="sliderContainer" id="originality-slider"></div>
+            </div>
+
+            <button type="submit" id="submit-form-button">Submit</button>
+        </form>
+    </body>
+    <script>
+    /*
+    1) Input ID of contest. *
+    2) Load all spinoffs into `entries` array. *
+    3) Display an entry, maybe pick in random order. *
+    4) Entry's code on left, canvas on right. Maybe w embeds *
+    5) Enter score below, submit.
+    6) Store submission in another array,
+       remove this entry from `entries` array.
+    7) Pick another entry from `entries`, repeat.
+    */
+    // https://www.khanacademy.org/computer-programming/contest-gingerbread-house/5611465022767104
+    var CONTEST_ID = 6312160950943744;
+    var ENTRIES = [];
+    var SUBMITTED = [];
+    var title = document.getElementById('entry-title');
+    var viewerIframe = document.getElementById('entry-viewer-iframe');
+    // Push entry IDs into `ENTRIES_IDS`
+    function storeEntries(data) {
+        for (var i = 0; i < data.scratchpads.length; ++i) {
+            ENTRIES.push({
+              url: data.scratchpads[i].url,
+              title: data.scratchpads[i].title
+            });
+        }
+        // If all entries loaded...
+        if (data.scratchpads.length === ENTRIES.length) {
+            let randomEntry = ENTRIES[Math.floor(Math.random() * ENTRIES.length)];
+            console.log(Math.floor(Math.random() * ENTRIES.length))
+            console.log(randomEntry);
+            viewerIframe.setAttribute('src', `${randomEntry.url}/embedded`);
+            title.textContent = randomEntry.title
+        }
+    };
+    // Get spinoffs with API
+    var s = document.createElement('script');
+    s.setAttribute('src', 'https://www.khanacademy.org/api/internal/scratchpads/' + CONTEST_ID + '/top-forks?callback=storeEntries&projection={"scratchpads":[{"url":1,"title":1}]}&\x5f=' + Date.now());
+    document.body.appendChild(s);
+    
+    
+    function Slider({ title, id, max, color, borderColor, leftLabel, rightLabel }) {
+        this.title = title;
+        this.id = id;
+        this.max = max;
+        this.min = 0;
+        this.value = max / 2;
+        this.color = color;
+        this.border = borderColor;
+        this.leftLabel = leftLabel;
+        this.rightLabel = rightLabel;
+    };
+    Slider.prototype.create = function() {
+        var container = document.getElementById(this.id);
+        var title = document.createElement('h3');
+        title.textContent = this.title;
+        var leftLabel = document.createElement('span');
+        leftLabel.style.float = 'left';
+        leftLabel.className = 'label';
+        var rightLabel = document.createElement('span');
+        rightLabel.style.float = "right";
+        rightLabel.className = 'label';
+        var leftLabelTxt = document.createTextNode(this.leftLabel);
+        var rightLabelTxt = document.createTextNode(this.rightLabel);
+        leftLabel.appendChild(leftLabelTxt);
+        rightLabel.appendChild(rightLabelTxt);
+        var slider = document.createElement('input');
+        slider.className = 'slider';
+        slider.type = 'range';
+        slider.min = this.min;
+        slider.max = this.max;
+        slider.value = this.value;
+        slider.style.background = this.color;
+        slider.style.border = '1px solid ' + this.border;
+        var currentValue = document.createElement('div');
+        currentValue.className = 'current-value';
+        currentValue.style.left = slider.value * 10 + '%';
+        currentValue.textContent = slider.value / 2;
+        slider.oninput = function() {
+            currentValue.style.left = slider.value * 10 + '%';
+            currentValue.textContent = slider.value / 2;
+        }
+        var ticks = document.createElement('div');
+        ticks.className = 'sliderTicks';
+        for (var i = this.min; i < this.max / 2 + 1; ++i) {
+            var tickVal = document.createElement('div');
+            tickVal.className = 'tick tickBottom';
+            tickVal.style.left = (i * this.max * 2) + '%';
+            var vals = document.createTextNode(i);
+            tickVal.appendChild(vals);
+            ticks.appendChild(tickVal);
+        }
+        container.appendChild(title);
+        container.appendChild(leftLabel);
+        container.appendChild(rightLabel);
+        container.appendChild(currentValue);
+        container.appendChild(slider);
+        container.appendChild(ticks);
+    };
+    var creativitySlider = new Slider({
+        title: 'Creativity',
+        id: 'creativity-slider',
+        max: 10,
+        color: '#b9e986',
+        borderColor: '#7ed320',
+        leftLabel: 'Unimaginative',
+        rightLabel: 'Inventive'
+    });
+    creativitySlider.create();
+    var complexitySlider = new Slider({
+        title: 'Complexity',
+        id: 'complexity-slider',
+        max: 10,
+        color: '#c6aef8',
+        borderColor: '#8e5bf4',
+        leftLabel: 'Uninformative',
+        rightLabel: 'Enlightening'
+    });
+    complexitySlider.create();
+    var cleanCodeSlider = new Slider({
+        title: 'Clean Code',
+        id: 'clean-code-slider',
+        max: 10,
+        color: '#ffc86e',
+        borderColor: '#fea839',
+        leftLabel: 'Messy',
+        rightLabel: 'Elegant'
+    });
+    cleanCodeSlider.create();
+    var originalitySlider = new Slider({
+        title: 'Originality',
+        id: 'originality-slider',
+        max: 10,
+        color: '#ed8995',
+        borderColor: '#d0011b',
+        leftLabel: 'Basic',
+        rightLabel: 'Sophisticated'
+    });
+    originalitySlider.create();
+    </script>
+</html>
