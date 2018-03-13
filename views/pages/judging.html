@@ -1,41 +1,51 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>WIP Judging tool</title>
+        <title>Judging | Challenge Council</title>
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/judging.css">
-        <!-- Try to store in repo and access. -->
-        <link rel="shortcut icon" href="https://cdn.kastatic.org/images/badges/sun/golden-winston-70x70.png" type="image/png">
+        <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
     <body>
+        <div id="page-header">
+            <a href="#" class="left">Challenge Council</a>
+
+            <a href="/profile" class="right">Jett Burns</a>
+            <a href="/admin" class="right">Admin</a>
+            <a href="/judging" class="right">Judge</a>
+        </div>
+
         <h1 id="entry-title"></h1>
         <p id="entry-info"></p>
+        <img src="/loading-spinner-icon.png" id="loading-spinner">
         <iframe id="entry-viewer-iframe"></iframe>
-        <!-- add loading spinner -->
 
-        <form id="entry-form">
-            <div class="form-field-div">
-                <div class="sliderContainer" id="creativity-slider"></div>
-            </div>
+        <form id="entry-form" method="post" action="/routes/judging" target="_self">
+            <div id="sliders-container">
+                <div class="form-field-div">
+                    <div class="sliderContainer" id="creativity-slider"></div>
+                </div>
+
+                <div class="form-field-div">
+                    <div class="sliderContainer" id="complexity-slider"></div>
+                </div>
+
+                <div class="form-field-div">
+                    <div class="sliderContainer" id="clean-code-slider"></div>
+                </div>
+
+                <div class="form-field-div">
+                    <div class="sliderContainer" id="originality-slider"></div>
+                </div>
             </div>
 
-            <div class="form-field-div">
-                <div class="sliderContainer" id="complexity-slider"></div>
-            </div>
-
-            <div class="form-field-div">
-                <div class="sliderContainer" id="clean-code-slider"></div>
-            </div>
-
-            <div class="form-field-div">
-                <div class="sliderContainer" id="originality-slider"></div>
-            </div>
-
-            <button type="submit" id="submit-form-button">Submit</button>
+            <input name="submit" type="submit" id="submit-form-button" value="Submit" ></input>
         </form>
     </body>
 
-    <script src="/contest.js"></script>
+    <script src="/routes/contest-id"></script>
+
     <script>
     /*
     1) Input ID of contest. *
@@ -48,39 +58,18 @@
     7) Pick another entry from `entries`, repeat.
     */
     // https://www.khanacademy.org/computer-programming/contest-gingerbread-house/5611465022767104
-    var ENTRIES = [];
-    var SUBMITTED = [];
+
+    var ENTRIES;
     var title = document.getElementById('entry-title');
     var info = document.getElementById('entry-info');
+    var entryForm = document.getElementById('entry-form');
     var viewerIframe = document.getElementById('entry-viewer-iframe');
-    // Push entry IDs into `ENTRIES_IDS`
-    function storeEntries(data) {
-        for (var i = 0; i < data.scratchpads.length; ++i) {
-            ENTRIES.push({
-              url: data.scratchpads[i].url,
-              title: data.scratchpads[i].title
-            });
-        }
-        // If all entries loaded...
-        if (data.scratchpads.length === ENTRIES.length) {
-            let randomEntryIndex = Math.floor(Math.random() * ENTRIES.length);
-            let randomEntry = ENTRIES[randomEntryIndex];
-            
-            console.log(Math.floor(Math.random() * ENTRIES.length));
-            
-            viewerIframe.setAttribute('src', `${randomEntry.url}/embedded`);
-            title.textContent = randomEntry.title;
-            info.textContent = `${randomEntryIndex}/${ENTRIES.length}`;
-        }
-    };
-    // Get spinoffs with API
-    var s = document.createElement('script');
-    s.setAttribute('src', 'https://www.khanacademy.org/api/internal/scratchpads/' + CONTEST_ID + '/top-forks?callback=storeEntries&projection={"scratchpads":[{"url":1,"title":1}]}&\x5f=' + Date.now());
-    document.body.appendChild(s);
-    
-    
-    function Slider({ title, id, max, color, borderColor, leftLabel, rightLabel }) {
+    var spinner = document.getElementById('loading-spinner');
+
+    function Slider({ title, name, description, id, max, color, borderColor, leftLabel, rightLabel }) {
         this.title = title;
+        this.name = name;
+        this.description = description;
         this.id = id;
         this.max = max;
         this.min = 0;
@@ -94,6 +83,8 @@
         var container = document.getElementById(this.id);
         var title = document.createElement('h3');
         title.textContent = this.title;
+        var description = document.createElement('p');
+        description.textContent = this.description;
         var leftLabel = document.createElement('span');
         leftLabel.style.float = 'left';
         leftLabel.className = 'label';
@@ -106,6 +97,7 @@
         rightLabel.appendChild(rightLabelTxt);
         var slider = document.createElement('input');
         slider.className = 'slider';
+        slider.name = this.name;
         slider.type = 'range';
         slider.min = this.min;
         slider.max = this.max;
@@ -131,14 +123,18 @@
             ticks.appendChild(tickVal);
         }
         container.appendChild(title);
+        container.appendChild(description)
         container.appendChild(leftLabel);
         container.appendChild(rightLabel);
         container.appendChild(currentValue);
         container.appendChild(slider);
         container.appendChild(ticks);
     };
+
     var creativitySlider = new Slider({
-        title: 'Creativity',
+        title: 'CREATIVITY',
+        name: 'creativity',
+        description: 'Test hu ijfnvkjfn jfn jkf nfjk nfk bdjknfjkn djkfn fkd nfk dklfm flkm lkdm lkfn lfk fkl mlkfdm kldm klfnkl dkfln lfd flkdn kfjdn lfkd.',
         id: 'creativity-slider',
         max: 10,
         color: '#b9e986',
@@ -148,7 +144,9 @@
     });
     creativitySlider.create();
     var complexitySlider = new Slider({
-        title: 'Complexity',
+        title: 'COMPLEXITY',
+        name: 'complexity',
+        description: 'Test hu ijfnvkjfn jfn jkf nfjk nfk bdjknfjkn djkfn fkd nfk dklfm flkm lkdm lkfn lfdn kfjdn lfkd.',
         id: 'complexity-slider',
         max: 10,
         color: '#c6aef8',
@@ -158,7 +156,9 @@
     });
     complexitySlider.create();
     var cleanCodeSlider = new Slider({
-        title: 'Clean Code',
+        title: 'CLEAN CODE',
+        name: 'clean_code',
+        description: 'Test hu ijfnvkjfn jfn jkf nfjk nfk bdjknfjkn djkfn fkd nfk.',
         id: 'clean-code-slider',
         max: 10,
         color: '#ffc86e',
@@ -168,7 +168,9 @@
     });
     cleanCodeSlider.create();
     var originalitySlider = new Slider({
-        title: 'Originality',
+        title: 'ORIGINALITY',
+        name: 'originality',
+        description: 'Test hu lkdm lkfn lfk fkl mlkfdm kldm klfnkl dkfln lfd flkdn kfjdn lfkd jn kjfn jlmf lkfn jf nlkfn fjln flk fkl nfln lfk flkf n.',
         id: 'originality-slider',
         max: 10,
         color: '#ed8995',
@@ -177,5 +179,47 @@
         rightLabel: 'Sophisticated'
     });
     originalitySlider.create();
+
+    // Get spinoffs with API
+    // AJAX
+    var getSpinoffs = new XMLHttpRequest();
+    getSpinoffs.open("GET", `https://www.khanacademy.org/api/internal/scratchpads/${CONTEST_ID}/top-forks?limit=2000&projection={"scratchpads":[{"url":1,"title":1}]}&\x5f=${Date.now()}`, true);
+    getSpinoffs.addEventListener("load", () => {
+        let status = getSpinoffs.status;
+        if (getSpinoffs.readyState == 4 && status == 200) {
+            ENTRIES = JSON.parse(getSpinoffs.responseText);
+
+            let entries = ENTRIES.scratchpads;
+            let randomEntryIndex = Math.floor(Math.random() * entries.length);
+            let randomEntry = entries[randomEntryIndex];
+            let randomEntryId = entries[randomEntryIndex].url.split('/')[5];
+
+            var getEntry = new XMLHttpRequest();
+            getEntry.open("GET", `https://www.khanacademy.org/api/labs/scratchpads/${randomEntryId}?projection={"width":1,"height":1}`);
+            getEntry.addEventListener("load", () => {
+                // once loaded, remove spinner.
+                let entryData = JSON.parse(getEntry.responseText);
+
+                viewerIframe.setAttribute("src", `${randomEntry.url}/embedded`);
+                //viewerIframe.setAttribute("width", 410 + entryData.width + "px");
+                viewerIframe.setAttribute("height", 2 + entryData.height + "px");
+                title.textContent = randomEntry.title;
+                info.textContent = `${randomEntryIndex}/${entries.length}`;
+            });
+            getEntry.send();
+        } else {
+          console.log(status);
+        }
+    });
+    getSpinoffs.send();
+
+    viewerIframe.addEventListener("load", () => {
+        viewerIframe.style.display = "block";
+        spinner.style.display = "none";
+    });
+
+    entryForm.addEventListener("submit", () => {
+        document.getElementById("submit-form-button").value = "Sent!";
+    });
     </script>
 </html>
