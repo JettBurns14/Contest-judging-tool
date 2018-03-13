@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Admin Controls | Challenge Council</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/admin.css">
+        <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    </head>
+    <body>
+
+    <!-- Add button to update entries DB with current entries. -->
+    <div id="page-header">
+        <a href="#" class="left">Challenge Council</a>
+
+        <a href="/profile" class="right">Jett Burns</a>
+        <a href="/admin" class="right">Admin</a>
+        <a href="/judging" class="right">Judge</a>
+    </div>
+
+    <div id="page-container">
+        <div id="side-bar">
+            <a class="nav-button selected" onclick="showpage(0)">Dashboard</a>
+            <a class="nav-button" onclick="showpage(1)">Contests</a>
+            <a class="nav-button" onclick="showpage(2)">Entries</a>
+            <a class="nav-button" onclick="showpage(3)">Activity</a>
+            <a class="nav-button" onclick="showpage(4)">Controls</a>
+        </div>
+
+        <div class="page-content" id="dashboard-page">
+            <h1 id="content-header">Dashboard</h1>
+
+            <div class="preview-container standard">
+                <p class="db-header">Database Preview 1</p>
+
+                <ul>
+                    <% results.forEach(function(r) { %>
+                        <li><%= r.id %> - <%= r.name %></li>
+                    <% }); %>
+                </ul>
+            </div>
+
+            <div class="preview-container standard">
+                <p class="db-header">Database Preview 2</p>
+
+                <ul>
+                    <% results.forEach(function(r) { %>
+                        <li><%= r.id %> - <%= r.name %></li>
+                    <% }); %>
+                </ul>
+            </div>
+
+            <!--
+            <div class="preview-container standard">
+                <p class="db-header">Database Preview 3</p>
+
+                <ul>
+                    <% results.forEach(function(r) { %>
+                        <li><%= r.id %> - <%= r.name %></li>
+                    <% }); %>
+                </ul>
+            </div>
+
+            <div class="preview-container standard">
+                <p class="db-header">Database Preview 4</p>
+
+                <ul>
+                    <% results.forEach(function(r) { %>
+                        <li><%= r.id %> - <%= r.name %></li>
+                    <% }); %>
+                </ul>
+            </div>-->
+        </div>
+
+        <div class="page-content" id="contests-page">
+            <h1 id="content-header">Contests</h1>
+        </div>
+
+        <div class="page-content" id="entries-page">
+            <h1 id="content-header">Entries</h1>
+        </div>
+
+        <div class="page-content" id="activity-page">
+            <h1 id="content-header">Activity</h1>
+        </div>
+
+        <div class="page-content" id="controls-page">
+            <h1 id="content-header">Controls</h1>
+            <!--<form action="/routes/update-entries" method="post">
+                <button type="submit">Update Entries</button>
+            </form>-->
+            <div class="preview-container warning">
+                <h4 class="db-header">Be careful</h4>
+                <p>These settings must be used with care, ask Jett before clicking these buttons.</p>
+                <button type="button" id="update-entries-button">Update Entries</button>
+            </div>
+        </div>
+    </div>
+
+    </body>
+    <script>
+    // Display pages here, like Evan's technique
+    var navButtons = document.getElementsByClassName('nav-button');
+    var pages = document.getElementsByClassName('page-content');
+    var updateButton = document.getElementById('update-entries-button');
+
+    showpage = (page) => {
+        for (var i = 0; i < pages.length; ++i) {
+            pages[i].style.display = 'none';
+        }
+        for(var i = 0; i < navButtons.length; ++i) {
+            navButtons[i].classList.remove('selected');
+        }
+        navButtons[page].classList.add('selected');
+        pages[page].style.display = 'block';
+        if (page == 0) {
+            pages[page].style.display = 'flex';
+        }
+    };
+    showpage(0);
+
+    updateButton.addEventListener('click', () => {
+        var req = new XMLHttpRequest();
+        req.open("POST", "/routes/update-entries", true);
+        req.addEventListener("load", () => {
+            updateButton.textContent = "Updated";
+        });
+        req.send();
+
+    });
+
+    </script>
+</html>
