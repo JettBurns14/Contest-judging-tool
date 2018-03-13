@@ -19,10 +19,6 @@ app.listen(app.get('port'), () => {
     console.log('Node app is running on port', app.get('port'));
 });
 
-/*app.get('/', function(request, response) {
-    Home page for user, maybe info/instructions about tool.
-});*/
-
 // Body parser stuff
 // Ref: https://github.com/expressjs/body-parser
 var jsonParser = bodyParser.json();
@@ -74,6 +70,11 @@ app.post('/routes/update-entries', (request, response) => {
 
 
 // Page routes
+app.get('/', function(request, response) {
+    // Home page for user, maybe info/instructions about tool.
+    response.send('Stuff that goes here is to be determined.');
+});
+
 app.get('/judging', (request, response) => {
     response.render('pages/judging');
 });
