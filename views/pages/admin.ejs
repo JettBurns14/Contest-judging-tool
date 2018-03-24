@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Admin | Challenge Council</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/admin.css">
+        <link rel="stylesheet" type="text/css" href="/header.css">
+        <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    </head>
+    <body>
+
+    <%- include ../partials/header %>
+
+    <div id="page-container">
+        <div id="side-bar">
+            <a class="nav-button selected" onclick="showpage(0)">Dashboard</a>
+            <a class="nav-button" onclick="showpage(1)">Contests</a>
+            <a class="nav-button" onclick="showpage(2)">Entries</a>
+            <a class="nav-button" onclick="showpage(3)">Activity</a>
+            <a class="nav-button" onclick="showpage(4)">Controls</a>
+        </div>
+
+        <div class="page-content" id="dashboard-page">
+            <h1 id="content-header">Dashboard</h1>
+
+            <div class="preview-container standard" style="height: 100px">
+                <p class="db-header">Number of entries</p>
+                <div class="preview-content">
+                    <p><%= entry1[0].count %></p>
+                </div>
+            </div>
+
+            <div class="preview-container standard" style="height: 100px">
+                <p class="db-header">Number of reviewed entries</p>
+                <div class="preview-content">
+                    <p><%= reviewed1[0].count %></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content" id="contests-page">
+            <h1 id="content-header">Contests</h1>
+            <div class="preview-container standard">
+                <p class="db-header"><%= contests1[0].contest_name + ' - #' + contests1[0].contest_id %></p>
+                <div class="preview-content">
+                    <a href="<%= contests1[0].contest_url %>" target="_blank"><img src="<%= contests1[0].contest_url + '/latest.png' %>"></a>
+                    <p>Start: <%= contests1[0].date_start %></p>
+                    <p>End: <%= contests1[0].date_end %></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content" id="entries-page">
+            <h1 id="content-header">Entries</h1>
+            <ol id="entries-list"><% entries1.forEach((e) => { %>
+                <li><span><%= e.entry_title %></span> created on <em><%= e.entry_created %></em></li>
+            <% }); %></ol>
+        </div>
+
+        <div class="page-content" id="activity-page">
+            <h1 id="content-header">Activity</h1>
+            <p>Coming soon.</p>
+        </div>
+
+        <div class="page-content" id="controls-page">
+            <h1 id="content-header">Controls</h1>
+            <div class="preview-container warning">
+                <h4 class="db-header">Update entries</h4>
+                <div class="preview-content">
+                    <p>Be careful! These settings must be used with care, ask Jett before clicking these buttons.</p>
+                    <button type="button" id="update-entries-button">Update Entries</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+    <script>
+    var navButtons = document.getElementsByClassName('nav-button');
+    var pages = document.getElementsByClassName('page-content');
+    var updateButton = document.getElementById('update-entries-button');
+
+    showpage = (page) => {
+        for (var i = 0; i < pages.length; ++i) {
+            pages[i].style.display = 'none';
+        }
+        for(var i = 0; i < navButtons.length; ++i) {
+            navButtons[i].classList.remove('selected');
+        }
+        navButtons[page].classList.add('selected');
+        pages[page].style.display = 'block';
+        if (page == 0) {
+            pages[page].style.display = 'flex';
+        }
+    };
+    showpage(0);
+
+    updateButton.addEventListener('click', () => {
+        alert('This isn\'t set up yet.');
+    });
+
+    </script>
+</html>
