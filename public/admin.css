@@ -1,36 +1,11 @@
 body {
     height: 100vh;
     background: #f8f8f8;
-    font-family: 'Roboto', Arial;
-    margin: 0px;
-}
-
-#page-header {
-    background: #f8f8f8;
-    border-bottom: 1px solid #e7e7e7;
-    position: relative;
-    height: 50px;
-}
-
-#page-header a {
-    color: #777;
-    padding: 14px 15px;
-    font-size: 18px;
-    text-decoration: none;
-}
-#page-header .left {
-    float: left;
-}
-#page-header .right {
-    float: right;
-}
-#page-header .right:hover {
-    background: #eee;
 }
 
 #page-container {
     display: flex;
-    margin: -1px 0px;
+    margin: 0px 0px;
 }
 
 /* Side bar and its buttons */
@@ -57,7 +32,7 @@ body {
 /* Container of preview containers and header */
 .page-content {
     background: #FFF;
-    height: 100vh;
+    min-height: 100vh;
     padding: 0px 30px;
     width: 85%;
     flex-wrap: wrap;
@@ -81,10 +56,10 @@ body {
     position: relative;
     margin: 0px 20px 20px 0px;
     width: 45%;
-    height: 200px;
+    min-height: 200px;
 }
 .preview-container.standard {
-    background: white; /*#f5f5f5;*/
+    background: white; /* #f5f5f5; */
     border: 1px solid #ddd;
 }
 .preview-container.warning {
@@ -105,4 +80,17 @@ body {
     padding: 10px 15px;
     margin: 0px;
     border-radius: 4px 4px 0px 0px;
+}
+.preview-content {
+    padding: 20px;
+    margin: 0px;
+}
+
+/* Big list of entries */
+#entries-list li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+#entries-list li span {
+    color: #777;
 }
