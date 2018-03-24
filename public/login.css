@@ -1,0 +1,38 @@
+body {
+    background: #f8f8f8;
+    font-family: 'Roboto', Arial;
+}
+
+#form-header {
+    text-align: center;
+    padding: 30px;
+    font-weight: 80;
+}
+#evaluator-dropdown {
+    display: block;
+    margin: 0px auto;
+    width: 97%;
+    height: 35px;
+}
+.login-input {
+    display: block;
+    padding: 10px;
+    width: 90%;
+    border-radius: 5px;
+    border: 1px solid #d7d7d7;
+    margin: 10px auto;
+}
+#form-div {
+    margin: 150px auto;
+    width: 300px;
+}
+#submit-button {
+    background: #337ab7;
+    border-color: #2e6da4;
+    color: white;
+    cursor: pointer;
+    margin: 0px auto;
+}
+#form-response {
+    text-align: center;
+}
