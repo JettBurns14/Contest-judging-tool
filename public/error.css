@@ -1,0 +1,10 @@
+#error-img {
+    display: block;
+    margin: 140px auto 10px;
+}
+#error-container {
+    text-align: center;
+}
+#error-msg {
+    color: red;
+}

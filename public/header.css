@@ -1,0 +1,26 @@
+body {
+    font-family: 'Roboto', Arial;
+    margin: 0px;
+}
+
+#page-header {
+    background: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
+    position: relative;
+    height: 50px;
+}
+#page-header a {
+    color: #777;
+    padding: 15px 15px;
+    font-size: 18px;
+    text-decoration: none;
+}
+#page-header a:hover {
+    background: #eee;
+}
+#page-header .left {
+    float: left;
+}
+#page-header .right {
+    float: right;
+}

@@ -1,7 +1,8 @@
 body {
     padding: 0px 0px 50px 0px;
-    font-family: Helvetica, Arial;
+    color: #333;
 }
+
 #entry-title {
     text-align: center;
 }
@@ -9,26 +10,54 @@ body {
     text-align: center;
 }
 #entry-viewer-iframe {
+    display: none;
     border: none;
     width: 100%;
     min-height: 404px;
+    margin: 30px 0px 50px;
+}
+#loading-spinner {
+    animation-name: spinner;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    display: block;
+    margin: 200px auto;
+    width: 120px;
+}
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 #entry-form {
-    width: 60%;
-    margin: 20px auto;
+    width: 84%;
+    margin: 10px auto;
+}
+#sliders-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 #submit-form-button {
-    font-size: 16px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    cursor: pointer;
+    display: block;
     float: right;
-    width: 20%;
-    height: 30px;
-    background: rgb(38, 201, 171);
-    border: 1px solid rgb(26, 176, 146);
-    border-radius: 5px;
-    color: white;
+    font-size: 16px;
+    padding: 10px 40px;
+    border-radius: 4px;
 }
 .form-field-div {
-    margin-bottom: 15px;
+    margin: 0px 0px 40px;
+    display: inline-block;
+    width: 45%;
 }
 .form-field-div label {
     display: block;
@@ -41,17 +70,21 @@ body {
 /* Slider */
 .sliderContainer {
     width: 100%;
-    margin: 80px auto;
-    display: block;
+    display: inline-block;
     position: relative;
 }
 .sliderContainer h3 {
-    text-align: center;
-    margin: 0px 0px 100px;
+  text-align: left;
+    margin: 0px 0px 10px;
+}
+.sliderContainer p {
+    height: 70px;
+    margin: 0px 0px 60px;
 }
 .label {
     margin-bottom: 8px;
     font-size: 14px;
+    display: none;
 }
 .slider {
     margin: 0px auto;
@@ -80,7 +113,7 @@ body {
 }
 .sliderTicks {
     margin: 0px auto;
-    display: block;
+    display: none;
     right: 0px;
     left: 0px;
     top: 8px;
@@ -110,6 +143,7 @@ body {
     text-align: center;
     line-height: 44px;
 }
+/* Try to replace with triangle div, not image. At least make this local img. */
 .current-value::after {
     background: url('https://breakthroughjuniorchallenge.org/i/scoring_arrow.png') no-repeat;
     width: 17px;
