@@ -7,15 +7,23 @@
         <link rel="stylesheet" type="text/css" href="/header.css">
         <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://static.zdassets.com/hc/assets/application-1bb1012613988b6129cdc3cec950bdd9.css" rel="stylesheet">
     </head>
     <body>
         <%- include ../partials/header %>
-        <h1 id="entry-title"><%= entry[0].o_entry_title %></h1>
+        <h1 id="entry-title"><%= entry.o_entry_title %></h1>
+        <p id="entry-identifier">
+            <% if (entry.o_entry_id == -1) { %>
+                <%= 'All entries evaluated!' %>
+            <% } else { %>
+                <%= entry.o_entry_id %>
+            <% } %>
+        </p>
         <img src="/loading-spinner-icon.png" id="loading-spinner">
-        <iframe id="entry-viewer-iframe" src="<%= entry[0].o_entry_url + '/embedded' %>" height="<%= entry[0].o_entry_height + 4 %>"></iframe>
+        <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + '/embedded' %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
 
         <form id="entry-form" method="post" action="/routes/judging" target="_self">
-            <input name="entry_id" value="<%= entry[0].o_entry_id %>" style="display: none;"></input>
+            <input name="entry_id" value="<%= entry.o_entry_id %>" style="display: none;"></input>
             <div id="sliders-container">
                 <div class="form-field-div">
                     <div class="sliderContainer" id="creativity-slider"></div>
@@ -33,8 +41,13 @@
                     <div class="sliderContainer" id="interpretation-slider"></div>
                 </div>
             </div>
+            <select id="skill-selector" name="skill_level">
+                <option class="skill-option" value="Advanced">Advanced</option>
+                <option class="skill-option" value="Intermediate">Intermediate</option>
+                <option class="skill-option" value="Beginner">Beginner</option>
+            </select>
 
-            <input type="submit" id="submit-form-button" value="Submit" ></input>
+            <input type="submit" id="submit-form-button" class="button green" value="Submit" ></input>
         </form>
     </body>
 

@@ -35,7 +35,7 @@ function handleError(err, res) {
 
 // Security check.
 function checkAccess(res) {
-    if (res.cookies.hasOwnProperty(process.env.COOKIE_1)) {
+    if (JSON.parse(JSON.stringify(res.cookies))[process.env.COOKIE_1]) {
       return true;
     }
     return false;
@@ -50,15 +50,16 @@ app.post('/routes/judging', urlencodedParser, (request, response) => {
     }
 
     let entry_id = request.body.entry_id;
-    let user_id = request.cookies[process.env.COOKIE_2];
+    let user_id = JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_2];
     let score_1 = request.body.creativity / 2;
     let score_2 = request.body.complexity / 2;
     let score_3 = request.body.quality_code / 2;
     let score_4 = request.body.interpretation / 2;
+    let skill_level = request.body.skill_level;
 
     try {
         pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-            client.query('SELECT evaluate($1, $2, $3, $4, $5, $6)', [entry_id, user_id, score_1, score_2, score_3, score_4], (err, result) => {
+            client.query('SELECT evaluate($1, $2, $3, $4, $5, $6, $7)', [entry_id, user_id, score_1, score_2, score_3, score_4, skill_level], (err, result) => {
                 done();
                 if (err) {
                     return handleError(err, response);
@@ -125,7 +126,7 @@ app.post('/routes/update-entries', (request, response) => {
 app.post('/routes/login', urlencodedParser, (request, response) => {
     console.log('/routes/login was fired.');
 
-    if (!request.cookies.hasOwnProperty(process.env.COOKIE_1)) {
+    if (!JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_1]) {
 
         if (request.body.councilPassword === process.env.COUNCIL_PW) {
             let userId = request.body.evaluator.split(' - ')[0];
@@ -162,9 +163,30 @@ app.post('/routes/login', urlencodedParser, (request, response) => {
     }
 });
 
+app.post('/routes/log-out', urlencodedParser, (request, response) => {
+    console.log('/routes/log-out was fired.');
+
+    let userId = JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_2];
+    console.log(userId);
+
+    pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+        console.log('Connected to db.')
+        client.query('UPDATE evaluator SET logged_in = false WHERE evaluator_id = $1', [userId], (err, res) => {
+            done();
+            console.log('Updated db.')
+            if (err) {
+                return handleError(err, response);
+            }
+            response.clearCookie(process.env.COOKIE_1);
+            response.clearCookie(process.env.COOKIE_2);
+            response.clearCookie(process.env.COOKIE_3);
+            response.redirect('/login');
+        });
+    });
+});
 
 /***  PAGE ROUTES  ***/
-app.get('/', function(request, response) {
+app.get('/', (request, response) => {
     if (!checkAccess(request)) {
         response.send('Unauthorized');
     } else {
@@ -173,7 +195,7 @@ app.get('/', function(request, response) {
 });
 
 app.get('/login', (request, response) => {
-    if (request.cookies.hasOwnProperty(process.env.COOKIE_1)) {
+    if (JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_1]) {
         return response.redirect('/');
     }
     try {
@@ -203,7 +225,7 @@ app.get('/judging', (request, response) => {
                 if (err) {
                     return handleError(err, response);
                 }
-                response.render('pages/judging', { entry: res.rows });
+                response.render('pages/judging', { entry: res.rows[0] });
             });
         });
     } catch(err) {
@@ -258,7 +280,7 @@ app.get('/profile', (request, response) => {
     if (!checkAccess(request)) {
         return response.send('Unauthorized');
     }
-    response.render('pages/profile');
+    response.render('pages/profile', { username: request.cookies[process.env.COOKIE_3] });
 });
 
 // Handler for all errors.

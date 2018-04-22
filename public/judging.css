@@ -6,7 +6,7 @@ body {
 #entry-title {
     text-align: center;
 }
-#entry-info {
+#entry-identifier {
     text-align: center;
 }
 #entry-viewer-iframe {
@@ -43,16 +43,19 @@ body {
     flex-wrap: wrap;
     justify-content: space-between;
 }
-#submit-form-button {
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
-    cursor: pointer;
-    display: block;
-    float: right;
-    font-size: 16px;
-    padding: 10px 40px;
+#skill-selector {
+    /* -webkit-appearance: none; */
+    border: 1px solid #ddd;
     border-radius: 4px;
+    padding: 0px 30px 0px 10px;
+    outline: none;
+    color: #555;
+    width: 20%;
+    height: 40px;
+}
+
+#submit-form-button {
+    float: right;
 }
 .form-field-div {
     margin: 0px 0px 40px;
@@ -143,9 +146,9 @@ body {
     text-align: center;
     line-height: 44px;
 }
-/* Try to replace with triangle div, not image. At least make this local img. */
+
 .current-value::after {
-    background: url('https://breakthroughjuniorchallenge.org/i/scoring_arrow.png') no-repeat;
+    background: url('/scoring-arrow.png') no-repeat;
     width: 17px;
     height: 9px;
     margin-left: -8px;

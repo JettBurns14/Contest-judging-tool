@@ -17,8 +17,9 @@
             <a class="nav-button selected" onclick="showpage(0)">Dashboard</a>
             <a class="nav-button" onclick="showpage(1)">Contests</a>
             <a class="nav-button" onclick="showpage(2)">Entries</a>
-            <a class="nav-button" onclick="showpage(3)">Activity</a>
-            <a class="nav-button" onclick="showpage(4)">Controls</a>
+            <a class="nav-button" onclick="showpage(3)">Results</a>
+            <a class="nav-button" onclick="showpage(4)">Activity</a>
+            <a class="nav-button" onclick="showpage(5)">Controls</a>
         </div>
 
         <div class="page-content" id="dashboard-page">
@@ -41,14 +42,16 @@
 
         <div class="page-content" id="contests-page">
             <h1 id="content-header">Contests</h1>
-            <div class="preview-container standard">
-                <p class="db-header"><%= contests1[0].contest_name + ' - #' + contests1[0].contest_id %></p>
-                <div class="preview-content">
-                    <a href="<%= contests1[0].contest_url %>" target="_blank"><img src="<%= contests1[0].contest_url + '/latest.png' %>"></a>
-                    <p>Start: <%= contests1[0].date_start %></p>
-                    <p>End: <%= contests1[0].date_end %></p>
+            <% contests1.forEach((c) => { %>
+                <div class="preview-container standard">
+                    <p class="db-header"><%= c.contest_name + ' - #' + c.contest_id %></p>
+                    <div class="preview-content">
+                        <a href="<%= c.contest_url %>" target="_blank"><img src="<%= c.contest_url + '/latest.png' %>"></a>
+                        <p>Start: <%= c.date_start %></p>
+                        <p>End: <%= c.date_end %></p>
+                    </div>
                 </div>
-            </div>
+            <% }); %>
         </div>
 
         <div class="page-content" id="entries-page">
@@ -56,6 +59,11 @@
             <ol id="entries-list"><% entries1.forEach((e) => { %>
                 <li><span><%= e.entry_title %></span> created on <em><%= e.entry_created %></em></li>
             <% }); %></ol>
+        </div>
+
+        <div class="page-content" id="results-page">
+            <h1 id="content-header">Results</h1>
+
         </div>
 
         <div class="page-content" id="activity-page">
@@ -69,7 +77,7 @@
                 <h4 class="db-header">Update entries</h4>
                 <div class="preview-content">
                     <p>Be careful! These settings must be used with care, ask Jett before clicking these buttons.</p>
-                    <button type="button" id="update-entries-button">Update Entries</button>
+                    <button type="button" class="button red" id="update-entries-button">Update Entries</button>
                 </div>
             </div>
         </div>

@@ -24,3 +24,25 @@ body {
 #page-header .right {
     float: right;
 }
+
+
+.button {
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    padding: 10px 24px;
+    border-radius: 4px;
+    transition: box-shadow 0.1s linear;
+}
+.button.green {
+    background-color: #54820a;
+}
+.button.red {
+    background-color: #a94442;
+}
+
+.button:hover {
+    box-shadow: 0px 1px 6px grey;
+}
