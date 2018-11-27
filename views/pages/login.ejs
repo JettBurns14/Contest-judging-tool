@@ -3,8 +3,8 @@
     <head>
         <title>Login | Challenge Council</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/login.css">
-        <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
+        <link rel="stylesheet" type="text/css" href="/css/login.css">
+        <link rel="shortcut icon" href="/images/Winston-icon.png" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
 
@@ -12,11 +12,6 @@
         <form id="login-form" method="post" action="/routes/login">
             <div id="form-div">
                 <h1 id="form-header">Log-in</h1>
-                <select name="evaluator" id="evaluator-dropdown" required>
-                    <% evaluators.forEach(function(u) { %>
-                        <option name="<%= u.evaluator_name %>"><%= u.evaluator_id %> - <%= u.evaluator_name %></option>
-                    <% }); %>
-                </select>
                 <input class="login-input" name="userPassword" type="password" placeholder="Account Password" required>
                 <input class="login-input" name="councilPassword" type="password" placeholder="Council Password" required>
                 <input class="login-input" type="submit" value="Log-in" id="submit-button">
