@@ -34,8 +34,8 @@ function handleError(err, res) {
 };
 
 // Security check.
-function checkAccess(res) {
-    if (JSON.parse(JSON.stringify(res.cookies))[process.env.COOKIE_1]) {
+function checkAccess(req) {
+    if (JSON.parse(JSON.stringify(req.cookies))[process.env.COOKIE_1]) {
       return true;
     }
     return false;
@@ -195,19 +195,11 @@ app.get('/', (request, response) => {
 });
 
 app.get('/login', (request, response) => {
-    if (JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_1]) {
+    if (!checkAccess(request)) {
         return response.redirect('/');
     }
     try {
-        pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-            client.query('SELECT evaluator_id, evaluator_name FROM evaluator WHERE logged_in = false ORDER BY evaluator_id', (err, res) => {
-                done();
-                if (err) {
-                    return handleError(err, response);
-                }
-                response.render('pages/login', { evaluators: res.rows });
-            });
-        });
+        response.render('pages/login');
     } catch(err) {
         handleError(err, response);
     }
@@ -241,6 +233,8 @@ app.get('/admin', (request, response) => {
         pg.connect(process.env.DATABASE_URL, (err, client, done) => {
             var entry1, reviewed1, contests1, entries1;
 
+            // TODO: Add results to a new table? Maybe add results link to contests table.
+            // TODO: Get count of only this contest's entries.
             client.query('SELECT COUNT(*) FROM entry', (err, res) => {
                 done();
                 if (err) {
@@ -248,6 +242,7 @@ app.get('/admin', (request, response) => {
                 }
                 entry1 = res.rows;
             });
+            // TODO: Get count of only this contest's evals.
             client.query('SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true;', (err, res) => {
                 done();
                 if (err) {
@@ -262,6 +257,7 @@ app.get('/admin', (request, response) => {
                 }
                 contests1 = res.rows;
             });
+            // TODO: Get only this contest's entries
             client.query('SELECT * FROM entry', (err, res) => {
                 done();
                 if (err) {
