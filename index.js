@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const Request = require('request');
@@ -7,7 +8,6 @@ const pg = require('pg');
 
 const app = express();
 
-// views is directory for all template files
 // app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('port', (process.env.PORT || 5000));
@@ -39,6 +39,11 @@ function checkAccess(req) {
       return true;
     }
     return false;
+}
+
+// Respond with JSON message.
+function jsonMessage(res, code, msg) {
+    return res.json({ code: code, message: msg });
 }
 
 /***  POST ROUTES  ***/
@@ -123,14 +128,14 @@ app.post('/routes/update-entries', (request, response) => {
     });
 });
 
-app.post('/routes/login', urlencodedParser, (request, response) => {
+app.post('/routes/login', jsonParser, (request, response) => {
     console.log('/routes/login was fired.');
 
-    if (!JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_1]) {
-
+    // If requester has no cookie, proceed with logging in, otherwise say 'unauthorized'.
+    if (!checkAccess(request)) {
         if (request.body.councilPassword === process.env.COUNCIL_PW) {
-            let userId = request.body.evaluator.split(' - ')[0];
-            let username = request.body.evaluator.split(' - ')[1];
+            let userId = request.body.evaluator;
+            // let username = request.body.evaluator.split(' - ')[1];
             let password = request.body.userPassword;
 
             pg.connect(process.env.DATABASE_URL, (err, client, done) => {
@@ -142,24 +147,24 @@ app.post('/routes/login', urlencodedParser, (request, response) => {
                     if (res.rows[0].verify_evaluator) {
                         response.cookie(process.env.COOKIE_1, true, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
                         response.cookie(process.env.COOKIE_2, userId, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
-                        response.cookie(process.env.COOKIE_3, username, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
+                        // response.cookie(process.env.COOKIE_3, username, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
 
                         client.query('UPDATE evaluator SET logged_in = true WHERE evaluator_id = $1', [userId], (err, res) => {
                             if (err) {
                                 return handleError(err, response);
                             }
-                            response.redirect('/');
+                            jsonMessage(response, 4, "Welcome!");
                         });
                     } else {
-                        response.send('Account password is incorrect.');
+                        jsonMessage(response, 3, "Account password is incorrect");
                     }
                 });
             });
         } else {
-            response.send('Council password is incorrect.');
+            jsonMessage(response, 2, "Council password is incorrect");
         }
     } else {
-        response.redirect('/');
+        jsonMessage(response, 1, "Unauthorized");
     }
 });
 
@@ -195,7 +200,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/login', (request, response) => {
-    if (!checkAccess(request)) {
+    if (checkAccess(request)) {
         return response.redirect('/');
     }
     try {
