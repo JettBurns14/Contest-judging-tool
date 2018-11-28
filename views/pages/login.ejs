@@ -9,13 +9,25 @@
     </head>
 
     <body>
-        <form id="login-form" method="post" action="/routes/login">
-            <div id="form-div">
-                <h1 id="form-header">Log-in</h1>
-                <input class="login-input" name="userPassword" type="password" placeholder="Account Password" required>
-                <input class="login-input" name="councilPassword" type="password" placeholder="Council Password" required>
-                <input class="login-input" type="submit" value="Log-in" id="submit-button">
+        <div class="center vertical">
+            <div class="center horizontal">
+                <div id="welcome-message">
+                    <h1>Good to see you again!</h1>
+                </div>
+                <div id="form-container">
+                    <form id="login-form" method="post" onSubmit="return submitLogin(event)">
+                        <h1 id="form-header">Log in</h1>
+                        <label for="evalutor">Account Username <span class="error" id="evaluator-error"></span></label>
+                        <input class="login-input" name="evaluator" type="text" required>
+                        <label for="userPassword">Account Password <span class="error" id="password-error"></span></label>
+                        <input class="login-input" name="userPassword" type="password" required>
+                        <label for="councilPassword">Council Password <span class="error" id="councilpw-error"></span></label>
+                        <input class="login-input" name="councilPassword" type="password" required>
+                        <input class="login-input" type="submit" value="Log in" id="submit-button">
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </body>
+    <script src="/js/login.js"></script>
 </html>

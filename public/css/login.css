@@ -1,38 +1,71 @@
 body {
-    background: #f8f8f8;
+    background-color: rgb(35, 100, 238);
+    background-image: url(https://cdn.kastatic.org/images/homepage/blue-mountains.svg);
+    background-position: 0 -2px;
+    background-size: cover;
+    height: 100vh;
+    overflow-y: hidden;
     font-family: 'Roboto', Arial;
+    margin: 2px 0;
 }
-
+.center.vertical {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.center.horizontal {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    margin: auto 6vw;
+}
+#welcome-message {
+    color: white;
+    font-size: 30px;
+}
+#welcome-message h1 {
+    margin: 50px 0;
+    width: 440px;
+    text-shadow: 0 2px 30px rgba(0, 0, 50, 0.3);
+}
+#form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 400px;
+    height: 450px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 5px 50px rgba(0, 0, 50, 0.3);
+}
+#login-form {
+    width: 80%;
+    margin: 0 auto;
+}
 #form-header {
     text-align: center;
-    padding: 30px;
+    padding:  0 0 20px 0;
+    margin-top: 0;
     font-weight: 80;
-}
-#evaluator-dropdown {
-    display: block;
-    margin: 0px auto;
-    width: 97%;
-    height: 35px;
 }
 .login-input {
     display: block;
     padding: 10px;
-    width: 90%;
-    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
     border: 1px solid #d7d7d7;
-    margin: 10px auto;
+    margin: 5px auto 20px;
+    font-size: 15px;
 }
-#form-div {
-    margin: 150px auto;
-    width: 300px;
+.error {
+    color: red;
 }
 #submit-button {
-    background: #337ab7;
-    border-color: #2e6da4;
+    background-color: rgb(12, 127, 153);
+    border-color: rgb(12, 127, 153);
     color: white;
     cursor: pointer;
-    margin: 0px auto;
-}
-#form-response {
-    text-align: center;
+    height: 48px;
 }
