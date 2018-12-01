@@ -43,11 +43,20 @@ exports.connect = function(mode, done) {
 exports.query = function(text, params, callback) {
 	return state.pool.query(text, params)
         .then(res => callback(res))
-        .catch(err => {
+        .catch(error => {
             // Log or send this back correctly.
-            // callback(err);
-            console.log("Error from db.js");
-            console.error(err);
+			console.log("Error from db.js");
+			console.error(error);
+			callback({ error });
+			// Invalid input syntax
+			// if (err.code === '22P02') {
+			// 	err.message = "Invalid syntax";
+			// }
+			// return next({
+			// 	status: 400,
+			// 	code:
+			// 	message: err.message
+			// });
         });
 };
 
