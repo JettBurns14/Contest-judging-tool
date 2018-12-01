@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/css/judging.css">
         <link rel="stylesheet" type="text/css" href="/css/header.css">
-        <link rel="shortcut icon" href="/images/Winston-icon.png" type="image/png">
+        <link rel="shortcut icon" href="/images/winston-icon.png" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <link href="https://static.zdassets.com/hc/assets/application-1bb1012613988b6129cdc3cec950bdd9.css" rel="stylesheet">
     </head>
@@ -14,15 +14,15 @@
         <h1 id="entry-title"><%= entry.o_entry_title %></h1>
         <p id="entry-identifier">
             <% if (entry.o_entry_id == -1) { %>
-                <%= 'All entries evaluated!' %>
+                <%= "All entries evaluated!" %>
             <% } else { %>
                 <%= entry.o_entry_id %>
             <% } %>
         </p>
         <img src="/images/loading-spinner-icon.png" id="loading-spinner">
-        <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + '/embedded' %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
+        <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + "/embedded" %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
 
-        <form id="entry-form" method="post" action="/routes/judging" target="_self">
+        <form id="entry-form" method="post" action="/api/judging" target="_self">
             <input name="entry_id" value="<%= entry.o_entry_id %>" style="display: none;"></input>
             <div id="sliders-container">
                 <div class="form-field-div">
@@ -52,10 +52,10 @@
     </body>
 
     <script>
-    var viewerIframe = document.getElementById('entry-viewer-iframe');
-    var spinner = document.getElementById('loading-spinner');
+    let viewerIframe = document.getElementById("entry-viewer-iframe");
+    let spinner = document.getElementById("loading-spinner");
 
-    function Slider({ title, name, description, id, max, color, borderColor, leftLabel, rightLabel }) {
+    let Slider = function({ title, name, description, id, max, color, borderColor, leftLabel, rightLabel }) {
         this.title = title;
         this.name = name;
         this.description = description;
@@ -69,45 +69,45 @@
         this.rightLabel = rightLabel;
     };
     Slider.prototype.create = function() {
-        var container = document.getElementById(this.id);
-        var title = document.createElement('h3');
+        let container = document.getElementById(this.id);
+        let title = document.createElement("h3");
         title.textContent = this.title;
-        var description = document.createElement('p');
+        let description = document.createElement("p");
         description.textContent = this.description;
-        var leftLabel = document.createElement('span');
-        leftLabel.style.float = 'left';
-        leftLabel.className = 'label';
-        var rightLabel = document.createElement('span');
+        let leftLabel = document.createElement("span");
+        leftLabel.style.float = "left";
+        leftLabel.className = "label";
+        let rightLabel = document.createElement("span");
         rightLabel.style.float = "right";
-        rightLabel.className = 'label';
-        var leftLabelTxt = document.createTextNode(this.leftLabel);
-        var rightLabelTxt = document.createTextNode(this.rightLabel);
+        rightLabel.className = "label";
+        let leftLabelTxt = document.createTextNode(this.leftLabel);
+        let rightLabelTxt = document.createTextNode(this.rightLabel);
         leftLabel.appendChild(leftLabelTxt);
         rightLabel.appendChild(rightLabelTxt);
-        var slider = document.createElement('input');
-        slider.className = 'slider';
+        let slider = document.createElement("input");
+        slider.className = "slider";
         slider.name = this.name;
-        slider.type = 'range';
+        slider.type = "range";
         slider.min = this.min;
         slider.max = this.max;
         slider.value = this.value;
         slider.style.background = this.color;
-        slider.style.border = '1px solid ' + this.border;
-        var currentValue = document.createElement('div');
-        currentValue.className = 'current-value';
-        currentValue.style.left = slider.value * 10 + '%';
+        slider.style.border = "1px solid " + this.border;
+        let currentValue = document.createElement("div");
+        currentValue.className = "current-value";
+        currentValue.style.left = slider.value * 10 + "%";
         currentValue.textContent = slider.value / 2;
         slider.oninput = function() {
-            currentValue.style.left = slider.value * 10 + '%';
+            currentValue.style.left = slider.value * 10 + "%";
             currentValue.textContent = slider.value / 2;
         }
-        var ticks = document.createElement('div');
-        ticks.className = 'sliderTicks';
-        for (var i = this.min; i < this.max / 2 + 1; ++i) {
-            var tickVal = document.createElement('div');
-            tickVal.className = 'tick tickBottom';
-            tickVal.style.left = (i * this.max * 2) + '%';
-            var vals = document.createTextNode(i);
+        let ticks = document.createElement("div");
+        ticks.className = "sliderTicks";
+        for (let i = this.min; i < this.max / 2 + 1; ++i) {
+            let tickVal = document.createElement("div");
+            tickVal.className = "tick tickBottom";
+            tickVal.style.left = (i * this.max * 2) + "%";
+            let vals = document.createTextNode(i);
             tickVal.appendChild(vals);
             ticks.appendChild(tickVal);
         }
@@ -120,52 +120,52 @@
         container.appendChild(ticks);
     };
 
-    var creativitySlider = new Slider({
-        title: 'CREATIVITY',
-        name: 'creativity',
-        description: 'Does this program put an unexpected spin on the ordinary? Do they use shapes or ideas in cool ways?',
-        id: 'creativity-slider',
+    const creativitySlider = new Slider({
+        title: "CREATIVITY",
+        name: "creativity",
+        description: "Does this program put an unexpected spin on the ordinary? Do they use shapes or ideas in cool ways?",
+        id: "creativity-slider",
         max: 10,
-        color: '#b9e986',
-        borderColor: '#7ed320',
-        leftLabel: 'Unimaginative',
-        rightLabel: 'Inventive'
+        color: "#b9e986",
+        borderColor: "#7ed320",
+        leftLabel: "Unimaginative",
+        rightLabel: "Inventive"
     });
     creativitySlider.create();
-    var complexitySlider = new Slider({
-        title: 'COMPLEXITY',
-        name: 'complexity',
-        description: 'Does this program appear to have taken lots of work? Is the code complex or output intricate?',
-        id: 'complexity-slider',
+    const complexitySlider = new Slider({
+        title: "COMPLEXITY",
+        name: "complexity",
+        description: "Does this program appear to have taken lots of work? Is the code complex or output intricate?",
+        id: "complexity-slider",
         max: 10,
-        color: '#c6aef8',
-        borderColor: '#8e5bf4',
-        leftLabel: 'Basic',
-        rightLabel: 'Elaborate'
+        color: "#c6aef8",
+        borderColor: "#8e5bf4",
+        leftLabel: "Basic",
+        rightLabel: "Elaborate"
     });
     complexitySlider.create();
-    var qualityCodeSlider = new Slider({
-        title: 'QUALITY CODE',
-        name: 'quality_code',
-        description: 'Does this program have cleanly indented, commented code? Are there any syntax errors or program logic errors?',
-        id: 'quality-code-slider',
+    const qualityCodeSlider = new Slider({
+        title: "QUALITY CODE",
+        name: "quality_code",
+        description: "Does this program have cleanly indented, commented code? Are there any syntax errors or program logic errors?",
+        id: "quality-code-slider",
         max: 10,
-        color: '#ffc86e',
-        borderColor: '#fea839',
-        leftLabel: 'Poor',
-        rightLabel: 'Elegant'
+        color: "#ffc86e",
+        borderColor: "#fea839",
+        leftLabel: "Poor",
+        rightLabel: "Elegant"
     });
     qualityCodeSlider.create();
-    var interpretationSlider = new Slider({
-        title: 'INTERPRETATION',
-        name: 'interpretation',
-        description: 'Does this program portray the overall theme of the contest?',
-        id: 'interpretation-slider',
+    const interpretationSlider = new Slider({
+        title: "INTERPRETATION",
+        name: "interpretation",
+        description: "Does this program portray the overall theme of the contest?",
+        id: "interpretation-slider",
         max: 10,
-        color: '#ed8995',
-        borderColor: '#d0011b',
-        leftLabel: 'Unrelated',
-        rightLabel: 'Representative'
+        color: "#ed8995",
+        borderColor: "#d0011b",
+        leftLabel: "Unrelated",
+        rightLabel: "Representative"
     });
     interpretationSlider.create();
 

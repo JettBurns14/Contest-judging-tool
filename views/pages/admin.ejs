@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="/css/admin.css">
         <link rel="stylesheet" type="text/css" href="/css/header.css">
-        <link rel="shortcut icon" href="/images/Winston-icon.png" type="image/png">
+        <link rel="shortcut icon" href="/images/winston-icon.png" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
     <body>
@@ -44,9 +44,9 @@
             <h1 id="content-header">Contests</h1>
             <% contests1.forEach((c) => { %>
                 <div class="preview-container standard">
-                    <p class="db-header"><%= c.contest_name + ' - #' + c.contest_id %></p>
+                    <p class="db-header"><%= c.contest_name + " - #" + c.contest_id %></p>
                     <div class="preview-content">
-                        <a href="<%= c.contest_url %>" target="_blank"><img src="<%= c.contest_url + '/latest.png' %>"></a>
+                        <a href="<%= c.contest_url %>" target="_blank"><img src="<%= c.contest_url + "/latest.png" %>"></a>
                         <p>Start: <%= c.date_start %></p>
                         <p>End: <%= c.date_end %></p>
                     </div>
@@ -85,27 +85,27 @@
 
     </body>
     <script>
-    var navButtons = document.getElementsByClassName('nav-button');
-    var pages = document.getElementsByClassName('page-content');
-    var updateButton = document.getElementById('update-entries-button');
+    let navButtons = document.getElementsByClassName("nav-button");
+    let pages = document.getElementsByClassName("page-content");
+    let updateButton = document.getElementById("update-entries-button");
 
-    showpage = (page) => {
+    const showpage = (page) => {
         for (var i = 0; i < pages.length; ++i) {
-            pages[i].style.display = 'none';
+            pages[i].style.display = "none";
         }
         for(var i = 0; i < navButtons.length; ++i) {
-            navButtons[i].classList.remove('selected');
+            navButtons[i].classList.remove("selected");
         }
-        navButtons[page].classList.add('selected');
-        pages[page].style.display = 'block';
+        navButtons[page].classList.add("selected");
+        pages[page].style.display = "block";
         if (page == 0) {
-            pages[page].style.display = 'flex';
+            pages[page].style.display = "flex";
         }
     };
     showpage(0);
 
-    updateButton.addEventListener('click', () => {
-        alert('This isn\'t set up yet.');
+    updateButton.addEventListener("click", () => {
+        alert("This isn\'t set up yet.");
     });
 
     </script>

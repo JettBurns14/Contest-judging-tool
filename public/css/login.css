@@ -5,7 +5,7 @@ body {
     background-size: cover;
     height: 100vh;
     overflow-y: hidden;
-    font-family: 'Roboto', Arial;
+    font-family: "Roboto", Arial;
     margin: 2px 0;
 }
 .center.vertical {
@@ -34,7 +34,7 @@ body {
     flex-direction: column;
     justify-content: center;
     width: 400px;
-    height: 450px;
+    padding: 30px 0;
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 5px 50px rgba(0, 0, 50, 0.3);
@@ -68,4 +68,15 @@ body {
     color: white;
     cursor: pointer;
     height: 48px;
+}
+#links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+#links a {
+    color: #71B307;
+}
+#links a:hover {
+    color: #518005;
 }

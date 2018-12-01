@@ -1,54 +1,49 @@
 require("dotenv").config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const Request = require('request');
-const Moment = require('moment');
-const CookieParser = require('cookie-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
+const Request = require("request");
+const Moment = require("moment");
+const CookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 5000;
 const db = require("./db");
 const errorHandler = require("./handlers/error");
-
+const log = require("./handlers/log");
 const app = express();
 
-app.set('view engine', 'ejs');
-
-app.use(CookieParser());
-app.use(express.static(__dirname + '/public'));
-
-// Ref: https://github.com/expressjs/body-parser
-var jsonParser = bodyParser.json();
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
-// Error handler function.
-function handleError(err, res) {
-    console.error(err);
-    res.status(500).render('pages/error', { error: err });
-};
-
 // Security check.
-function checkAccess(req) {
+const checkAccess = req => {
     if (JSON.parse(JSON.stringify(req.cookies))[process.env.COOKIE_1]) {
-      return true;
+        return true;
     }
     return false;
 }
 
 // Respond with JSON message.
-function jsonMessage(res, code, msg) {
+const jsonMessage = (res, code, msg) => {
     return res.json({ code: code, message: msg });
 }
 
-function handleNext(next, status, message) {
+// Reduce repeated next() code.
+const handleNext = (next, status, message) => {
     return next({
         status,
         message
     });
 }
 
-/***  POST ROUTES  ***/
+app.set("view engine", "ejs");
+app.use(CookieParser());
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.json());
 
-app.post('/routes/judging', urlencodedParser, (request, response) => {
-    console.log('/routes/judging was fired.');
+// Log every request.
+app.use(log);
+
+/***  POST ROUTES  ***/
+app.post("/api/judging", (request, response) => {
+    if (!checkAccess(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
     if (!request.body) {
         return handleNext(next, 400, "No request body received");
     }
@@ -62,23 +57,25 @@ app.post('/routes/judging', urlencodedParser, (request, response) => {
     let skill_level = request.body.skill_level;
 
     try {
-        db.query('SELECT evaluate($1, $2, $3, $4, $5, $6, $7)', [entry_id, user_id, score_1, score_2, score_3, score_4, skill_level], res => {
+        db.query("SELECT evaluate($1, $2, $3, $4, $5, $6, $7)", [entry_id, user_id, score_1, score_2, score_3, score_4, skill_level], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem evaluating this entry");
             }
-            response.redirect('/judging');
+            response.redirect("/judging");
         });
     } catch(err) {
         return handleNext(next, 400, "There was a problem evaluating this entry");
     }
 });
 
-// WIP, could be used to load all entries into Db once contest is over.
-app.post('/routes/update-entries', (request, response, next) => {
-    console.log('/routes/update-entries was fired.');
+// WIP, could be used to load all entries into DB once contest deadline is past.
+app.post("/api/update-entries", (request, response, next) => {
+    if (!checkAccess(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
 
     Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${process.env.CONTEST_PROGRAM_ID}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
-        console.log('Request callback called.');
+        console.log("Request callback called.");
         if (!JSON.parse(body)) {
             return handleNext(next, 400, "No request body received");
         } else
@@ -88,17 +85,17 @@ app.post('/routes/update-entries', (request, response, next) => {
 
         let data = JSON.parse(body);
         if (data) {
-            console.log('Data exists.');
+            console.log("Data exists.");
             // When data is received (which is sorted already)...
             // SELECT all current entries in DB table.
             // Sort current table entries by created date.
             // Get most recent entry from table, TOP().
             try {
-                db.query('SELECT MAX(entry_created) FROM entry', [], res => {
+                db.query("SELECT MAX(entry_created) FROM entry", [], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem getting the most recent entry");
                     }
-                    console.log('Query callback called.');
+                    console.log("Query callback called.");
                     // Handle error
                     console.log(`${res.rows[0].max} --- ${data.scratchpads.length} new programs.`);
                     for (var i = 0; i < data.scratchpads.length; ++i) {
@@ -124,22 +121,20 @@ app.post('/routes/update-entries', (request, response, next) => {
     });
 });
 
-app.post('/routes/login', jsonParser, (request, response, next) => {
-    console.log('/routes/login was fired.');
-
+app.post("/api/login", (request, response, next) => {
     // If requester has no cookie, proceed with logging in, otherwise say they are logged in.
     if (!checkAccess(request)) {
         if (request.body.councilPassword === process.env.COUNCIL_PW) {
             let userId = request.body.evaluator;
-            // let username = request.body.evaluator.split(' - ')[1];
+            // let username = request.body.evaluator.split(" - ")[1];
             let password = request.body.userPassword;
             // Needs to use a username, not id.
-            db.query('SELECT verify_evaluator($1, $2)', [userId, password], res => {
+            db.query("SELECT verify_evaluator($1, $2)", [userId, password], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem logging you in");
                 }
                 if (res.rows[0].verify_evaluator) {
-                    db.query('UPDATE evaluator SET logged_in = true WHERE evaluator_id = $1', [userId], res => {
+                    db.query("UPDATE evaluator SET logged_in = true WHERE evaluator_id = $1", [userId], res => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem logging you in");
                         }
@@ -163,39 +158,41 @@ app.post('/routes/login', jsonParser, (request, response, next) => {
     }
 });
 
-app.post('/routes/log-out', urlencodedParser, (request, response, next) => {
-    console.log('/routes/log-out was fired.');
-
+app.post("/api/logout", (request, response, next) => {
+    if (!checkAccess(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    
     let userId = JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_2];
     console.log(userId);
 
-    db.query('UPDATE evaluator SET logged_in = false WHERE evaluator_id = $1', [userId], res => {
+    db.query("UPDATE evaluator SET logged_in = false WHERE evaluator_id = $1", [userId], res => {
         if (res.error) {
             return handleNext(next, 400, "There was a problem logging you out");
         }
         response.clearCookie(process.env.COOKIE_1);
         response.clearCookie(process.env.COOKIE_2);
         response.clearCookie(process.env.COOKIE_3);
-        response.redirect('/login');
+        response.redirect("/login");
     });
 });
 
 /***  PAGE ROUTES  ***/
-app.get('/', (request, response, next) => {
+app.get("/", (request, response, next) => {
     if (!checkAccess(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
-    response.render('pages/home');
+    response.render("pages/home");
 });
 
-app.get('/login', (request, response) => {
+app.get("/login", (request, response) => {
     if (checkAccess(request)) {
-        return response.redirect('/');
+        return response.redirect("/");
     }
-    response.render('pages/login');
+    response.render("pages/login");
 });
 
-app.get('/judging', (request, response, next) => {
+app.get("/judging", (request, response, next) => {
     if (!checkAccess(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
@@ -205,14 +202,14 @@ app.get('/judging', (request, response, next) => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting an entry");
             }
-            response.render('pages/judging', { entry: res.rows[0] });
+            response.render("pages/judging", { entry: res.rows[0] });
         });
     } catch(err) {
         return handleNext(next, 400, err);
     }
 });
 
-app.get('/admin', (request, response, next) => {
+app.get("/admin", (request, response, next) => {
     if (!checkAccess(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
@@ -221,47 +218,47 @@ app.get('/admin', (request, response, next) => {
 
         // TODO: Add results to a new table? Maybe add results link to contests table.
         // TODO: Get count of only this contest's entries.
-        db.query('SELECT COUNT(*) FROM entry', [], res => {
+        db.query("SELECT COUNT(*) FROM entry", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the number of entries");
             }
             entry1 = res.rows;
         });
         // TODO: Get count of only this contest's evals.
-        db.query('SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true;', [], res => {
+        db.query("SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true;", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the evaluations");
             }
             reviewed1 = res.rows;
         });
-        db.query('SELECT * FROM contest', [], res => {
+        db.query("SELECT * FROM contest", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the contests");
             }
             contests1 = res.rows;
         });
         // TODO: Get only this contest's entries
-        db.query('SELECT * FROM entry', [], res => {
+        db.query("SELECT * FROM entry", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the entries");
             }
             entries1 = res.rows;
-            response.render('pages/admin', { entry1: entry1, reviewed1: reviewed1, contests1: contests1, entries1: entries1 });
+            response.render("pages/admin", { entry1: entry1, reviewed1: reviewed1, contests1: contests1, entries1: entries1 });
         });
     } catch(err) {
         return handleNext(next, 400, err);
     }
 });
 
-app.get('/profile', (request, response, next) => {
+app.get("/profile", (request, response, next) => {
     if (!checkAccess(request)) {
         return handleNext(next, 400, "Unauthorized");
     }
-    response.render('pages/profile', { username: request.cookies[process.env.COOKIE_3] });
+    response.render("pages/profile", { username: request.cookies[process.env.COOKIE_3] });
 });
 
 // Handler for any undefined routes.
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     let err = new Error("Not Found");
     err.status = 404;
     next(err);
@@ -270,12 +267,13 @@ app.use(function(req, res, next) {
 // Handler for standardizing error format.
 app.use(errorHandler);
 
+let time = new Date().toLocaleTimeString();
 db.connect(
     db.MODE_DEV,
     () => {
-        console.log("Connected to Postgres");
+        console.log(time, "Connected to Postgres");
         app.listen(PORT, () => {
-            console.log(`Council app is running on port ${PORT}, http://localhost:${PORT}/`);
+            console.log(time, `Council app is listening on port ${PORT}, http://localhost:${PORT}/`);
         });
     }
 );

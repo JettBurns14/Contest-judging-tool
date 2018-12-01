@@ -17,14 +17,7 @@ let state = {
 };
 
 // Initial connection helper.
-exports.connect = function(mode, done) {
-    // Connect to specificed DB.
-	/*state.pool = new Pool({
-		host: process.env.DB_HOST,
-		user: process.env.DB_USER,
-		password: process.env.DB_PASSWORD,
-		database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : DEV_DB,
-	});*/
+exports.connect = (mode, done) => {
     state.pool = new Pool({
         connectionString: process.env.PRODUCTION_DB_URL,
     });
@@ -40,27 +33,17 @@ exports.connect = function(mode, done) {
 };
 
 // Easily run a query.
-exports.query = function(text, params, callback) {
+exports.query = (text, params, callback) => {
 	return state.pool.query(text, params)
         .then(res => callback(res))
         .catch(error => {
-            // Log or send this back correctly.
 			console.log("Error from db.js");
 			console.error(error);
 			callback({ error });
-			// Invalid input syntax
-			// if (err.code === '22P02') {
-			// 	err.message = "Invalid syntax";
-			// }
-			// return next({
-			// 	status: 400,
-			// 	code:
-			// 	message: err.message
-			// });
         });
 };
 
-exports.shutdown = function() {
+exports.shutdown = () => {
     return state.pool.end().then(() => console.log("Pool has shutdown"));
 }
 
