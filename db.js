@@ -5,11 +5,11 @@ const { Pool } = require("pg");
 // const async = require("async");
 
 // Names of databases to connect to, given the mode.
-const PRODUCTION_DB = process.env.PRODUCTION_DB;
-const DEV_DB = process.env.DEV_DB;
+const PROD_DB = process.env.PROD_DB_URL;
+const DEV_DB = process.env.DEV_DB_URL;
 
 exports.MODE_DEV = "mode_dev";
-exports.MODE_PRODUCTION = "mode_production";
+exports.MODE_PROD = "mode_prod";
 
 let state = {
 	pool: null,
@@ -19,7 +19,7 @@ let state = {
 // Initial connection helper.
 exports.connect = (mode, done) => {
     state.pool = new Pool({
-        connectionString: process.env.PRODUCTION_DB_URL,
+        connectionString: mode === exports.MODE_PROD ? PROD_DB : DEV_DB,
     });
 
     state.pool.on("error", (err, client) => {
