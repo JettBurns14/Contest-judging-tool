@@ -1,6 +1,6 @@
 body {
     background-color: rgb(35, 100, 238);
-    background-image: url(https://cdn.kastatic.org/images/homepage/blue-mountains.svg);
+    background-image: url("/static/images/blue-mountains.svg");
     background-position: 0 -2px;
     background-size: cover;
     height: 100vh;

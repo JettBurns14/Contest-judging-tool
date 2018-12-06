@@ -55,6 +55,7 @@ body {
     color: #555;
     width: 20%;
     height: 40px;
+    font: inherit;
 }
 
 #submit-form-button {
@@ -151,7 +152,7 @@ body {
 }
 
 .current-value::after {
-    background: url("/images/scoring-arrow.png") no-repeat;
+    background: url("/static/images/scoring-arrow.png") no-repeat;
     width: 17px;
     height: 9px;
     margin-left: -8px;

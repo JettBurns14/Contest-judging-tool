@@ -12,7 +12,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 app.use(CookieParser());
-app.use(express.static(__dirname + "/public"));
+app.use("/static", express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
 // Log every request.

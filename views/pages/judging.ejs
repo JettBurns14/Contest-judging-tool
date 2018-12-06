@@ -3,11 +3,10 @@
     <head>
         <title>Judging | Challenge Council</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/css/judging.css">
-        <link rel="stylesheet" type="text/css" href="/css/header.css">
-        <link rel="shortcut icon" href="/images/winston-icon.png" type="image/png">
+        <link rel="stylesheet" type="text/css" href="/static/css/judging.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
+        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-        <link href="https://static.zdassets.com/hc/assets/application-1bb1012613988b6129cdc3cec950bdd9.css" rel="stylesheet">
     </head>
     <body>
         <%- include ../partials/header %>
@@ -19,7 +18,7 @@
                 <%= entry.o_entry_id %>
             <% } %>
         </p>
-        <img src="/images/loading-spinner-icon.png" id="loading-spinner">
+        <img src="/static/images/loading-spinner-icon.png" id="loading-spinner">
         <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + "/embedded" %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
 
         <form id="entry-form" method="post" action="/api/judging" target="_self">
@@ -51,5 +50,5 @@
         </form>
     </body>
 
-    <script src="/js/judging.js"></script>
+    <script src="/static/js/judging.js"></script>
 </html>
