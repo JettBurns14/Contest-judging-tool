@@ -2,16 +2,17 @@ require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 const express = require("express");
 const bodyParser = require("body-parser");
-const CookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 const db = require("./db");
 const errorHandler = require("./middleware/error");
 const log = require("./middleware/log");
 const apiRoutes = require("./routes/api");
 const pagesRoutes = require("./routes/pages");
+const authRoutes = require("./routes/auth");
 const app = express();
 
 app.set("view engine", "ejs");
-app.use(CookieParser());
+app.use(cookieParser());
 app.use("/static", express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(log);
 app.use("/", pagesRoutes);
 app.use("/api/", apiRoutes);
+app.use("/api/auth/", authRoutes);
 
 // Handler for any undefined routes.
 app.use((req, res, next) => {

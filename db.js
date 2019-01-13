@@ -36,10 +36,9 @@ exports.connect = (mode, done) => {
 exports.query = (text, params, callback) => {
 	return state.pool.query(text, params)
         .then(res => callback(res))
-        .catch(error => {
-			console.log("Error from db.js");
-			console.error(error);
-			callback({ error });
+        .catch(err => {
+			console.log("Error from db.js", err);
+			callback({ error: err });
         });
 };
 
