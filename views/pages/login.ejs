@@ -15,17 +15,11 @@
                     <h1>Good to see you again!</h1>
                 </div>
                 <div id="form-container">
-                    <form id="login-form" method="post" onSubmit="return submitLogin(event)">
-                        <h1 id="form-header">Log in</h1>
-                        <label for="evalutor">Account Username <span class="error" id="evaluator-error"></span></label>
-                        <input class="login-input" name="evaluator" type="text" required>
-                        <label for="userPassword">Account Password <span class="error" id="password-error"></span></label>
-                        <input class="login-input" name="userPassword" type="password" required>
-                        <label for="councilPassword">Council Password <span class="error" id="councilpw-error"></span></label>
-                        <input class="login-input" name="councilPassword" type="password" required>
-                        <input class="login-input" type="submit" value="Log in" id="submit-button">
-                        <div id="links"><a href="#">Create an account</a><a href="#">Forgot password?</a></div>
+                    <h1 id="form-header">Sign up or login</h1>
+                    <form class="form" method="post" onSubmit="return submitForm(event)">
+                        <input name="submit-signup" class="KA-style" type="submit" value="Connect with KA">
                     </form>
+                    <p>Note: Only approved Challenge Council members can connect their accounts. Check out the <a href="/">homepage</a> if you aren't here to judge!</p>
                 </div>
             </div>
         </div>

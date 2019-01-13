@@ -28,21 +28,21 @@
             <div class="preview-container standard" style="height: 100px">
                 <p class="db-header">Number of entries</p>
                 <div class="preview-content">
-                    <p><%= entry1[0].count %></p>
+                    <p><%= entryCount %></p>
                 </div>
             </div>
 
             <div class="preview-container standard" style="height: 100px">
                 <p class="db-header">Number of reviewed entries</p>
                 <div class="preview-content">
-                    <p><%= reviewed1[0].count %></p>
+                    <p><%= reviewedCount %></p>
                 </div>
             </div>
         </div>
 
         <div class="page-content" id="contests-page">
             <h1 id="content-header">Contests</h1>
-            <% contests1.forEach((c) => { %>
+            <% contests.forEach((c) => { %>
                 <div class="preview-container standard">
                     <p class="db-header"><%= c.contest_name + " - #" + c.contest_id %></p>
                     <div class="preview-content">
@@ -56,7 +56,7 @@
 
         <div class="page-content" id="entries-page">
             <h1 id="content-header">Entries</h1>
-            <ol id="entries-list"><% entries1.forEach((e) => { %>
+            <ol id="entries-list"><% entries.forEach((e) => { %>
                 <li><span><%= e.entry_title %></span> created on <em><%= e.entry_created %></em></li>
             <% }); %></ol>
         </div>
