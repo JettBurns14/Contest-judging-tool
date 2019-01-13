@@ -1,10 +1,10 @@
-const { checkAccess, handleNext, jsonMessage } = require("../functions");
+const { isLoggedIn, handleNext, jsonMessage } = require("../functions");
 const db = require("../db");
 const Request = require("request");
 const Moment = require("moment");
 
 exports.evaluateEntry = (request, response) => {
-    if (!checkAccess(request)) {
+    if (!isLoggedIn(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
     if (!request.body) {
@@ -33,7 +33,7 @@ exports.evaluateEntry = (request, response) => {
 
 // WIP, could be used to load all entries into DB once contest deadline is past.
 exports.updateEntries = (request, response, next) => {
-    if (!checkAccess(request)) {
+    if (!isLoggedIn(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
 
@@ -81,62 +81,6 @@ exports.updateEntries = (request, response, next) => {
         } else {
             return handleNext(next, 400, "There is no parsed JSON data");
         }
-    });
-}
-
-exports.login = (request, response, next) => {
-    // If requester has no cookie, proceed with logging in, otherwise say they are logged in.
-    if (!checkAccess(request)) {
-        if (request.body.councilPassword === process.env.COUNCIL_PW) {
-            let userId = request.body.evaluator;
-            // let username = request.body.evaluator.split(" - ")[1];
-            let password = request.body.userPassword;
-            // Needs to use a username, not id.
-            db.query("SELECT verify_evaluator($1, $2)", [userId, password], res => {
-                if (res.error) {
-                    return handleNext(next, 400, "There was a problem logging you in");
-                }
-                if (res.rows[0].verify_evaluator) {
-                    db.query("UPDATE evaluator SET logged_in = true WHERE evaluator_id = $1", [userId], res => {
-                        if (res.error) {
-                            return handleNext(next, 400, "There was a problem logging you in");
-                        }
-                        response.cookie(process.env.COOKIE_1, true, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
-                        response.cookie(process.env.COOKIE_2, userId, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
-                        // response.cookie(process.env.COOKIE_3, username, { expires: new Date(Date.now() + (1000 * 3600 * 24 * 365))});
-                        jsonMessage(response, 4, "Welcome!");
-                    });
-                } else {
-                    return handleNext(next, 401, "Account password is incorrect");
-                    // jsonMessage(response, 3, "Account password is incorrect");
-                }
-            });
-        } else {
-            return handleNext(next, 401, "Council password is incorrect");
-            // jsonMessage(response, 2, "Council password is incorrect");
-        }
-    } else {
-        return handleNext(next, 400, "You are already logged in");
-        // jsonMessage(response, 1, "Unauthorized");
-    }
-}
-
-exports.logout = (request, response, next) => {
-    if (!checkAccess(request)) {
-        return handleNext(next, 401, "Unauthorized");
-    }
-
-    let userId = JSON.parse(JSON.stringify(request.cookies))[process.env.COOKIE_2];
-    console.log(userId);
-
-    db.query("UPDATE evaluator SET logged_in = false WHERE evaluator_id = $1", [userId], res => {
-        if (res.error) {
-            return handleNext(next, 400, "There was a problem logging you out");
-        }
-        response.clearCookie(process.env.COOKIE_1);
-        response.clearCookie(process.env.COOKIE_2);
-        response.clearCookie(process.env.COOKIE_3);
-        response.redirect("/login");
     });
 }
 
