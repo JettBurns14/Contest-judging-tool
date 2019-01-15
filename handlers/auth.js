@@ -59,14 +59,14 @@ exports.oauthCallback = function(request, response, next) {
                         }
                         // If row, truthy, kaid is whitelisted, move on.
                         if (result.rows.length) {
-                            let kaidNums = kaid.split("_")[1];
-                            db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaidNums], result => {
+                            // let kaidNums = kaid.split("_")[1];
+                            db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaid], result => {
                                 if (result.error) {
                                     return handleNext(next, 400, "There was a problem while searching for this evaluator_kaid, please try again");
                                 }
                                 // If row, truthy, user exists, just log in.
                                 if (result.rows.length) {
-                                    createJWTToken(kaidNums, token, tokenSecret)
+                                    createJWTToken(kaid, token, tokenSecret)
                                         .then(jwtToken => {
                                             response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                             response.redirect("/");
@@ -76,12 +76,12 @@ exports.oauthCallback = function(request, response, next) {
                                         });
                                 } else {
                                     // User doesn't exist, sign up.
-                                    db.query("INSERT INTO evaluator (logged_in, logged_in_tstz, dt_term_start, dt_term_end, email, username, nickname, evaluator_name, evaluator_kaid, avatar_url) VALUES (true, CURRENT_TIMESTAMP, null, null, $1, $2, $3, $4, $5)", [email, username, nickname, nickname, kaid, avatarUrl], result => {
+                                    db.query("INSERT INTO evaluator (logged_in, logged_in_tstz, dt_term_start, dt_term_end, email, username, nickname, evaluator_name, evaluator_kaid, avatar_url) VALUES (true, CURRENT_TIMESTAMP, null, null, $1, $2, $3, $4, $5, $6)", [email, username, nickname, nickname, kaid, avatarUrl], result => {
                                         if (result.error) {
                                             return handleNext(next, 400, "There was a problem creating your account, please try again");
                                         }
                                         // This user was just created, now get their ID.
-                                        createJWTToken(kaidNums, token, tokenSecret)
+                                        createJWTToken(kaid, token, tokenSecret)
                                             .then(jwtToken => {
                                                 response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                                 response.redirect("/");

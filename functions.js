@@ -15,9 +15,9 @@ exports.isLoggedIn = req => {
     return false;
 }
 
-exports.createJWTToken = (kaidNums, token, tokenSecret) => {
+exports.createJWTToken = (kaid, token, tokenSecret) => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaidNums], result => {
+        db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaid], result => {
             if (result.error) {
                 throw new Error("There was a problem while searching for this evaluator_kaid, please try again");
             }
