@@ -1,8 +1,17 @@
 body {
-    padding: 0px 0px 50px 0px;
+    margin: 0;
     color: #333;
+    /* background-image: url("/static/images/lines.png");
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: 150%; */
+    height: 100vh;
 }
 
+#all-judged-message {
+    text-align: center;
+    margin-top: 200px;
+}
 #entry-title {
     text-align: center;
 }

@@ -1,28 +1,96 @@
 body {
-    font-family: "Roboto", Arial;
+    font-family: "Lato", Arial;
     margin: 0px;
 }
 
 #page-header {
-    background: #f8f8f8;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
     border-bottom: 1px solid #e7e7e7;
-    position: relative;
-    height: 50px;
+    background-color: #fff;
+    height: 71px;
 }
-#page-header a {
+.nav a {
     color: #777;
-    padding: 15px 15px;
-    font-size: 18px;
     text-decoration: none;
 }
-#page-header a:hover {
-    background: #eee;
+.nav:hover {
+    text-decoration: none;
 }
 #page-header .left {
-    float: left;
+    flex-grow: 1;
 }
-#page-header .right {
-    float: right;
+.logo {
+    width: 320px;
+    padding: 9px;
+    font-size: 29px;
+    text-align: right;
+    font-weight: bold;
+    background-size: contain;
+    color: #0A2A66;
+    background-image: url(/static/images/ka-logo.png);
+    background-position: left center;
+    background-repeat: no-repeat;
+    text-decoration: none;
+}
+.logo:hover {
+    text-decoration: none;
+}
+.nav.user {
+    position: relative;
+    cursor: pointer;
+}
+.user span:hover {
+    text-decoration: underline;
+}
+.dropdown {
+    position: absolute;
+    background: #fff;
+    display: none;
+    flex-direction: column;
+    padding: 10px 0;
+    margin-top: 20px;
+    box-shadow: 0px 1px 5px #999;
+    border-radius: 3px;
+    min-width: 200px;
+    right: 0;
+    left: auto;
+}
+.dropdown.open {
+    display: flex;
+}
+.dropdown::before {
+    content: "";
+    position: absolute;
+    left: auto;
+    right: 9px;
+    top: -7px;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #d8d8d8;
+    border-left: 7px solid transparent;
+}
+.dropdown::after {
+    content: "";
+    position: absolute;
+    left: auto;
+    right: 10px;
+    top: -6px;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+    border-left: 6px solid transparent;
+}
+.dropdown-option {
+    padding: 7px 0 7px 20px;
+    font-size: 16px;
+}
+.dropdown-option:hover {
+    background-color: #eee;
+    text-decoration: none;
 }
 
 
