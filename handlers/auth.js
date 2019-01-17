@@ -4,7 +4,7 @@
 const db = require("../db");
 const jwt = require("jsonwebtoken");
 const OAuthClient = require("oauth-1-client");
-const { isLoggedIn, createJWTToken, handleNext, jsonMessage } = require("../functions");
+const { isLoggedIn, createJWTToken, handleNext, jsonMessage, getJWTToken } = require("../functions");
 const { KA_CONSUMER_KEY, KA_CONSUMER_SECRET, PORT } = process.env;
 const OAUTH_CALLBACK_PATH = `/api/auth/oauth_callback`;
 const KA = "www.khanacademy.org";
@@ -29,9 +29,7 @@ exports.connect = function(request, response, next) {
     client.requestToken()
         .then(r => `https://${KA}/api/auth2/authorize?oauth_token=${r.token}`)
         .then(url => response.json({ redirect_url: url }))
-        .catch(e => {
-            return handleNext(next, 400, "Problem while requesting token");
-        });
+        .catch(err => handleNext(next, 400, "Problem while requesting token"));
 }
 
 exports.oauthCallback = function(request, response, next) {
@@ -71,9 +69,7 @@ exports.oauthCallback = function(request, response, next) {
                                             response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                             response.redirect("/");
                                         })
-                                        .catch(err => {
-                                            return handleNext(next, 400, err.message);
-                                        });
+                                        .catch(err => handleNext(next, 400, err.message));
                                 } else {
                                     // User doesn't exist, sign up.
                                     db.query("INSERT INTO evaluator (logged_in, logged_in_tstz, dt_term_start, dt_term_end, email, username, nickname, evaluator_name, evaluator_kaid, avatar_url) VALUES (true, CURRENT_TIMESTAMP, null, null, $1, $2, $3, $4, $5, $6)", [email, username, nickname, nickname, kaid, avatarUrl], result => {
@@ -86,9 +82,7 @@ exports.oauthCallback = function(request, response, next) {
                                                 response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                                 response.redirect("/");
                                             })
-                                            .catch(err => {
-                                                return handleNext(next, 400, err.message);
-                                            });
+                                            .catch(err => handleNext(next, 400, err.message));
                                     });
                                 }
                             });
@@ -97,8 +91,8 @@ exports.oauthCallback = function(request, response, next) {
                             response.redirect("/login");
                         }
                     });
-                }).catch(e => handleNext(next, 400, "Problem with getting KA user info"));
-        }).catch(e => handleNext(next, 400, "Problem while getting KA access token"));
+                }).catch(err => handleNext(next, 400, "Problem with getting KA user info"));
+        }).catch(err => handleNext(next, 400, "Problem while getting KA access token"));
     } else {
         response.status(400).send("Bad request");
     }
@@ -106,20 +100,18 @@ exports.oauthCallback = function(request, response, next) {
 
 exports.logout = function(request, response, next) {
     if (isLoggedIn(request)) {
-        const jwtToken = request.cookies.jwtToken;
         // Get decoded user ID.
-        return jwt.verify(jwtToken, process.env.SECRET_KEY, (err, decoded) => {
-            if (decoded && decoded.token && decoded.evaluator_id) {
-                // They are logged in.
-                db.query("UPDATE evaluator SET logged_in = 'f' WHERE evaluator_id = $1", [decoded.evaluator_id], res => {
+        getJWTToken(request)
+            .then(payload => {
+                db.query("UPDATE evaluator SET logged_in = 'f' WHERE evaluator_id = $1", [payload.evaluator_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem logging you out");
                     }
                     response.clearCookie("jwtToken");
                     response.redirect("/login");
                 });
-            }
-        });
+            })
+            .catch(err => handleNext(next, 400, err));
     } else {
         return handleNext(next, 401, "You cannot logout if you are not logged in first, silly");
     }

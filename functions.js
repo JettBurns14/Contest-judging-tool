@@ -37,6 +37,25 @@ exports.createJWTToken = (kaid, token, tokenSecret) => {
     });
 }
 
+exports.getJWTToken = req => {
+    return new Promise((resolve, reject) => {
+        const jwtToken = req.cookies.jwtToken;
+        if (jwtToken) {
+            jwt.verify(jwtToken, process.env.SECRET_KEY, (err, decoded) => {
+                if (err) {
+                    throw new Error(err.message);
+                } else if (decoded && decoded.tokenSecret) {
+                    resolve(decoded);
+                } else {
+                    throw new Error("Corrupted decoded JWT token");
+                }
+            });
+        } else {
+            throw new Error("Token not found");
+        }
+    });
+}
+
 // Reduce repeated next() code.
 exports.handleNext = (next, status, message) => {
     return next({

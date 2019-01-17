@@ -1,4 +1,4 @@
-const { isLoggedIn, handleNext, jsonMessage } = require("../functions");
+const { isLoggedIn, handleNext, jsonMessage, getJWTToken } = require("../functions");
 const db = require("../db");
 
 exports.home = (request, response, next) => {
@@ -20,13 +20,16 @@ exports.judging = (request, response, next) => {
         return handleNext(next, 401, "Unauthorized");
     }
     try {
-        let userId = request.cookies[process.env.COOKIE_2];
-        db.query("SELECT * FROM get_entry_and_create_placeholder($1)", [userId], res => {
-            if (res.error) {
-                return handleNext(next, 400, "There was a problem getting an entry");
-            }
-            response.render("pages/judging", { entry: res.rows[0] });
-        });
+        getJWTToken(request)
+            .then(payload => {
+                db.query("SELECT * FROM get_entry_and_create_placeholder($1)", [payload.evaluator_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem getting an entry");
+                    }
+                    response.render("pages/judging", { entry: res.rows[0] });
+                });
+            })
+            .catch(err => handleNext(next, 400, err));
     } catch(err) {
         return handleNext(next, 400, err);
     }
@@ -52,7 +55,7 @@ exports.admin = (request, response, next) => {
                     return handleNext(next, 400, "There was a problem getting the evaluations");
                 }
                 reviewedCount = res.rows[0].count;
-                db.query("SELECT * FROM contest", [], res => {
+                db.query("SELECT * FROM contest ORDER BY contest_id DESC", [], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem getting the contests");
                     }
@@ -77,7 +80,11 @@ exports.profile = (request, response, next) => {
     if (!isLoggedIn(request)) {
         return handleNext(next, 400, "Unauthorized");
     }
-    response.render("pages/profile", { username: request.cookies[process.env.COOKIE_3] });
+    getJWTToken(request)
+        .then(payload => {
+            response.render("pages/profile", { evaluator_name: payload.evaluator_name });
+        })
+        .catch(err => handleNext(next, 400, err));
 }
 
 module.exports = exports;
