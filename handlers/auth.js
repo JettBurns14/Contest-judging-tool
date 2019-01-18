@@ -10,7 +10,11 @@ const OAUTH_CALLBACK_PATH = `/api/auth/oauth_callback`;
 const KA = "www.khanacademy.org";
 
 const client = (() => {
-    const callback = `http://localhost:${PORT}${OAUTH_CALLBACK_PATH}`;
+    const callback = (
+        process.env.APP_STATE === "dev"
+        ? `http://localhost:${PORT}${OAUTH_CALLBACK_PATH}`
+        : `https://council-judging-tool.herokuapp.com${OAUTH_CALLBACK_PATH}`
+    );
     return new OAuthClient({
         key: KA_CONSUMER_KEY,
         secret: KA_CONSUMER_SECRET,

@@ -2,14 +2,10 @@
     "name": "Contest-judging-tool",
     "version": "0.1.0",
     "description": "An open source tool used to judge official contests on Khan Academy",
-    "engines": {
-        "node": "7.5.0"
-    },
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "nodemon index.js"
     },
-    "style": "judging.css",
     "dependencies": {
         "body-parser": "^1.18.3",
         "cookie-parser": "^1.4.3",
