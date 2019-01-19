@@ -7,5 +7,6 @@ router.get("/login", handlers.login);
 router.get("/judging", handlers.judging);
 router.get("/admin", handlers.admin);
 router.get("/profile", handlers.profile);
+router.get("/results/:contestId", handlers.results);
 
 module.exports = router;
