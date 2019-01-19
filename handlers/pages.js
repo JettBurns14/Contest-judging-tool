@@ -40,37 +40,53 @@ exports.admin = (request, response, next) => {
         return handleNext(next, 401, "Unauthorized");
     }
     try {
-        let entryCount, reviewedCount, contests, entries;
+        let entryCount, reviewedCount, contests, entries, evaluators, whitelisted_kaids;
 
         // TODO: Add results to a new table? Maybe add results link to contests table.
         // TODO: Get count of only this contest's entries.
-        db.query("SELECT COUNT(*) FROM entry", [], res => {
-            if (res.error) {
-                return handleNext(next, 400, "There was a problem getting the number of entries");
-            }
-            entryCount = res.rows[0].count;
-            // TODO: Get count of only this contest's evals.
-            db.query("SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true", [], res => {
-                if (res.error) {
-                    return handleNext(next, 400, "There was a problem getting the evaluations");
-                }
-                reviewedCount = res.rows[0].count;
-                db.query("SELECT * FROM contest ORDER BY contest_id DESC", [], res => {
-                    if (res.error) {
-                        return handleNext(next, 400, "There was a problem getting the contests");
-                    }
-                    contests = res.rows;
-                    // TODO: Get only this contest's entries
-                    db.query("SELECT * FROM entry", [], res => {
-                        if (res.error) {
-                            return handleNext(next, 400, "There was a problem getting the entries");
-                        }
-                        entries = res.rows;
-                        response.render("pages/admin", { entryCount, reviewedCount, contests, entries });
-                    });
-                });
-            });
-        });
+        getJWTToken(request)
+            .then(payload => {
+              db.query("SELECT COUNT(*) FROM entry", [], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem getting the number of entries");
+                  }
+                  entryCount = res.rows[0].count;
+                  // TODO: Get count of only this contest's evals.
+                  db.query("SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true", [], res => {
+                      if (res.error) {
+                          return handleNext(next, 400, "There was a problem getting the evaluations");
+                      }
+                      reviewedCount = res.rows[0].count;
+                      db.query("SELECT * FROM contest ORDER BY contest_id DESC", [], res => {
+                          if (res.error) {
+                              return handleNext(next, 400, "There was a problem getting the contests");
+                          }
+                          contests = res.rows;
+                          // TODO: Get only this contest's entries
+                          db.query("SELECT * FROM entry", [], res => {
+                              if (res.error) {
+                                  return handleNext(next, 400, "There was a problem getting the entries");
+                              }
+                              entries = res.rows;
+                              db.query("SELECT * FROM evaluator ORDER BY evaluator_name, account_locked DESC;", [], res => {
+                                  if (res.error) {
+                                      return handleNext(next, 400, "There was a problem getting the entries");
+                                  }
+                                  evaluators = res.rows;
+                                  db.query("SELECT * FROM whitelisted_kaids;", [], res => {
+                                      if (res.error) {
+                                          return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                                      }
+                                      whitelisted_kaids = res.rows;
+                                      response.render("pages/admin", { entryCount, reviewedCount, contests, entries, evaluators, whitelisted_kaids, is_admin: payload.is_admin });
+                                  });
+                              });
+                          });
+                      });
+                  });
+              });
+            })
+            .catch(err => handleNext(next, 400, err));
     } catch(err) {
         return handleNext(next, 400, err);
     }

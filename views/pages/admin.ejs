@@ -20,6 +20,9 @@
             <a class="nav-button" onclick="showpage(3)">Results</a>
             <a class="nav-button" onclick="showpage(4)">Activity</a>
             <a class="nav-button" onclick="showpage(5)">Controls</a>
+            <%if (is_admin) { %>
+				      <a class="nav-button" onclick="showpage(6)">Users</a>
+			      <% } %>
         </div>
 
         <div class="page-content" id="dashboard-page">
@@ -87,7 +90,118 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="page-content admin-only" id="users-page">
+            <h1 id="content-header">Users</h1>
+            <h4 id="add-user-btn" class="admin-btn" onclick="showpage(7)">Add User</h4>
+
+            <!-- whitelisted_kaids box -->
+            <div class="preview-container wide-box standard">
+                <p class="db-header">Whitelisted Kaids</p>
+                <div class="preview-content">
+                  <table id="whitelisted-kaids">
+                    <% whitelisted_kaids.forEach((c) => { %>
+                      <tr>
+                        <td><%= c.kaid %></td>
+                        <td onclick="removeWhitelistedUser('<%= c.kaid %>')">Delete</td>
+                      </tr>
+                    <% }); %>
+                  </table>
+                </div>
+            </div>
+
+            <!-- User boxes -->
+              <% evaluators.forEach((c) => { %>
+                <div class="preview-container standard">
+                    <p class="db-header"><%= c.evaluator_name %> <span class="edit-user-btn" onclick="showpage(8); edituser(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);">Edit</span></p>
+                    <div class="preview-content">
+                        <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
+                        <p><span class="bold">ID:</span> <%= c.evaluator_id %></p>
+                        <% if (c.account_locked) { %>
+                			    <p><span class="bold">Status:</span> <span class="red">Deactivated</span></p>
+            			      <% } else { %>
+                			    <p><span class="bold">Status:</span> <span class="green">Active</span></p>
+            			      <% } %>
+                          <p><span class="bold">Permission Level:</span>
+                            <% if (c.is_admin) { %>
+                			        Admin
+            			          <% } else { %>
+                			        Standard User
+            			          <% } %>
+                          </p>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <!-- Add User Form -->
+        <div class="page-content" id="add-user-page">
+        	<h1 id="content-header">Add User</h1>
+        	<div class="form-container">
+
+            <form id="add-user-form" method="post" action="/api/whitelistUser" target="_self">
+  					<div class="row">
+    					<div class="col-25">
+      						<label for="user_kaid">User's KAID</label>
+    					</div>
+   						<div class="col-75">
+      						<input type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
+    					</div>
+  					</div>
+  					<div class="row">
+      					<input type="submit" value="Save">
+  					</div>
+  				</form>
+          </div>
+        </div>
+
+        <div class="page-content" id="edit-user-page">
+        	<h1 id="content-header">Edit User</h1>
+        	<div class="form-container">
+            <form id="edit-user-form" method="post" action="/api/editUser" target="_self">
+  					  <div class="row">
+      				  <input type="hidden" id="edit_user_id" name="edit_user_id">
+  					  </div>
+  					  <div class="row">
+    					  <div class="col-25">
+      						<label for="edit_user_name">User's Name</label>
+    					  </div>
+    					  <div class="col-75">
+      						<input type="text" id="edit_user_name" name="edit_user_name">
+    					  </div>
+  					  </div>
+  					  <div class="row">
+    					  <div class="col-25">
+      						<label for="edit_user_kaid">User's KAID</label>
+    					  </div>
+   						  <div class="col-75">
+      						<input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="Remove 'kaid_' from ID">
+    					  </div>
+  					  </div>
+  					  <div class="row">
+    					  <div class="col-25">
+      						<label for="edit_user_is_admin">Make user an administrator</label>
+    					  </div>
+    					  <div class="col-75">
+      						<input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin" value="true">
+    					  </div>
+  					  </div>
+  					  <div class="row">
+    					  <div class="col-25">
+      						<label for="edit_account_locked">Is account locked</label>
+    					  </div>
+    					  <div class="col-75">
+      						<input type="checkbox" id="edit_account_locked" name="edit_account_locked" value="true">
+    					  </div>
+  					  </div>
+  					  <div class="row">
+      					<input type="submit" value="Save">
+  					  </div>
+  				  </form>
+        	</div>
+        </div>
+
+    </div> <!-- Page container -->
 
     </body>
     <script src="/static/js/general.js"></script>

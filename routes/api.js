@@ -8,5 +8,8 @@ router.get("/ping", (req, res) => {
 
 router.post("/judging", handlers.evaluateEntry);
 router.post("/update-entries", handlers.updateEntries);
+router.post("/whitelistUser", handlers.whitelistUser);
+router.post("/removeWhitelistedUser", handlers.removeWhitelistedUser);
+router.post("/editUser", handlers.editUser);
 
 module.exports = router;

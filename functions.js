@@ -17,15 +17,18 @@ exports.isLoggedIn = req => {
 
 exports.createJWTToken = (kaid, token, tokenSecret) => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaid], result => {
+        db.query("SELECT evaluator_id, evaluator_name, evaluator_kaid, is_admin, account_locked, email, username, nickname, avatar_url FROM evaluator WHERE evaluator_kaid = $1", [kaid], result => {
             if (result.error) {
                 throw new Error("There was a problem while searching for this evaluator_kaid, please try again");
             }
-            let { evaluator_id, evaluator_name, evaluator_kaid, username, nickname, avatarUrl } = result.rows[0];
+            let { evaluator_id, evaluator_name, evaluator_kaid, is_admin, account_locked, email, username, nickname, avatarUrl } = result.rows[0];
             let jwtToken = jwt.sign({
                 evaluator_id,
                 evaluator_name,
                 evaluator_kaid,
+                is_admin,
+                account_locked,
+                email,
                 username,
                 nickname,
                 avatarUrl,
