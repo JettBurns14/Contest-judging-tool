@@ -1,8 +1,6 @@
 const log = (request, response, next) => {
     let time = new Date().toLocaleTimeString();
-    console.log(`
-${time}  -  ${request.method} ${request.url}`
-    );
+    console.log(`${time}  -  ${request.method} ${request.url}`);
     next();
 }
 

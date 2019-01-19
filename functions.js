@@ -1,20 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db = require("./db");
 
-exports.isLoggedIn = req => {
-    const jwtToken = req.cookies.jwtToken;
-    if (jwtToken) {
-        return jwt.verify(jwtToken, process.env.SECRET_KEY, (err, decoded) => {
-            if (decoded && decoded.token) {
-                // They are logged in.
-                return true;
-            }
-        });
-    }
-    // They are not logged in.
-    return false;
-}
-
 exports.createJWTToken = (kaid, token, tokenSecret) => {
     return new Promise((resolve, reject) => {
         db.query("SELECT * FROM evaluator WHERE evaluator_kaid = $1", [kaid], result => {

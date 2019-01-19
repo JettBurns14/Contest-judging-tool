@@ -4,7 +4,7 @@
 const db = require("../db");
 const jwt = require("jsonwebtoken");
 const OAuthClient = require("oauth-1-client");
-const { isLoggedIn, createJWTToken, handleNext, jsonMessage, getJWTToken } = require("../functions");
+const { createJWTToken, handleNext, jsonMessage } = require("../functions");
 const { KA_CONSUMER_KEY, KA_CONSUMER_SECRET, PORT } = process.env;
 const OAUTH_CALLBACK_PATH = `/api/auth/oauth_callback`;
 const KA = "www.khanacademy.org";
@@ -25,7 +25,7 @@ const client = (() => {
 })();
 
 exports.connect = function(request, response, next) {
-    if (isLoggedIn(request)) {
+    if (request.decodedToken) {
         // If token
         return handleNext(next, 400, "You are already logged in");
     }
@@ -98,25 +98,20 @@ exports.oauthCallback = function(request, response, next) {
                 }).catch(err => handleNext(next, 400, "Problem with getting KA user info"));
         }).catch(err => handleNext(next, 400, "Problem while getting KA access token"));
     } else {
-        response.status(400).send("Bad request");
+        handleNext(next, 400, "Bad request");
     }
 }
 
 exports.logout = function(request, response, next) {
-    if (isLoggedIn(request)) {
+    if (request.decodedToken) {
         // Get decoded user ID.
-        getJWTToken(request)
-            .then(payload => {
-                db.query("UPDATE evaluator SET logged_in = 'f' WHERE evaluator_id = $1", [payload.evaluator_id], res => {
-                    if (res.error) {
-                        return handleNext(next, 400, "There was a problem logging you out");
-                    }
-                    response.clearCookie("jwtToken");
-                    response.redirect("/login");
-                });
-            })
-            .catch(err => handleNext(next, 400, err));
-    } else {
-        return handleNext(next, 401, "You cannot logout if you are not logged in first, silly");
+        return db.query("UPDATE evaluator SET logged_in = 'f' WHERE evaluator_id = $1", [request.decodedToken.evaluator_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem logging you out");
+            }
+            response.clearCookie("jwtToken");
+            return response.redirect("/login");
+        });
     }
+    handleNext(next, 401, "You cannot logout if you are not logged in first, silly");
 }

@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const db = require("./db");
 const errorHandler = require("./middleware/error");
 const log = require("./middleware/log");
+const isLoggedIn = require("./middleware/isLoggedIn");
 const apiRoutes = require("./routes/api");
 const pagesRoutes = require("./routes/pages");
 const authRoutes = require("./routes/auth");
@@ -18,6 +19,8 @@ app.use(bodyParser.json());
 
 // Log every request.
 app.use(log);
+// Check if user is logged in for every request.
+app.use(isLoggedIn);
 app.use("/", pagesRoutes);
 app.use("/api/", apiRoutes);
 app.use("/api/auth/", authRoutes);
