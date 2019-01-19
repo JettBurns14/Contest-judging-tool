@@ -11,5 +11,6 @@ router.post("/update-entries", handlers.updateEntries);
 router.post("/whitelistUser", handlers.whitelistUser);
 router.post("/removeWhitelistedUser", handlers.removeWhitelistedUser);
 router.post("/editUser", handlers.editUser);
+router.post("/addContest", handlers.addContest);
 
 module.exports = router;

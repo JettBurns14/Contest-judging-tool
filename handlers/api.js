@@ -148,6 +148,42 @@ exports.editUser = (request, response) => {
     }
 }
 
+exports.addContest = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let contest_name = request.body.contest_name;
+      let contest_URL = request.body.contest_url;
+      let contest_author = request.body.contest_author;
+      let contest_start_date = request.body.contest_start_date;
+      let contest_end_date = request.body.contest_end_date;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("INSERT INTO contest (contest_name, contest_url, contest_author, date_start, date_end) VALUES ($1, $2, $3, $4, $5)", [contest_name, contest_URL, contest_author, contest_start_date, contest_end_date], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this user");
+                  }
+                  response.redirect("/admin");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this user");
+    }
+}
+
 // WIP, could be used to load all entries into DB once contest deadline is past.
 exports.updateEntries = (request, response, next) => {
     if (!isLoggedIn(request)) {
