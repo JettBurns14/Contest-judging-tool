@@ -141,11 +141,12 @@ body {
 	cursor: pointer;
 }
 
-table#whitelisted-kaids td:nth-child(2) {
-  padding-left: 10%;
+img.delete-icon {
+  width: 4%;
+  margin: 0px 5% 0px 5%;
 }
 
-table#whitelisted-kaids td:nth-child(2):hover {
+img.delete-icon:hover {
   cursor: pointer;
 }
 

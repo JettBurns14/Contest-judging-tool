@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div class="page-content admin-only" id="users-page">
+        <div class="page-content" id="users-page">
             <h1 id="content-header">Users</h1>
             <h4 id="add-user-btn" class="admin-btn" onclick="showpage(7)">Add User</h4>
 
@@ -104,7 +104,7 @@
                     <% whitelisted_kaids.forEach((c) => { %>
                       <tr>
                         <td><%= c.kaid %></td>
-                        <td onclick="removeWhitelistedUser('<%= c.kaid %>')">Delete</td>
+                        <td><img class="delete-icon" onclick="removeWhitelistedUser('<%= c.kaid %>')" src="../static/images/delete-icon.png"></td>
                       </tr>
                     <% }); %>
                   </table>
