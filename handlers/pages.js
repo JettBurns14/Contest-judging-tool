@@ -40,7 +40,7 @@ exports.admin = (request, response, next) => {
         return handleNext(next, 401, "Unauthorized");
     }
     try {
-        let entryCount, reviewedCount, contests, entries, evaluators, whitelisted_kaids;
+        let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids;
 
         // TODO: Add results to a new table? Maybe add results link to contests table.
         // TODO: Get count of only this contest's entries.
@@ -62,24 +62,17 @@ exports.admin = (request, response, next) => {
                               return handleNext(next, 400, "There was a problem getting the contests");
                           }
                           contests = res.rows;
-                          // TODO: Get only this contest's entries
-                          db.query("SELECT * FROM entry", [], res => {
+                          db.query("SELECT * FROM evaluator ORDER BY evaluator_name, account_locked DESC;", [], res => {
                               if (res.error) {
                                   return handleNext(next, 400, "There was a problem getting the entries");
                               }
-                              entries = res.rows;
-                              db.query("SELECT * FROM evaluator ORDER BY evaluator_name, account_locked DESC;", [], res => {
+                              evaluators = res.rows;
+                              db.query("SELECT * FROM whitelisted_kaids;", [], res => {
                                   if (res.error) {
-                                      return handleNext(next, 400, "There was a problem getting the entries");
+                                      return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
                                   }
-                                  evaluators = res.rows;
-                                  db.query("SELECT * FROM whitelisted_kaids;", [], res => {
-                                      if (res.error) {
-                                          return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
-                                      }
-                                      whitelisted_kaids = res.rows;
-                                      response.render("pages/admin", { entryCount, reviewedCount, contests, entries, evaluators, whitelisted_kaids, is_admin: payload.is_admin });
-                                  });
+                                  whitelisted_kaids = res.rows;
+                                  response.render("pages/admin", { entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, is_admin: payload.is_admin });
                               });
                           });
                       });
@@ -144,6 +137,34 @@ exports.results = (request, response, next) => {
                   });
               });
           });
+        })
+        .catch(err => handleNext(next, 400, err));
+}
+
+exports.entries = (request, response, next) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 400, "Unauthorized");
+    }
+
+    let contest_id = request.params.contestId;
+    let contests, entries;
+
+    getJWTToken(request)
+        .then(payload => {
+          db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
+              if (res.error) {
+                  return handleNext(next, 400, "There was a problem getting the contests kaids");
+              }
+              contests = res.rows;
+              db.query("SELECT * FROM entry WHERE contest_id = $1 ORDER BY entry_id", [contest_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                  }
+                  entries = res.rows;
+                  response.render("pages/entries", { contests, entries, contest_id: contest_id, is_admin: payload.is_admin });
+
+              });
+           });
         })
         .catch(err => handleNext(next, 400, err));
 }
