@@ -3,7 +3,7 @@ const db = require("../db");
 
 exports.home = (request, response, next) => {
     if (request.decodedToken) {
-        return response.render("pages/home");
+        return response.render("pages/home", { evaluator_name: request.decodedToken.evaluator_name });
     }
     handleNext(next, 401, "Unauthorized");
 }
@@ -12,7 +12,7 @@ exports.login = (request, response) => {
     if (request.decodedToken) {
         return response.redirect("/");
     }
-    response.render("pages/login");
+    response.render("pages/login", { evaluator_name: false });
 }
 
 exports.judging = (request, response, next) => {
@@ -22,7 +22,7 @@ exports.judging = (request, response, next) => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting an entry");
                 }
-                return response.render("pages/judging", { entry: res.rows[0] });
+                return response.render("pages/judging", { entry: res.rows[0], evaluator_name: request.decodedToken.evaluator_name });
             });
         } catch(err) {
             return handleNext(next, 400, err);
@@ -61,7 +61,7 @@ exports.admin = (request, response, next) => {
                                 return handleNext(next, 400, "There was a problem getting the entries");
                             }
                             entries = res.rows;
-                            return response.render("pages/admin", { entryCount, reviewedCount, contests, entries });
+                            return response.render("pages/admin", { entryCount, reviewedCount, contests, entries, evaluator_name: request.decodedToken.evaluator_name });
                         });
                     });
                 });

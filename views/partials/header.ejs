@@ -1,7 +1,17 @@
 <div id="page-header">
-    <a href="/" class="logo">KA Challenge Council</a>
+    <a href="/" class="logo">
+        <img src="/static/images/ka-cc-logo.png">
+    </a>
     <div class="nav user">
-        <span class="dropdown-btn">Dropdown</span>
+        <% if (evaluator_name) { %>
+            <span class="dropdown-btn">
+                <%= evaluator_name %>
+            </span>
+        <% } else { %>
+            <span>
+                <a href="/login">Login</a>
+            </span>
+        <% } %>
         <div class="dropdown">
             <a class="dropdown-option" href="/profile">Profile</a>
             <a class="dropdown-option" href="/admin">Admin Dashboard</a>
