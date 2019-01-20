@@ -118,6 +118,7 @@
                     <div class="preview-content">
                         <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
                         <p><span class="bold">ID:</span> <%= c.evaluator_id %></p>
+                        <p><span class="bold">KAID:</span> <%= c.evaluator_kaid %></p>
                         <% if (c.account_locked) { %>
                 			    <p><span class="bold">Status:</span> <span class="red">Deactivated</span></p>
             			      <% } else { %>
