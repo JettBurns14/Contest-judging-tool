@@ -9,7 +9,7 @@ exports.home = (request, response, next) => {
       let messages;
         getJWTToken(request)
             .then(payload => {
-                db.query("SELECT * FROM messages", [], res => {
+                db.query("SELECT * FROM messages ORDER BY message_date DESC", [], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem getting the messages");
                     }
