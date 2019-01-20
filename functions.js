@@ -7,7 +7,14 @@ exports.isLoggedIn = req => {
         return jwt.verify(jwtToken, process.env.SECRET_KEY, (err, decoded) => {
             if (decoded && decoded.token) {
                 // They are logged in.
-                return true;
+
+                // Determine if their account has been deactivated
+                if (decoded.account_locked) {
+                  return false;
+                }
+                else {
+                  return true;
+                }
             }
         });
     }
