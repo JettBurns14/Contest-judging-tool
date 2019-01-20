@@ -122,6 +122,13 @@ body {
   width: 92%;
 }
 
+.large-stat {
+  font-size: 48px;
+  margin: auto;
+  text-align: center;
+  margin-top: 4%;
+}
+
 /* Big list of entries */
 #entries-list li {
     padding: 10px;

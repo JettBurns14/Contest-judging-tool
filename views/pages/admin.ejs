@@ -29,16 +29,15 @@
             <h1 id="content-header">Dashboard</h1>
 
             <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Number of entries</p>
+                <p class="db-header">Your reviewed entries for current contest:</p>
                 <div class="preview-content">
-                    <p><%= entryCount %></p>
+                    <p class="large-stat"><%= reviewedCount %> / <%= entryCount %></p>
                 </div>
             </div>
-
             <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Number of reviewed entries</p>
+                <p class="db-header">Total reviewed entries for current contest:</p>
                 <div class="preview-content">
-                    <p><%= reviewedCount %></p>
+                    <p class="large-stat"><%= totalEvaluationsCount %> / <%= totalEvaluationsNeeded %></p>
                 </div>
             </div>
         </div>
