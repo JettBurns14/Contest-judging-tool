@@ -10,7 +10,7 @@ exports.evaluateEntry = (request, response) => {
     if (!request.body) {
         return handleNext(next, 400, "No request body received");
     }
-
+    console.log(request.body);
     let entry_id = request.body.entry_id;
     let score_1 = request.body.creativity / 2;
     let score_2 = request.body.complexity / 2;
@@ -24,6 +24,14 @@ exports.evaluateEntry = (request, response) => {
                 db.query("SELECT evaluate($1, $2, $3, $4, $5, $6, $7)", [entry_id, payload.evaluator_id, score_1, score_2, score_3, score_4, skill_level], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem evaluating this entry");
+                    }
+
+                    if (payload.is_admin) {
+                      db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [skill_level, entry_id], res => {
+                          if (res.error) {
+                              return handleNext(next, 400, "There was a problem setting the skill level of this entry");
+                          }
+                      });
                     }
                     response.redirect("/judging");
                 });
