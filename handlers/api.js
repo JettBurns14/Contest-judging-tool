@@ -286,6 +286,109 @@ exports.addWinner = (request, response) => {
     }
 }
 
+exports.addMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_author = request.body.message_author;
+      let message_date = request.body.message_date;
+      let message_title = request.body.message_title;
+      let message_content = request.body.message_content;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("INSERT INTO messages (message_author, message_date, message_title, message_content) VALUES ($1, $2, $3, $4);", [message_author, message_date, message_title, message_content], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this message");
+    }
+}
+
+exports.editMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_id = request.body.message_id;
+      let message_author = request.body.message_author;
+      let message_date = request.body.message_date;
+      let message_title = request.body.message_title;
+      let message_content = request.body.message_content;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE messages SET message_author = $1, message_date = $2, message_title = $3, message_content = $4 WHERE message_id = $5", [message_author, message_date, message_title, message_content, message_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem editing this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem editing this message");
+    }
+}
+
+exports.deleteMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_id = request.body.message_id;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("DELETE FROM messages WHERE message_id = $1", [message_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem deleting this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem deleting this message");
+    }
+}
+
 // WIP, could be used to load all entries into DB once contest deadline is past.
 exports.updateEntries = (request, response, next) => {
     if (!isLoggedIn(request)) {

@@ -15,5 +15,8 @@ router.post("/addContest", handlers.addContest);
 router.post("/editEntry", handlers.editEntry);
 router.post("/deleteEntry", handlers.deleteEntry);
 router.post("/addWinner", handlers.addWinner);
+router.post("/addMessage", handlers.addMessage);
+router.post("/editMessage", handlers.editMessage);
+router.post("/deleteMessage", handlers.deleteMessage);
 
 module.exports = router;

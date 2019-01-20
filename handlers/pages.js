@@ -5,7 +5,22 @@ exports.home = (request, response, next) => {
     if (!isLoggedIn(request)) {
         return handleNext(next, 401, "Unauthorized");
     }
-    response.render("pages/home");
+    try {
+      let messages;
+        getJWTToken(request)
+            .then(payload => {
+                db.query("SELECT * FROM messages", [], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem getting the messages");
+                    }
+                    messages = res.rows;
+                    response.render("pages/home", { messages, is_admin: payload.is_admin, evaluator_name: payload.evaluator_name });
+                });
+            })
+            .catch(err => handleNext(next, 400, err));
+    } catch(err) {
+        return handleNext(next, 400, err);
+    }
 }
 
 exports.login = (request, response) => {

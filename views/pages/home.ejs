@@ -16,7 +16,23 @@
             <p>Chances are, you are here to judge the contest entries. Please see the header above ^ to navigate.</p>
             <p>If you have any questions at all about using this tool, ask Jett since he built it.</p>
             <p>If you would like to build new features, adjust the interface, or just look under the hood, check out all the code on <a href="https://github.com/JettBurns14/Contest-judging-tool">GitHub</a>.</p>
+
+            <div id="message-section">
+              <div id="messages-heading">
+                <h2>Announcements:</h2>
+                <%if (is_admin) { %> <p id="new-announcement-btn" onclick="createMessage('<%= evaluator_name %>')">New Announcement</p><% } %>
+              </div>
+              <% messages.forEach((c) => { %>
+                <div class="message-container">
+                  <h3><%= c.message_title %> <img class="control-btn" onclick="deleteMessage(<%= c.message_id %>)" src="../static/images/delete-icon.png"><img class="control-btn" onclick="editMessage('<%= c.message_id %>', '<%= c.message_author %>', '<%= c.message_date %>', '<%= c.message_title %>', '<%= c.message_content %>')" src="../static/images/edit-icon.png"></h3>
+                  <p id="message-author">By. <%= c.message_author %></p>
+                  <p id="message-date">Posted on <%= c.message_date %></p>
+                  <p><%= c.message_content %></p>
+                </div>
+              <% }); %>
+            </div>
         </div>
     </body>
     <script src="/static/js/general.js"></script>
+    <script src="/static/js/home.js"></script>
 </html>
