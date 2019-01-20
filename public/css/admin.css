@@ -8,6 +8,10 @@ body {
     margin: 0px 0px;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* General Styling and Colors */
 .green {
 	color: #54820a;
