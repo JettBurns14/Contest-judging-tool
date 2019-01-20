@@ -66,6 +66,7 @@
             <div class="preview-content">
               <table>
                 <thead>
+                  <th>ID</th>
                   <th>Title</th>
                   <th>Author</th>
                   <th>Evaluations</th>
@@ -75,11 +76,36 @@
                 <tbody>
                   <% entriesByAvgScore.forEach((a) => { %>
                     <tr>
+                      <td><%= a.entry_id %></td>
                       <td><a href="<%= a.entry_url %>" target="_blank"><%= a.replace%></a></td>
                       <td><%= a.entry_author %></td>
                       <td><%= a.evaluations %></td>
                       <td><%= a.entry_level %></td>
                       <td><%= a.avg_score %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="preview-container standard wide-box">
+            <p class="db-header">Selected Winners <%if (is_admin) { %><span class="add-winner-btn" onclick="addWinner('<%= contest_id %>');">Add Winner</span><% } %></p>
+            <div class="preview-content">
+              <table>
+                <thead>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Skill Level</th>
+                </thead>
+                <tbody>
+                  <% winners.forEach((a) => { %>
+                    <tr>
+                      <td><%= a.entry_id %></td>
+                      <td><a href="<%= a.entry_url %>" target="_blank"><%= a.entry_title%></a></td>
+                      <td><%= a.entry_author %></td>
+                      <td><%= a.entry_level %></td>
                     </tr>
                   <% }); %>
                 </tbody>
@@ -97,4 +123,5 @@
     navButtons[<%= contest_id %> - 1].classList.add('selected');
   </script>
   <script src="/static/js/general.js"></script>
+  <script src="/static/js/results.js"></script>
 </html>

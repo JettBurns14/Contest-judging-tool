@@ -131,3 +131,11 @@ th {
   background-color: #54820a;
   color: white;
 }
+
+span.add-winner-btn {
+  float: right;
+}
+
+span.add-winner-btn:hover {
+  cursor: pointer;
+}

@@ -102,36 +102,42 @@ exports.results = (request, response, next) => {
     }
 
     let contest_id = request.params.contestId;
-    let contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator;
+    let contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners;
 
     getJWTToken(request)
         .then(payload => {
           db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
               if (res.error) {
-                  return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                  return handleNext(next, 400, "There was a problem getting the results kaids");
               }
               contests = res.rows;
               db.query("SELECT x.evaluation_level, COUNT(x.evaluation_level) as cnt FROM evaluation x	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete = true AND z.contest_id =" + contest_id + "GROUP BY (x.evaluation_level) ORDER BY (	CASE x.evaluation_level	WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END);", [], res => {
                   if (res.error) {
-                      return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                      return handleNext(next, 400, "There was a problem getting the results kaids");
                   }
                   evaluationsPerLevel = res.rows;
-                  db.query(`SELECT REPLACE(z.entry_title,'"',''), z.entry_author, z.entry_url, z.entry_level, COUNT(z.entry_title) as evaluations,	MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) as min_level_numeric,	CASE MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate' ELSE 'Advanced' END as min_level, CASE MAX(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate'	ELSE 'Advanced'	END as max_level,	AVG(x.creativity+x.complexity+x.execution+x.interpretation) as avg_score, MIN(x.creativity+x.complexity+x.execution+x.interpretation) as min_score,	MAX(x.creativity+x.complexity+x.execution+x.interpretation) as max_score	FROM evaluation x	INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete	AND z.contest_id = ` + contest_id + ` GROUP BY (z.entry_title, z.entry_author, z.entry_url, z.entry_level)	ORDER BY z.entry_level ASC, avg_score DESC;`, [], res => {
+                  db.query(`SELECT REPLACE(z.entry_title,'"',''), z.entry_id, z.entry_author, z.entry_url, z.entry_level, COUNT(z.entry_title) as evaluations,	MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) as min_level_numeric,	CASE MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate' ELSE 'Advanced' END as min_level, CASE MAX(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate'	ELSE 'Advanced'	END as max_level,	AVG(x.creativity+x.complexity+x.execution+x.interpretation) as avg_score, MIN(x.creativity+x.complexity+x.execution+x.interpretation) as min_score,	MAX(x.creativity+x.complexity+x.execution+x.interpretation) as max_score	FROM evaluation x	INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete	AND z.contest_id = ` + contest_id + ` GROUP BY (z.entry_title, z.entry_id, z.entry_author, z.entry_url, z.entry_level)	ORDER BY z.entry_level ASC, avg_score DESC;`, [], res => {
                       if (res.error) {
-                          return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                          return handleNext(next, 400, "There was a problem getting the results kaids");
                       }
                       entriesByAvgScore = res.rows;
                       db.query("SELECT COUNT(*) FROM entry WHERE contest_id = $1", [contest_id], res => {
                           if (res.error) {
-                              return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                              return handleNext(next, 400, "There was a problem getting the results kaids");
                           }
                           entryCount = res.rows;
                           db.query("SELECT y.evaluator_name, COUNT(x.entry_id) as cnt FROM evaluation x INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id INNER JOIN entry z ON z.entry_id = x.entry_id WHERE x.evaluation_complete = true AND z.contest_id =" + request.params.contestId + "GROUP BY (y.evaluator_name) ORDER BY cnt DESC;", [], res => {
                               if (res.error) {
-                                  return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                                  return handleNext(next, 400, "There was a problem getting the results kaids");
                               }
                               evaluationsPerEvaluator = res.rows;
-                              response.render("pages/results", { contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, contest_id: contest_id });
+                              db.query("SELECT * FROM entry WHERE contest_id = $1 AND is_winner = true ORDER BY entry_level", [contest_id], res => {
+                                  if (res.error) {
+                                      return handleNext(next, 400, "There was a problem getting the results kaids");
+                                  }
+                                  winners = res.rows;
+                                  response.render("pages/results", { contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners, contest_id: contest_id, is_admin: payload.is_admin });
+                              });
                           });
                       });
                   });

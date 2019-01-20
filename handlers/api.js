@@ -231,7 +231,7 @@ exports.deleteEntry = (request, response) => {
     try {
       let entry_id = request.body.entryId;
       let contest_id = request.body.contest_id
-      
+
       getJWTToken(request)
           .then(payload => {
             if (payload.is_admin) {
@@ -250,6 +250,39 @@ exports.deleteEntry = (request, response) => {
 
     } catch(err) {
         return handleNext(next, 400, "There was a problem deleting this user");
+    }
+}
+
+exports.addWinner = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let entry_id = request.body.entryId;
+      let contest_id = request.body.contest_id;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE entry SET is_winner = true WHERE entry_id = $1", [entry_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this winner");
+                  }
+                  response.redirect("/results/" + contest_id);
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this winner");
     }
 }
 

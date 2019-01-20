@@ -14,5 +14,6 @@ router.post("/editUser", handlers.editUser);
 router.post("/addContest", handlers.addContest);
 router.post("/editEntry", handlers.editEntry);
 router.post("/deleteEntry", handlers.deleteEntry);
+router.post("/addWinner", handlers.addWinner);
 
 module.exports = router;
