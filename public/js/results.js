@@ -1,7 +1,9 @@
 function addWinner(contest_id) {
   let entry_id = window.prompt("Enter the ID of the entry you want to add:");
 
-  post('/api/addWinner', {entryId: entry_id, contest_id: contest_id});
+  if (entry_id > 0) {
+    post('/api/addWinner', {entryId: entry_id, contest_id: contest_id});
+  }
 }
 
 function post(path, params, method) {
