@@ -26,7 +26,7 @@ body {
     flex-grow: 1;
 }
 .logo:hover {
-    text-decoration: none;
+    cursor: pointer;
 }
 .nav.user {
     position: relative;
@@ -47,6 +47,7 @@ body {
     min-width: 200px;
     right: 0;
     left: auto;
+    z-index: 1;
 }
 .dropdown.open {
     display: flex;

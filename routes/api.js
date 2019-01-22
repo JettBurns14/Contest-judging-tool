@@ -16,5 +16,15 @@ router.post("/judging", [
     check("skill_level").isIn(["Advanced", "Intermediate", "Beginner"])
 ], handlers.evaluateEntry);
 router.post("/update-entries", handlers.updateEntries);
+router.post("/whitelistUser", handlers.whitelistUser);
+router.post("/removeWhitelistedUser", handlers.removeWhitelistedUser);
+router.post("/editUser", handlers.editUser);
+router.post("/addContest", handlers.addContest);
+router.post("/editEntry", handlers.editEntry);
+router.post("/deleteEntry", handlers.deleteEntry);
+router.post("/addWinner", handlers.addWinner);
+router.post("/addMessage", handlers.addMessage);
+router.post("/editMessage", handlers.editMessage);
+router.post("/deleteMessage", handlers.deleteMessage);
 
 module.exports = router;

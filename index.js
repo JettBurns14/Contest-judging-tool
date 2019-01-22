@@ -2,6 +2,7 @@ require("dotenv").config();
 const PORT = process.env.PORT || 5000;
 const express = require("express");
 const bodyParser = require("body-parser");
+const urlencodedParser = bodyParser.urlencoded({extended: false});
 const cookieParser = require("cookie-parser");
 const db = require("./db");
 const errorHandler = require("./middleware/error");
@@ -16,6 +17,7 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use("/static", express.static(__dirname + "/public"));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // Log every request.
 app.use(log);

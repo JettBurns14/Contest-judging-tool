@@ -13,3 +13,6 @@ const submitForm = e => {
         }
     });
 };
+
+let navBtn = document.getElementsByClassName("nav");
+navBtn[0].parentNode.removeChild(navBtn[0]);

@@ -15,18 +15,383 @@ exports.evaluateEntry = (request, response, next) => {
         }
         try {
             const { entry_id, creativity, complexity, quality_code, interpretation, skill_level } = request.body;
-            const values = [entry_id, request.decodedToken.evaluator_id, (creativity / 2), (complexity / 2), (quality_code / 2), (interpretation / 2), skill_level]
+            const { evaluator_id, is_admin } = request.decodedToken;
+            const values = [entry_id, evaluator_id, (creativity / 2), (complexity / 2), (quality_code / 2), (interpretation / 2), skill_level]
             return db.query("SELECT evaluate($1, $2, $3, $4, $5, $6, $7)", values, res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem evaluating this entry");
                 }
-                return response.redirect("/judging");
+                if (is_admin) {
+                    return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [skill_level, entry_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem setting the skill level of this entry");
+                        }
+                        return response.redirect("/judging");
+                    });
+                } else {
+                    return response.redirect("/judging");
+                }
             });
         } catch(err) {
             return handleNext(next, 400, "There was a problem evaluating this entry");
         }
     }
     handleNext(next, 401, "Unauthorized");
+}
+
+exports.whitelistUser = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let kaid = request.body.kaid;
+
+        getJWTToken(request)
+            .then(payload => {
+              if (payload.is_admin) {
+                db.query("INSERT INTO whitelisted_kaids (kaid) VALUES ($1)", [kaid], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem whitelisting this user");
+                    }
+                    response.redirect("/admin");
+                });
+              }
+              else {
+                return handleNext(next, 403, "Insufficient access");
+              }
+            })
+            .catch(err => handleNext(next, 400, err));
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem whitelisting this user");
+    }
+}
+
+exports.removeWhitelistedUser = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let kaid = request.body.kaid;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("DELETE FROM whitelisted_kaids WHERE kaid = $1;", [kaid], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem removing this user");
+                  }
+                  response.redirect("/admin");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem removing this user");
+    }
+}
+
+exports.editUser = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      console.log(request.body);
+      let evaluator_id = request.body.edit_user_id;
+      let evaluator_name = request.body.edit_user_name;
+      let evaluator_kaid = request.body.edit_user_kaid;
+      let is_admin = request.body.edit_user_is_admin;
+      let account_locked = request.body.edit_account_locked;
+
+      // Change to boolean data type
+    	if (is_admin == 'true') {
+    		is_admin = true;
+    	}
+    	else {
+    	 is_admin = false;
+    	}
+
+    	if (account_locked == 'true') {
+    		account_locked = true;
+    	}
+    	else {
+    		account_locked = false;
+    	}
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE evaluator SET evaluator_name = $1, evaluator_kaid = $2, account_locked = $3, is_admin = $4 WHERE evaluator_id = $5;", [evaluator_name, evaluator_kaid, account_locked, is_admin, evaluator_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem editing this user");
+                  }
+                  response.redirect("/admin");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem editing this user");
+    }
+}
+
+exports.addContest = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let contest_name = request.body.contest_name;
+      let contest_URL = request.body.contest_url;
+      let contest_author = request.body.contest_author;
+      let contest_start_date = request.body.contest_start_date;
+      let contest_end_date = request.body.contest_end_date;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("INSERT INTO contest (contest_name, contest_url, contest_author, date_start, date_end) VALUES ($1, $2, $3, $4, $5)", [contest_name, contest_URL, contest_author, contest_start_date, contest_end_date], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this contest");
+                  }
+                  response.redirect("/admin");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this contest");
+    }
+}
+
+exports.editEntry = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let entry_id = request.body.entry_id;
+      let entry_level = request.body.edited_level;
+      let contest_id = request.body.contest_id;
+
+      let next_entry = 1 + parseInt(entry_id);
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [entry_level, entry_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem editing this entry");
+                  }
+                  response.redirect("/entries/" + contest_id + "#" + next_entry);
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this user");
+    }
+}
+
+exports.deleteEntry = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let entry_id = request.body.entryId;
+      let contest_id = request.body.contest_id
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("DELETE FROM entry WHERE entry_id = $1", [entry_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem deleting this entry");
+                  }
+                  response.redirect("/entries/" + contest_id);
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem deleting this user");
+    }
+}
+
+exports.addWinner = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let entry_id = request.body.entryId;
+      let contest_id = request.body.contest_id;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE entry SET is_winner = true WHERE entry_id = $1", [entry_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this winner");
+                  }
+                  response.redirect("/results/" + contest_id);
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this winner");
+    }
+}
+
+exports.addMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_author = request.body.message_author;
+      let message_date = request.body.message_date;
+      let message_title = request.body.message_title;
+      let message_content = request.body.message_content;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("INSERT INTO messages (message_author, message_date, message_title, message_content) VALUES ($1, $2, $3, $4);", [message_author, message_date, message_title, message_content], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem adding this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem adding this message");
+    }
+}
+
+exports.editMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_id = request.body.message_id;
+      let message_author = request.body.message_author;
+      let message_date = request.body.message_date;
+      let message_title = request.body.message_title;
+      let message_content = request.body.message_content;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("UPDATE messages SET message_author = $1, message_date = $2, message_title = $3, message_content = $4 WHERE message_id = $5", [message_author, message_date, message_title, message_content, message_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem editing this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem editing this message");
+    }
+}
+
+exports.deleteMessage = (request, response) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 401, "Unauthorized");
+    }
+    if (!request.body) {
+        return handleNext(next, 400, "No request body received");
+    }
+
+    try {
+      let message_id = request.body.message_id;
+
+      getJWTToken(request)
+          .then(payload => {
+            if (payload.is_admin) {
+              db.query("DELETE FROM messages WHERE message_id = $1", [message_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem deleting this message");
+                  }
+                  response.redirect("/");
+              });
+            }
+            else {
+              return handleNext(next, 403, "Insufficient access");
+            }
+          })
+          .catch(err => handleNext(next, 400, err));
+
+    } catch(err) {
+        return handleNext(next, 400, "There was a problem deleting this message");
+    }
 }
 
 // WIP, could be used to load all entries into DB once contest deadline is past.

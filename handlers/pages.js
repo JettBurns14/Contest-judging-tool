@@ -3,7 +3,19 @@ const db = require("../db");
 
 exports.home = (request, response, next) => {
     if (request.decodedToken) {
-        return response.render("pages/home", { evaluator_name: request.decodedToken.evaluator_name });
+        try {
+            let messages;
+            let { is_admin, evaluator_name } = request.decodedToken;
+            return db.query("SELECT * FROM messages ORDER BY message_date DESC", [], res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem getting the messages");
+                }
+                messages = res.rows;
+                response.render("pages/home", { messages, is_admin, evaluator_name });
+            });
+        } catch(err) {
+            return handleNext(next, 400, err);
+        }
     }
     handleNext(next, 401, "Unauthorized");
 }
@@ -35,33 +47,56 @@ exports.judging = (request, response, next) => {
 exports.admin = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entryCount, reviewedCount, contests, entries;
+            let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, activeEvaluatorCount, totalEvaluationsCount, totalEntryCount, totalEvaluationsNeeded;
 
             // TODO: Add results to a new table? Maybe add results link to contests table.
             // TODO: Get count of only this contest's entries.
-            return db.query("SELECT COUNT(*) FROM entry", [], res => {
+            return db.query("SELECT COUNT(*) FROM entry WHERE contest_id = (SELECT MAX(a.contest_id) FROM contest a);", [], res => {
                 if (res.error) {
-                    return handleNext(next, 400, "There was a problem getting the number of entries");
+                    return handleNext(next, 400, "There was a problem getting your entry count");
                 }
                 entryCount = res.rows[0].count;
-                // TODO: Get count of only this contest's evals.
-                db.query("SELECT COUNT(*) FROM evaluation WHERE evaluation_complete = true", [], res => {
+                db.query("SELECT COUNT(x.entry_id) as cnt FROM evaluation x INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete = true AND z.contest_id =	(SELECT MAX(a.contest_id) FROM contest a) AND x.evaluator_id = $1 GROUP BY (y.evaluator_name) ORDER BY cnt DESC;", [payload.evaluator_id], res => {
                     if (res.error) {
-                        return handleNext(next, 400, "There was a problem getting the evaluations");
+                        return handleNext(next, 400, "There was a problem getting your evaluation count");
                     }
-                    reviewedCount = res.rows[0].count;
+                    reviewedCount = res.rows[0].cnt;
                     db.query("SELECT * FROM contest ORDER BY contest_id DESC", [], res => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem getting the contests");
                         }
                         contests = res.rows;
-                        // TODO: Get only this contest's entries
-                        db.query("SELECT * FROM entry", [], res => {
+                        db.query("SELECT * FROM evaluator ORDER BY evaluator_name, account_locked DESC;", [], res => {
                             if (res.error) {
-                                return handleNext(next, 400, "There was a problem getting the entries");
+                                return handleNext(next, 400, "There was a problem getting the evaluators");
                             }
-                            entries = res.rows;
-                            return response.render("pages/admin", { entryCount, reviewedCount, contests, entries, evaluator_name: request.decodedToken.evaluator_name });
+                            evaluators = res.rows;
+                            db.query("SELECT * FROM whitelisted_kaids;", [], res => {
+                                if (res.error) {
+                                    return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                                }
+                                whitelisted_kaids = res.rows;
+                                db.query("SELECT COUNT(*) FROM evaluator WHERE account_locked = false;", [], res => {
+                                    if (res.error) {
+                                        return handleNext(next, 400, "There was a problem getting the active evaluator count");
+                                    }
+                                    activeEvaluatorCount = res.rows[0].count;
+                                    db.query("SELECT COUNT(x.entry_id) as cnt FROM evaluation x	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete = true AND z.contest_id =	(SELECT MAX(a.contest_id) FROM contest a);", [], res => {
+                                        if (res.error) {
+                                            return handleNext(next, 400, "There was a problem getting the total evaluation count");
+                                        }
+                                        totalEvaluationsCount = res.rows[0].cnt;
+                                        db.query("SELECT COUNT(*) FROM entry WHERE contest_id =	(SELECT MAX(a.contest_id) FROM contest a);", [], res => {
+                                            if (res.error) {
+                                                return handleNext(next, 400, "There was a problem getting the total entry count");
+                                            }
+                                            totalEntryCount = res.rows[0].count;
+                                            totalEvaluationsNeeded = activeEvaluatorCount * totalEntryCount;
+                                            response.render("pages/admin", { entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, totalEvaluationsNeeded, totalEvaluationsCount, is_admin: payload.is_admin });
+                                        });
+                                    });
+                                });
+                            });
                         });
                     });
                 });
@@ -78,6 +113,85 @@ exports.profile = (request, response, next) => {
         return response.render("pages/profile", { evaluator_name: request.decodedToken.evaluator_name });
     }
     handleNext(next, 400, "Unauthorized");
+}
+
+exports.results = (request, response, next) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 400, "Unauthorized");
+    }
+
+    let contest_id = request.params.contestId;
+    let contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners;
+
+    getJWTToken(request)
+        .then(payload => {
+          db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
+              if (res.error) {
+                  return handleNext(next, 400, "There was a problem getting the results kaids");
+              }
+              contests = res.rows;
+              db.query("SELECT x.evaluation_level, COUNT(x.evaluation_level) as cnt FROM evaluation x	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete = true AND z.contest_id =" + contest_id + "GROUP BY (x.evaluation_level) ORDER BY (	CASE x.evaluation_level	WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END);", [], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem getting the results kaids");
+                  }
+                  evaluationsPerLevel = res.rows;
+                  db.query(`SELECT REPLACE(z.entry_title,'"',''), z.entry_id, z.entry_author, z.entry_url, z.entry_level, COUNT(z.entry_title) as evaluations,	MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) as min_level_numeric,	CASE MIN(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate' ELSE 'Advanced' END as min_level, CASE MAX(CASE x.evaluation_level WHEN 'Beginner' THEN 0 WHEN 'Intermediate' THEN 1 ELSE 2 END) WHEN 0 THEN 'Beginner'	WHEN 1 THEN 'Intermediate'	ELSE 'Advanced'	END as max_level,	AVG(x.creativity+x.complexity+x.execution+x.interpretation) as avg_score, MIN(x.creativity+x.complexity+x.execution+x.interpretation) as min_score,	MAX(x.creativity+x.complexity+x.execution+x.interpretation) as max_score	FROM evaluation x	INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id	INNER JOIN entry z ON z.entry_id = x.entry_id	WHERE x.evaluation_complete	AND z.contest_id = ` + contest_id + ` GROUP BY (z.entry_title, z.entry_id, z.entry_author, z.entry_url, z.entry_level)	ORDER BY z.entry_level ASC, avg_score DESC;`, [], res => {
+                      if (res.error) {
+                          return handleNext(next, 400, "There was a problem getting the results kaids");
+                      }
+                      entriesByAvgScore = res.rows;
+                      db.query("SELECT COUNT(*) FROM entry WHERE contest_id = $1", [contest_id], res => {
+                          if (res.error) {
+                              return handleNext(next, 400, "There was a problem getting the results kaids");
+                          }
+                          entryCount = res.rows;
+                          db.query("SELECT y.evaluator_name, COUNT(x.entry_id) as cnt FROM evaluation x INNER JOIN evaluator y ON y.evaluator_id = x.evaluator_id INNER JOIN entry z ON z.entry_id = x.entry_id WHERE x.evaluation_complete = true AND z.contest_id =" + request.params.contestId + "GROUP BY (y.evaluator_name) ORDER BY cnt DESC;", [], res => {
+                              if (res.error) {
+                                  return handleNext(next, 400, "There was a problem getting the results kaids");
+                              }
+                              evaluationsPerEvaluator = res.rows;
+                              db.query("SELECT * FROM entry WHERE contest_id = $1 AND is_winner = true ORDER BY entry_level", [contest_id], res => {
+                                  if (res.error) {
+                                      return handleNext(next, 400, "There was a problem getting the results kaids");
+                                  }
+                                  winners = res.rows;
+                                  response.render("pages/results", { contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners, contest_id: contest_id, is_admin: payload.is_admin });
+                              });
+                          });
+                      });
+                  });
+              });
+          });
+        })
+        .catch(err => handleNext(next, 400, err));
+}
+
+exports.entries = (request, response, next) => {
+    if (!isLoggedIn(request)) {
+        return handleNext(next, 400, "Unauthorized");
+    }
+
+    let contest_id = request.params.contestId;
+    let contests, entries;
+
+    getJWTToken(request)
+        .then(payload => {
+          db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
+              if (res.error) {
+                  return handleNext(next, 400, "There was a problem getting the contests kaids");
+              }
+              contests = res.rows;
+              db.query("SELECT * FROM entry WHERE contest_id = $1 ORDER BY entry_id", [contest_id], res => {
+                  if (res.error) {
+                      return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                  }
+                  entries = res.rows;
+                  response.render("pages/entries", { contests, entries, contest_id: contest_id, is_admin: payload.is_admin });
+
+              });
+           });
+        })
+        .catch(err => handleNext(next, 400, err));
 }
 
 module.exports = exports;

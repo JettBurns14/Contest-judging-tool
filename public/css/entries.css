@@ -8,11 +8,6 @@ body {
     margin: 0px 0px;
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* General Styling and Colors */
 .green {
 	color: #54820a;
 }
@@ -23,19 +18,6 @@ body {
 
 .bold {
 	font-weight: bold;
-}
-
-.admin-btn {
-	width: 10%;
-	background-color: #54820a;
-	color: white;
-	text-align: center;
-	padding: 10px;
-	border-radius: 5px;
-}
-
-.admin-btn:hover {
-    cursor: pointer;
 }
 
 /* Side bar and its buttons */
@@ -70,7 +52,6 @@ body {
     flex-wrap: wrap;
     /* This messes up if there are 2 boxes, fix! */
     justify-content: space-evenly;
-    display: none;
 }
 
 /* Main header inside page container */
@@ -83,21 +64,19 @@ body {
 
 /* Boxes inside page container */
 .preview-container {
-    background: white;
     display: inline-block;
     border-radius: 5px;
     position: relative;
-    margin: 0px 20px 20px 0px;
+    margin: 0px 2% 2% 0px;
     width: 45%;
     min-height: 200px;
 }
-.preview-container.current-contest {
-    border: 3px solid green;
-}
 .preview-container.standard {
+    background: white; /* #f5f5f5; */
     border: 1px solid #ddd;
 }
 .preview-container.warning {
+    background: white;
     border: 1px solid #ebccd1;
 }
 .preview-container.warning .db-header {
@@ -119,110 +98,50 @@ body {
     padding: 20px;
     margin: 0px;
 }
-.preview-thumb {
-    max-width: 200px;
-}
+
 .wide-box {
   width: 92%;
 }
 
-.large-stat {
-  font-size: 48px;
-  margin: auto;
+/* Data tables */
+table {
   text-align: center;
-  margin-top: 4%;
-}
-
-/* Big list of entries */
-#entries-list li {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-#entries-list li span {
-    color: #777;
-}
-
-
-/* User page */
-.edit-user-btn {
-	float: right;
-}
-
-.edit-user-btn:hover {
-	cursor: pointer;
-}
-
-img.delete-icon {
-  width: 4%;
-  margin: 0px 5% 0px 5%;
-}
-
-img.delete-icon:hover {
-  cursor: pointer;
-}
-
-
-/* Forms */
-
-form {
+  margin: auto;
+  border-collapse: collapse;
   width: 100%;
 }
 
-input[type=text], input[type=password], input[type=number], select, textarea {
-  width: 50%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
+table a {
+  text-decoration: none;
+  color: black;
 }
 
-label {
-  padding: 12px 12px 12px 0;
-  display: inline-block;
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-input[type=submit] {
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
   background-color: #54820a;
   color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
+}
+
+td img.delete-icon, td img.edit-icon {
+  width: 25%;
+  margin: 0px 5% 0px 5%;
+}
+
+input.check-icon {
+  width: 12%;
+  margin-left: 5%;
+}
+
+td img.delete-icon:hover, td img.edit-icon:hover, td input.check-icon {
   cursor: pointer;
-  float: left;
-  margin-top: 20px;
-}
-
-input[type=submit]:hover {
-  background-color: #45a049;
-}
-
-input[type=checkbox] {
-	margin-top: 2%;
-}
-
-.col-25 {
-  float: left;
-  width: 10%;
-  margin-top: 6px;
-}
-
-.col-75 {
-  float: left;
-  width: 75%;
-  margin-top: 6px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-  .col-25, .col-75, input[type=submit] {
-    width: 100%;
-    margin-top: 0;
-  }
 }
