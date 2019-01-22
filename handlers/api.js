@@ -1,10 +1,15 @@
 const { handleNext, jsonMessage } = require("../functions");
+const { validationResult } = require('express-validator/check');
 const db = require("../db");
 const Request = require("request");
 const Moment = require("moment");
 
-exports.evaluateEntry = (request, response) => {
+exports.evaluateEntry = (request, response, next) => {
     if (request.decodedToken) {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            return handleNext(next, 400, errors.array());
+        }
         if (!request.body) {
             return handleNext(next, 400, "No request body received");
         }

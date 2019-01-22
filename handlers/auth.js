@@ -76,6 +76,8 @@ exports.oauthCallback = function(request, response, next) {
                                         .catch(err => handleNext(next, 400, err.message));
                                 } else {
                                     // User doesn't exist, sign up.
+                                    // Inserting this data would normally be dangerous, but Node.PG auto-sanitizes.
+                                    // https://github.com/brianc/node-postgres/wiki/FAQ#8-does-node-postgres-handle-sql-injection
                                     db.query("INSERT INTO evaluator (logged_in, logged_in_tstz, dt_term_start, dt_term_end, email, username, nickname, evaluator_name, evaluator_kaid, avatar_url) VALUES (true, CURRENT_TIMESTAMP, null, null, $1, $2, $3, $4, $5, $6)", [email, username, nickname, nickname, kaid, avatarUrl], result => {
                                         if (result.error) {
                                             return handleNext(next, 400, "There was a problem creating your account, please try again");
