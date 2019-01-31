@@ -104,17 +104,17 @@ exports.editUser = (request, response, next) => {
             let edit_evaluator_kaid = request.body.edit_user_kaid;
             let edit_is_admin = request.body.edit_user_is_admin;
             let edit_account_locked = request.body.edit_account_locked;
-            let { id_admin, evaluator_name } = request.decodedToken;
+            let { is_admin, evaluator_name } = request.decodedToken;
 
             if (is_admin) {
                 // Change to boolean data type
-                if (is_admin == 'true') {
+                if (edit_is_admin == 'true') {
                     edit_is_admin = true;
                 } else {
                     edit_is_admin = false;
                 }
 
-                if (account_locked == 'true') {
+                if (edit_account_locked == 'true') {
                     edit_account_locked = true;
                 } else {
                     edit_account_locked = false;
