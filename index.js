@@ -43,6 +43,7 @@ db.connect(
     () => {
         console.log(time, "Connected to Postgres");
         app.listen(PORT, () => {
+            console.log(time, `Started in ${process.env.APP_STATE === "dev" ? "dev" : "prod"} mode`)
             console.log(time, `Council app is listening on port ${PORT}, http://localhost:${PORT}/`);
         });
     }
