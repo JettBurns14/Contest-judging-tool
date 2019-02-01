@@ -204,7 +204,7 @@ exports.deleteEntry = (request, response, next) => {
 
         try {
             let entry_id = request.body.entryId;
-            let contest_id = request.body.contest_id
+            let contest_id = request.body.contest_id;
             let { is_admin, evaluator_name } = request.decodedToken;
 
             if (is_admin) {
