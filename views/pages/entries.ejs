@@ -44,7 +44,7 @@
                       <td id="<%= a.entry_id + '-level'%>"><%= a.entry_level %></td>
                       <td><%= a.entry_created %></td>
                       <%if (is_admin) { %>
-          				      <td id="<%= a.entry_id + '-actions'%>"><img class="edit-icon" src="../static/images/edit-icon.png" onclick="<%= 'editEntry(' + a.entry_id + ')'%>"><img class="delete-icon" src="../static/images/delete-icon.png" onclick="<%= 'deleteEntry(' + a.entry_id + ')'%>"></td>
+          				      <td id="<%= a.entry_id + '-actions'%>"><img class="edit-icon" src="../static/images/edit-icon.png" onclick="<%= 'editEntry(' + a.entry_id + ')'%>"><img class="delete-icon" src="../static/images/delete-icon.png" onclick="deleteEntry( <%= a.entry_id%>, <%= contest_id %> )"></td>
           			      <% } %>
                     </tr>
                   <% }); %>
@@ -63,11 +63,11 @@
   var navButtons = document.getElementsByClassName('nav-button');
   navButtons[<%= contest_id %> - 1].classList.add('selected');
 
-  function deleteEntry(id) {
+  function deleteEntry(id, contest_id) {
     var shouldDelete = confirm("Are you sure you want to delete this entry?");
 
     if (shouldDelete) {
-      post('/api/deleteEntry', {entryId: id, 'contest_id': <%= contest_id %>});
+      post('/api/deleteEntry', {'entryId': id, 'contest_id': contest_id});
     }
   }
 

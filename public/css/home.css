@@ -23,6 +23,10 @@
   line-height: 0.5em;
 }
 
+#message-content {
+  padding-bottom: 2%;
+}
+
 .control-btn {
   float: right;
   width: 1.5%;
