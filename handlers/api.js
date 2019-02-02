@@ -10,9 +10,6 @@ exports.evaluateEntry = (request, response, next) => {
         if (!errors.isEmpty()) {
             return handleNext(next, 400, errors.array());
         }
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
         try {
             const { entry_id, creativity, complexity, quality_code, interpretation, skill_level } = request.body;
             const { evaluator_id, is_admin } = request.decodedToken;
@@ -41,10 +38,6 @@ exports.evaluateEntry = (request, response, next) => {
 
 exports.whitelistUser = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let kaid = request.body.kaid;
             let { is_admin, evaluator_name } = request.decodedToken;
@@ -68,10 +61,6 @@ exports.whitelistUser = (request, response, next) => {
 
 exports.removeWhitelistedUser = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let kaid = request.body.kaid;
             let { is_admin, evaluator_name } = request.decodedToken;
@@ -94,10 +83,6 @@ exports.removeWhitelistedUser = (request, response, next) => {
 
 exports.editUser = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let edit_evaluator_id = request.body.edit_user_id;
             let edit_evaluator_name = request.body.edit_user_name;
@@ -137,10 +122,6 @@ exports.editUser = (request, response, next) => {
 
 exports.addContest = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let contest_name = request.body.contest_name;
             let contest_URL = request.body.contest_url;
@@ -157,7 +138,7 @@ exports.addContest = (request, response, next) => {
                     response.redirect("/admin");
                 });
             } else {
-              return handleNext(next, 403, "Insufficient access");
+                return handleNext(next, 403, "Insufficient access");
             }
         } catch(err) {
             return handleNext(next, 400, "There was a problem adding this contest");
@@ -168,10 +149,6 @@ exports.addContest = (request, response, next) => {
 
 exports.editEntry = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let entry_id = request.body.entry_id;
             let entry_level = request.body.edited_level;
@@ -198,10 +175,6 @@ exports.editEntry = (request, response, next) => {
 
 exports.deleteEntry = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let entry_id = request.body.entryId;
             let contest_id = request.body.contest_id
@@ -226,10 +199,6 @@ exports.deleteEntry = (request, response, next) => {
 
 exports.addWinner = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let entry_id = request.body.entryId;
             let contest_id = request.body.contest_id;
@@ -254,10 +223,6 @@ exports.addWinner = (request, response, next) => {
 
 exports.addMessage = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let message_author = request.body.message_author;
             let message_date = request.body.message_date;
@@ -284,10 +249,6 @@ exports.addMessage = (request, response, next) => {
 
 exports.editMessage = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let message_id = request.body.message_id;
             let message_author = request.body.message_author;
@@ -315,10 +276,6 @@ exports.editMessage = (request, response, next) => {
 
 exports.deleteMessage = (request, response, next) => {
     if (request.decodedToken) {
-        if (!request.body) {
-            return handleNext(next, 400, "No request body received");
-        }
-
         try {
             let message_id = request.body.message_id;
             let { is_admin, evaluator_name } = request.decodedToken;
@@ -351,9 +308,6 @@ exports.updateEntries = (request, response, next) => {
 
             return Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${contest_id}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
                 console.log("Request callback called.");
-                if (!JSON.parse(body)) {
-                    return handleNext(next, 400, "No request body received");
-                } else
                 if (err) {
                     return handleNext(next, 400, "There was a problem with the request");
                 }

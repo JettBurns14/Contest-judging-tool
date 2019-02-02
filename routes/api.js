@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const handlers = require("../handlers/api");
 const { check } = require('express-validator/check');
+const hasBody = require("../middleware/hasBody");
+
+router.use(hasBody);
 
 router.get("/ping", (req, res) => {
     res.send("Pong!");
