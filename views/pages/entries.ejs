@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/entries.css">
     <link rel="stylesheet" type="text/css" href="/static/css/header.css">
     <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   </head>
   <body>
     <%- include ../partials/header %>
@@ -67,7 +67,7 @@
     var shouldDelete = confirm("Are you sure you want to delete this entry?");
 
     if (shouldDelete) {
-      post('/api/deleteEntry', {'entryId': id, 'contest_id': contest_id});
+      post('/api/deleteEntry', {'entry_id': id, 'contest_id': contest_id});
     }
   }
 

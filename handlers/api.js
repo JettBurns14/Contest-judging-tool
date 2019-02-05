@@ -1,15 +1,10 @@
 const { handleNext, jsonMessage } = require("../functions");
-const { validationResult } = require('express-validator/check');
 const db = require("../db");
 const Request = require("request");
 const Moment = require("moment");
 
-exports.evaluateEntry = (request, response, next) => {
+exports.submitEvaluation = (request, response, next) => {
     if (request.decodedToken) {
-        const errors = validationResult(request);
-        if (!errors.isEmpty()) {
-            return handleNext(next, 400, errors.array());
-        }
         try {
             const { entry_id, creativity, complexity, quality_code, interpretation, skill_level } = request.body;
             const { evaluator_id, is_admin } = request.decodedToken;
@@ -176,7 +171,7 @@ exports.editEntry = (request, response, next) => {
 exports.deleteEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entry_id = request.body.entryId;
+            let entry_id = request.body.entry_id;
             let contest_id = request.body.contest_id;
             let { is_admin, evaluator_name } = request.decodedToken;
 
@@ -200,7 +195,7 @@ exports.deleteEntry = (request, response, next) => {
 exports.addWinner = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entry_id = request.body.entryId;
+            let entry_id = request.body.entry_id;
             let contest_id = request.body.contest_id;
             let { is_admin, evaluator_name } = request.decodedToken;
 

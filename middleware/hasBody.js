@@ -1,4 +1,4 @@
-const { handleNext } = require("../functions")
+const { handleNext } = require("../functions");
 
 const hasBody = (request, response, next) => {
     if (request.method === "POST") {

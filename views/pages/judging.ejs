@@ -22,7 +22,7 @@
             <img src="/static/images/new-loading-spinner.svg" id="loading-spinner">
             <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + "/embedded" %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
 
-            <form id="entry-form" method="post" action="/api/judging" target="_self">
+            <form id="entry-form" method="post" action="/api/submitEvaluation" target="_self">
                 <input name="entry_id" value="<%= entry.o_entry_id %>" style="display: none;"></input>
                 <div id="sliders-container">
                     <div class="form-field-div">

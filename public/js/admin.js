@@ -35,19 +35,24 @@ function removeWhitelistedUser(kaid) {
 }
 
 edituser = (id, name, kaid, is_admin, account_locked) => {
-  var inputFields = document.querySelectorAll("#edit-user-page input");
+    var inputFields = document.querySelectorAll("#edit-user-page input");
+    var formOptions = document.querySelectorAll("option");
 
-  inputFields[0].setAttribute("value", id);
-  inputFields[1].setAttribute("value", name);
-  inputFields[2].setAttribute("value", kaid);
+    inputFields[0].setAttribute("value", id);
+    inputFields[1].setAttribute("value", name);
+    inputFields[2].setAttribute("value", kaid);
 
-  if (is_admin) {
-    inputFields[3].setAttribute("checked", true);
-  }
+    if (is_admin) {
+        formOptions[0].setAttribute("selected", true);
+    } else {
+        formOptions[1].setAttribute("selected", true);
+    }
 
-  if (account_locked) {
-    inputFields[4].setAttribute("checked", true);
-  }
+    if (account_locked) {
+        formOptions[2].setAttribute("selected", true);
+    } else {
+        formOptions[3].setAttribute("selected", true);
+    }
 };
 
 

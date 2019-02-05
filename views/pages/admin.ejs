@@ -176,23 +176,31 @@
       						<label for="edit_user_kaid">User's KAID</label>
     					  </div>
    						  <div class="col-75">
-      						<input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="Remove 'kaid_' from ID">
+      						<input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
     					  </div>
   					  </div>
   					  <div class="row">
     					  <div class="col-25">
       						<label for="edit_user_is_admin">Make user an administrator</label>
     					  </div>
-    					  <div class="col-75">
-      						<input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin" value="true">
+    					  <div class="col-25">
+      						<!-- <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin"> -->
+                            <select id="edit_user_is_admin" name="edit_user_is_admin">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
     					  </div>
   					  </div>
   					  <div class="row">
     					  <div class="col-25">
       						<label for="edit_account_locked">Is account locked</label>
     					  </div>
-    					  <div class="col-75">
-      						<input type="checkbox" id="edit_account_locked" name="edit_account_locked" value="true">
+    					  <div class="col-25">
+      						<!-- <input type="checkbox" id="edit_account_locked" name="edit_account_locked"> -->
+                            <select id="edit_account_locked" name="edit_account_locked">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
     					  </div>
   					  </div>
   					  <div class="row">
@@ -228,7 +236,7 @@
       						<label for="contest_author">Author</label>
     					  </div>
     					  <div class="col-75">
-      						<input type="text" id="contest_author" name="contest_author" value="">
+      						<input type="text" id="contest_author" name="contest_author" placeholder="Name">
     					  </div>
   					  </div>
   					  <div class="row">
@@ -236,7 +244,7 @@
       						<label for="contest_start_date">Start Date</label>
     					  </div>
     					  <div class="col-75">
-      						<input type="text" id="contest_start_date" name="contest_start_date" value="YYYY-MM-DD">
+      						<input type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
     					  </div>
   					  </div>
   					  <div class="row">
@@ -244,7 +252,7 @@
       						<label for="contest_end_date">End Date</label>
     					  </div>
     					  <div class="col-75">
-      						<input type="text" id="contest_end_date" name="contest_end_date" value="YYYY-MM-DD">
+      						<input type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
     					  </div>
   				  	</div>
   					  <div class="row">
