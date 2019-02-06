@@ -128,7 +128,7 @@ exports.results = (request, response, next) => {
         let { evaluator_name, is_admin } = request.decodedToken;
         let contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners;
 
-        return db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
+        return db.query("SELECT contest_id, contest_name FROM contest ORDER BY contest_id;", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the results kaids");
             }
@@ -175,7 +175,7 @@ exports.entries = (request, response, next) => {
         let { evaluator_name, is_admin } = request.decodedToken;
         let contests, entries;
 
-        return db.query("SELECT contest_id, contest_name FROM contest;", [], res => {
+        return db.query("SELECT contest_id, contest_name FROM contest ORDER BY contest_id;", [], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the contests kaids");
             }

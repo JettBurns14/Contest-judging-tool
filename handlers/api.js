@@ -207,17 +207,22 @@ exports.deleteEntry = (request, response, next) => {
             let { is_admin, evaluator_name } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("DELETE FROM entry WHERE entry_id = $1", [entry_id], res => {
+                return db.query("DELETE FROM evaluation WHERE entry_id = $1", [entry_id], res => {
                     if (res.error) {
-                        return handleNext(next, 400, "There was a problem deleting this entry");
+                        return handleNext(next, 400, "There was a problem deleting this entry's evaluations");
                     }
-                    response.redirect("/entries/" + contest_id);
+                    return db.query("DELETE FROM entry WHERE entry_id = $1", [entry_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem deleting this entry");
+                        }
+                        response.redirect("/entries/" + contest_id);
+                    });
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
             }
         } catch(err) {
-            return handleNext(next, 400, "There was a problem deleting this user");
+            return handleNext(next, 400, "There was a problem deleting this entry");
         }
     }
     return handleNext(next, 401, "Unauthorized");
