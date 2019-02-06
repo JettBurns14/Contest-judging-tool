@@ -82,23 +82,11 @@ exports.editUser = (request, response, next) => {
             let edit_evaluator_id = request.body.edit_user_id;
             let edit_evaluator_name = request.body.edit_user_name;
             let edit_evaluator_kaid = request.body.edit_user_kaid;
-            let edit_is_admin = request.body.edit_user_is_admin;
-            let edit_account_locked = request.body.edit_account_locked;
-            let { is_admin, evaluator_name } = request.decodedToken;
+            let edit_is_admin = (request.body.edit_user_is_admin == "true" ? true : false);
+            let edit_account_locked = (request.body.edit_account_locked == "true" ? true : false);
+            let { is_admin } = request.decodedToken;
 
             if (is_admin) {
-                // Change to boolean data type
-                if (edit_is_admin == 'true') {
-                    edit_is_admin = true;
-                } else {
-                    edit_is_admin = false;
-                }
-
-                if (edit_account_locked == 'true') {
-                    edit_account_locked = true;
-                } else {
-                    edit_account_locked = false;
-                }
                 return db.query("UPDATE evaluator SET evaluator_name = $1, evaluator_kaid = $2, account_locked = $3, is_admin = $4 WHERE evaluator_id = $5;", [edit_evaluator_name, edit_evaluator_kaid, edit_account_locked, edit_is_admin, edit_evaluator_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this user");
@@ -137,6 +125,49 @@ exports.addContest = (request, response, next) => {
             }
         } catch(err) {
             return handleNext(next, 400, "There was a problem adding this contest");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.editContest = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            if (request.decodedToken.is_admin) {
+                let { edit_contest_id, edit_contest_name, edit_contest_url, edit_contest_author, edit_contest_start_date, edit_contest_end_date, edit_contest_current } = request.body;
+                let values = [edit_contest_name, edit_contest_url, edit_contest_author, edit_contest_start_date, edit_contest_end_date, edit_contest_current, edit_contest_id];
+                return db.query("UPDATE contest SET contest_name = $1, contest_url = $2, contest_author = $3, date_start = $4, date_end = $5, current = $6 WHERE contest_id = $7", values, res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem editing this contest");
+                    }
+                    response.redirect("/admin");
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch(err) {
+            return handleNext(next, 400, "There was a problem editing this contest");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.deleteContest = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            if (request.decodedToken.is_admin) {
+                let { contest_id } = request.body;
+                return db.query("DELETE FROM contest WHERE contest_id = $1", [contest_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem deleting this contest");
+                    }
+                    response.redirect("/admin");
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch(err) {
+            return handleNext(next, 400, "There was a problem deleting this contest");
         }
     }
     return handleNext(next, 401, "Unauthorized");

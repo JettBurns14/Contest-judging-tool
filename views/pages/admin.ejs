@@ -20,9 +20,9 @@
             <a class="nav-button" href="/results/1">Results</a>
             <a class="nav-button hidden" onclick="showpage(4)">Activity</a>
             <a class="nav-button hidden" onclick="showpage(5)">Controls</a>
-            <%if (is_admin) { %>
-				      <a class="nav-button" onclick="showpage(6)">Users</a>
-			      <% } %>
+            <% if (is_admin) { %>
+                <a class="nav-button" onclick="showpage(6)">Users</a>
+            <% } %>
         </div>
 
         <div class="page-content" id="dashboard-page">
@@ -31,22 +31,26 @@
             <div class="preview-container standard" style="height: 100px">
                 <p class="db-header">Your reviewed entries for current contest:</p>
                 <div class="preview-content">
-                    <p class="large-stat"><%= reviewedCount %> / <%= entryCount %></p>
+                    <p class="large-stat">
+                        <%= reviewedCount %> / <%= entryCount %>
+                    </p>
                 </div>
             </div>
             <div class="preview-container standard" style="height: 100px">
                 <p class="db-header">Total reviewed entries for current contest:</p>
                 <div class="preview-content">
-                    <p class="large-stat"><%= totalEvaluationsCount %> / <%= totalEvaluationsNeeded %></p>
+                    <p class="large-stat">
+                        <%= totalEvaluationsCount %> / <%= totalEvaluationsNeeded %>
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="page-content" id="contests-page">
             <h1 id="content-header">Contests</h1>
-            <%if (is_admin) { %>
-				      <h4 id="add-contest-btn" class="admin-btn" onclick="showpage(9)">Add Contest</h4>
-			      <% } %>
+            <% if (is_admin) { %>
+                <h4 id="add-contest-btn" class="admin-btn" onclick="showpage(9)">Add Contest</h4>
+            <% } %>
 
             <% contests.forEach((c) => { %>
                 <% if (c.current) { %>
@@ -54,14 +58,21 @@
                 <% } else { %>
                     <div class="preview-container standard">
                 <% } %>
-                    <p class="db-header"><%= c.contest_name + " - #" + c.contest_id %></p>
-                    <div class="preview-content">
-                        <a href="<%= c.contest_url %>" target="_blank">
-                            <img class="preview-thumb" src="<%= c.contest_url + "/latest.png" %>">
-                        </a>
-                        <p>Start: <%= c.date_start %></p>
-                        <p>End: <%= c.date_end %></p>
-                    </div>
+                <p class="db-header">
+                    <%= c.contest_name + " - #" + c.contest_id %><% if (is_admin) { %>
+                        <span class="contest-options">
+                            <span>Edit</span>
+                            <span>Delete</span>
+                        </span>
+                    <% } %>
+                </p>
+                <div class="preview-content">
+                    <a href="<%= c.contest_url %>" target="_blank">
+                        <img class="preview-thumb" src="<%= c.contest_url + '/latest.png' %>">
+                    </a>
+                    <p>Start: <%= c.date_start %></p>
+                    <p>End: <%= c.date_end %></p>
+                </div>
                 </div>
             <% }); %>
         </div>
@@ -72,7 +83,6 @@
 
         <div class="page-content" id="results-page">
             <h1 id="content-header">Results</h1>
-
         </div>
 
         <div class="page-content" id="activity-page">
@@ -99,41 +109,57 @@
             <div class="preview-container wide-box standard">
                 <p class="db-header">Whitelisted Kaids</p>
                 <div class="preview-content">
-                  <table id="whitelisted-kaids">
+                <table id="whitelisted-kaids">
                     <% whitelisted_kaids.forEach((c) => { %>
-                      <tr>
-                        <td><%= c.kaid %></td>
-                        <td><img class="delete-icon" onclick="removeWhitelistedUser('<%= c.kaid %>')" src="../static/images/delete-icon.png"></td>
-                      </tr>
+                        <tr>
+                            <td><%= c.kaid %></td>
+                            <td>
+                                <img class="delete-icon" onclick="removeWhitelistedUser('<%= c.kaid %>')" src="../static/images/delete-icon.png">
+                            </td>
+                        </tr>
                     <% }); %>
-                  </table>
+                </table>
+            </div>
+        </div>
+
+        <!-- User boxes -->
+        <% evaluators.forEach((c) => { %>
+            <div class="preview-container standard">
+                <p class="db-header">
+                    <%= c.evaluator_name %>
+                    <span class="edit-user-btn" onclick="showpage(8); edituser(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);">Edit</span></p>
+                <div class="preview-content">
+                    <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
+                    <p>
+                        <span class="bold">ID:</span>
+                        <%= c.evaluator_id %>
+                    </p>
+                    <p>
+                        <span class="bold">KAID:</span>
+                        <%= c.evaluator_kaid %></p>
+                    <% if (c.account_locked) { %>
+                        <p>
+                            <span class="bold">Status:</span>
+                            <span class="red">Deactivated</span>
+                        </p>
+                    <% } else { %>
+                        <p>
+                            <span class="bold">Status:</span>
+                            <span class="green">Active</span>
+                        </p>
+                    <% } %>
+                    <p>
+                        <span class="bold">Permission Level:</span>
+                        <% if (c.is_admin) { %>
+                            Admin
+                        <% } else { %>
+                            Standard User
+                        <% } %>
+                    </p>
                 </div>
             </div>
-
-            <!-- User boxes -->
-              <% evaluators.forEach((c) => { %>
-                <div class="preview-container standard">
-                    <p class="db-header"><%= c.evaluator_name %> <span class="edit-user-btn" onclick="showpage(8); edituser(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);">Edit</span></p>
-                    <div class="preview-content">
-                        <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
-                        <p><span class="bold">ID:</span> <%= c.evaluator_id %></p>
-                        <p><span class="bold">KAID:</span> <%= c.evaluator_kaid %></p>
-                        <% if (c.account_locked) { %>
-                			    <p><span class="bold">Status:</span> <span class="red">Deactivated</span></p>
-            			      <% } else { %>
-                			    <p><span class="bold">Status:</span> <span class="green">Active</span></p>
-            			      <% } %>
-                          <p><span class="bold">Permission Level:</span>
-                            <% if (c.is_admin) { %>
-                			        Admin
-            			          <% } else { %>
-                			        Standard User
-            			          <% } %>
-                          </p>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
+        <% }); %>
+    </div>
 
         <!-- Add User Form -->
         <div class="page-content" id="add-user-page">

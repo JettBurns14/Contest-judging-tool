@@ -91,6 +91,36 @@ router.post("/addContest", [
         .withMessage("Must be a valid date YYYY-MM-DD"),
 ], wasValidated, handlers.addContest);
 
+router.post("/editContest", [
+    check("edit_contest_id")
+        .isInt()
+        .withMessage("Contest ID must be an integer"),
+    check("edit_contest_name")
+        .isLength(nameChars)
+        .withMessage("Contest name cannot be empty or longer than 200 characters"),
+    check("edit_contest_author")
+        .isLength(nameChars)
+        .withMessage("Contest author cannot be empty or longer than 200 characters"),
+    check("edit_contest_url")
+        .isURL()
+        .withMessage("Must provide a valid contest URL"),
+    check("edit_contest_start_date")
+        .matches(datePattern)
+        .withMessage("Start date must be a valid date YYYY-MM-DD"),
+    check("edit_contest_end_date")
+        .matches(datePattern)
+        .withMessage("End date must be a valid date YYYY-MM-DD"),
+    check("edit_contest_current")
+        .isBoolean()
+        .withMessage("Current contest must be true or false")
+], wasValidated, handlers.editContest);
+
+router.post("/deleteContest", [
+    check("contest_id")
+        .isInt()
+        .withMessage("Contest ID must be an integer")
+], wasValidated, handlers.deleteContest);
+
 router.post("/editEntry", [
     check("entry_id")
         .isInt()

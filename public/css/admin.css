@@ -115,6 +115,16 @@ body {
     margin: 0px;
     border-radius: 4px 4px 0px 0px;
 }
+.contest-options {
+    float: right;
+}
+.contest-options span {
+    margin-left: 10px;
+    cursor: pointer;
+}
+.contest-options span:hover {
+    text-decoration: underline;
+}
 .preview-content {
     padding: 20px;
     margin: 0px;
