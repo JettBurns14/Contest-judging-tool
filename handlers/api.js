@@ -156,8 +156,9 @@ exports.deleteContest = (request, response, next) => {
     if (request.decodedToken) {
         try {
             if (request.decodedToken.is_admin) {
-                let { contest_id } = request.body;
-                return db.query("DELETE FROM contest WHERE contest_id = $1", [contest_id], res => {
+                let contest_id = request.body.contest_id;
+
+                return db.query("DELETE FROM contest WHERE contest_id = $1;", [contest_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem deleting this contest");
                     }
