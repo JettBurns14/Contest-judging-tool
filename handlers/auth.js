@@ -68,12 +68,16 @@ exports.oauthCallback = function(request, response, next) {
                                 }
                                 // If row, truthy, user exists, just log in.
                                 if (result.rows.length) {
-                                    createJWTToken(kaid, token, tokenSecret)
+                                  if (result.rows[0].account_locked) {
+                                    response.redirect("/login");
+                                  } else {
+                                      createJWTToken(kaid, token, tokenSecret)
                                         .then(jwtToken => {
                                             response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                             response.redirect("/");
                                         })
                                         .catch(err => handleNext(next, 400, err.message));
+                                  }
                                 } else {
                                     // User doesn't exist, sign up.
                                     // Inserting this data would normally be dangerous, but Node.PG auto-sanitizes.

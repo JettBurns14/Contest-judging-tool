@@ -51,8 +51,6 @@ exports.admin = (request, response, next) => {
             let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, activeEvaluatorCount, totalEvaluationsCount, totalEntryCount, totalEvaluationsNeeded;
             let { evaluator_id, evaluator_name, is_admin } = request.decodedToken;
 
-            // TODO: Add results to a new table? Maybe add results link to contests table.
-            // TODO: Get count of only this contest's entries.
             return db.query("SELECT COUNT(*) FROM entry WHERE contest_id = (SELECT MAX(a.contest_id) FROM contest a);", [], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting your entry count");
