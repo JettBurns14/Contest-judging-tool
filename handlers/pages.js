@@ -17,7 +17,7 @@ exports.home = (request, response, next) => {
             return handleNext(next, 400, err);
         }
     }
-    handleNext(next, 401, "Unauthorized");
+    response.redirect("/login");
 }
 
 exports.login = (request, response) => {
