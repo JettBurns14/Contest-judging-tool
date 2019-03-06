@@ -19,7 +19,7 @@
               </div>
               <% messages.forEach((c) => { %>
                 <div class="message-container">
-                  <h3><%= c.message_title %> <%if (is_admin) { %><img class="control-btn" onclick="deleteMessage(<%= c.message_id %>)" src="../static/images/delete-icon.png"><img class="control-btn" onclick="editMessage(<%= c.message_id %>, '<%= c.message_author %>', '<%= c.message_title %>', `<%= c.message_content %>`);" src="../static/images/edit-icon.png"><% } %></h3>
+                  <h3><%= c.message_title %> <%if (is_admin) { %><img class="control-btn" onclick="deleteMessage(<%= c.message_id %>)" src="../static/images/delete-icon.png"><img class="control-btn" onclick="editMessage(<%= c.message_id %>, '<%= c.message_date %>', '<%= c.message_author %>', '<%= c.message_title %>', `<%= c.message_content %>`);" src="../static/images/edit-icon.png"><% } %></h3>
                   <p id="message-author">By. <%= c.message_author %></p>
                   <p id="message-date">Posted on <%= c.message_date %></p>
                   <div id="message-content"><%- c.message_content %></div>
