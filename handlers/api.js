@@ -174,6 +174,37 @@ exports.deleteContest = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.addEntry = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let contest_id = request.body.contest_id;
+            let entry_url = request.body.entry_url;
+            let entry_kaid = request.body.entry_kaid;
+            let entry_title = request.body.entry_title;
+            let entry_author = request.body.entry_author;
+            let entry_level = request.body.entry_level;
+            let entry_votes = request.body.entry_votes;
+            let entry_created = request.body.entry_created;
+            let entry_height = request.body.entry_height;
+            let { is_admin, evaluator_name } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);", [contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem editing this entry");
+                    }
+                    response.redirect("/entries/" + contest_id);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch(err) {
+            return handleNext(next, 400, "There was a problem adding this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 exports.editEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
@@ -194,7 +225,7 @@ exports.editEntry = (request, response, next) => {
                 return handleNext(next, 403, "Insufficient access");
             }
         } catch(err) {
-            return handleNext(next, 400, "There was a problem adding this user");
+            return handleNext(next, 400, "There was a problem editing this entry");
         }
     }
     return handleNext(next, 401, "Unauthorized");
