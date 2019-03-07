@@ -20,7 +20,9 @@
 
       <div class="page-content" id="entry-list">
         <h1 id="content-header">Entries for <%= contests[contest_id - 1].contest_name %></h1>
-
+        <% if (is_admin) { %>
+            <h4 id="import-entries-btn" class="admin-btn" onclick="updateEntries(<%= contest_id %>)">Import Entries</h4>
+        <% } %>
           <div class="preview-container standard wide-box">
             <p class="db-header">List of entries</p>
             <div class="preview-content">
@@ -104,4 +106,5 @@
     form.submit();
   }
   </script>
+  <script src="/static/js/entries.js"></script>
 </html>

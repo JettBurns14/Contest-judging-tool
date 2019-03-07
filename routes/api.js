@@ -190,6 +190,10 @@ router.post("/deleteMessage", [
         .withMessage("Message ID must be an integer")
 ], wasValidated, handlers.deleteMessage);
 
-router.post("/update-entries", handlers.updateEntries);
+router.post("/updateEntries", [
+    check("contest_id")
+        .isInt()
+        .withMessage("Contest ID must be an integer")
+], wasValidated, handlers.updateEntries);
 
 module.exports = router;

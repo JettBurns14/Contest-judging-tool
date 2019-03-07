@@ -20,6 +20,19 @@ body {
 	font-weight: bold;
 }
 
+.admin-btn {
+	width: 10%;
+	background-color: #54820a;
+	color: white;
+	text-align: center;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.admin-btn:hover {
+    cursor: pointer;
+}
+
 /* Side bar and its buttons */
 #side-bar {
     background: #f8f8f8;
