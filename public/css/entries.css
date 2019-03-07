@@ -27,6 +27,8 @@ body {
 	text-align: center;
 	padding: 10px;
 	border-radius: 5px;
+    display: inline-block;
+    margin-left: 10px;
 }
 
 .admin-btn:hover {
