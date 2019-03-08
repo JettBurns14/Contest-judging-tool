@@ -1,111 +1,166 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Entries | Challenge Council</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/entries.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-  </head>
-  <body>
-    <%- include ../partials/header %>
+    <head>
+        <meta charset="utf-8">
+        <title>Entries | Challenge Council</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/entries.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+        <link rel="shortcut icon" href="/Winston-icon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    </head>
+    <body>
+        <%- include ../partials/header %>
 
-    <div id="page-container">
-      <div id="side-bar">
-        <% contests.forEach((c) => { %>
-          <a class="nav-button" href="<%= '/entries/' + c.contest_id%>" %>"><%= c.contest_name%></a>
-        <% }); %>
-      </div>
-
-      <div class="page-content" id="entry-list">
-        <h1 id="content-header">Entries for <%= contests[contest_id - 1].contest_name %></h1>
-        <% if (is_admin) { %>
-            <h4 id="import-entries-btn" class="admin-btn" onclick="updateEntries(<%= contest_id %>)">Import Entries</h4>
-            <h4 id="add-entry-btn" class="admin-btn" onclick="addEntry(<%= contest_id %>)">Add Single Entry</h4>
-        <% } %>
-          <div class="preview-container standard wide-box">
-            <p class="db-header">List of entries</p>
-            <div class="preview-content">
-              <table>
-                <thead>
-                  <th style="width: 3%">Entry ID</th>
-                  <th style="width: 10%">Title</th>
-                  <th style="width: 10%">Author</th>
-                  <th style="width: 10%">Skill Level</th>
-                  <th style="width: 15%">Created</th>
-                  <%if (is_admin) { %>
-      				      <th style="width: 3%">Actions</th>
-      			      <% } %>
-                </thead>
-                <tbody>
-                  <% entries.forEach((a) => { %>
-                    <tr id="<%= a.entry_id%>">
-                      <td><%= a.entry_id%></td>
-                      <td><a href='<%= a.entry_url %>' target='_blank'><%= a.entry_title %></a></td>
-                      <td><%= a.entry_author %></td>
-                      <td id="<%= a.entry_id + '-level'%>"><%= a.entry_level %></td>
-                      <td><%= a.entry_created %></td>
-                      <%if (is_admin) { %>
-          				      <td id="<%= a.entry_id + '-actions'%>"><img class="edit-icon" src="../static/images/edit-icon.png" onclick="<%= 'editEntry(' + a.entry_id + ')'%>"><img class="delete-icon" src="../static/images/delete-icon.png" onclick="deleteEntry( <%= a.entry_id%>, <%= contest_id %> )"></td>
-          			      <% } %>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
+        <div id="page-container">
+            <div id="side-bar">
+                <% contests.forEach((c) => { %>
+                    <a class="nav-button" href="<%= '/entries/' + c.contest_id%>" %>"><%= c.contest_name%></a>
+                <% }); %>
             </div>
-          </div>
 
+            <div class="page-content" id="entry-list">
+                <h1 id="content-header">Entries for <%= contests[contest_id - 1].contest_name %></h1>
+                <% if (is_admin) { %>
+                    <h4 id="import-entries-btn" class="admin-btn" onclick="updateEntries(<%= contest_id %>)">Import Entries</h4>
+                    <h4 id="add-entry-btn" class="admin-btn" onclick="addEntry(<%= contest_id %>)">Add Single Entry</h4>
+                <% } %>
+                <div class="preview-container standard wide-box">
+                    <p class="db-header">List of entries</p>
+                    <div class="preview-content">
+                        <table>
+                            <thead>
+                                <th style="width: 3%">Entry ID</th>
+                                <th style="width: 10%">Title</th>
+                                <th style="width: 10%">Author</th>
+                                <th style="width: 10%">Skill Level</th>
+                                <th style="width: 15%">Created</th>
+                                <%if (is_admin) { %>
+      				                <th style="width: 3%">Actions</th>
+      			                <% } %>
+                            </thead>
+                            <tbody>
+                                <% entries.forEach((a) => { %>
+                                    <tr id="<%= a.entry_id%>">
+                                        <td><%= a.entry_id%></td>
+                                        <td><a href='<%= a.entry_url %>' target='_blank'><%= a.entry_title %></a></td>
+                                        <td><%= a.entry_author %></td>
+                                        <td id="<%= a.entry_id + '-level'%>"><%= a.entry_level %></td>
+                                        <td><%= a.entry_created %></td>
+                                        <%if (is_admin) { %>
+          				                    <td id="<%= a.entry_id + '-actions'%>"><img class="edit-icon" src="../static/images/edit-icon.png" onclick="<%= 'editEntry(' + a.entry_id + ')'%>"><img class="delete-icon" src="../static/images/delete-icon.png" onclick="deleteEntry( <%= a.entry_id%>, <%= contest_id %> )"></td>
+          			                    <% } %>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!-- Page content -->
+            <div class="page-content" id="edit-entry-page" style="display: none">
+                <h1 id="content-header">Edit Entry</h1>
+                <div class="form-container">
+                    <form id="edit-entry-form" method="post" action="/api/editEntry" target="_self">
+                        <div class="row">
+                            <input type="hidden" id="edit_entry_id" name="edit_user_id">
+                        </div>
+                        <div class="row">
+                            <div class="col-25">
+                                <label for="edit_user_name">User's Name</label>
+                            </div>
+                            <div class="col-75">
+                                <input type="text" id="edit_user_name" name="edit_user_name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-25">
+                                <label for="edit_user_kaid">User's KAID</label>
+                            </div>
+                            <div class="col-75">
+                                <input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-25">
+                                <label for="edit_user_is_admin">Make user an administrator</label>
+                            </div>
+                            <div class="col-25">
+                                <select id="edit_user_is_admin" name="edit_user_is_admin">
+                                    <option value="true">Yes</option>
+                                    <option value="false" selected>No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-25">
+                                <label for="edit_account_locked">Is account locked</label>
+                            </div>
+                            <div class="col-25">
+                                <select id="edit_account_locked" name="edit_account_locked">
+                                    <option value="true">Yes</option>
+                                    <option value="false" selected>No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="submit" value="Save">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- Page container -->
+    </body>
+    <script src="/static/js/general.js"></script>
+    <script>
+    var navButtons = document.getElementsByClassName('nav-button');
+    navButtons[<%= contest_id %> - 1].classList.add('selected');
 
-        </div> <!-- Page content -->
+    function deleteEntry(id, contest_id) {
+        var shouldDelete = confirm("Are you sure you want to delete this entry?");
 
-    </div> <!-- Page container -->
-  </body>
-  <script src="/static/js/general.js"></script>
-  <script>
-  var navButtons = document.getElementsByClassName('nav-button');
-  navButtons[<%= contest_id %> - 1].classList.add('selected');
-
-  function deleteEntry(id, contest_id) {
-    var shouldDelete = confirm("Are you sure you want to delete this entry?");
-
-    if (shouldDelete) {
-      post('/api/deleteEntry', {'entry_id': id, 'contest_id': contest_id});
-    }
-  }
-
-  function editEntry(id) {
-    var row = document.getElementById(id);
-    var entryLevelBox = document.getElementById(id + '-level');
-    var currentLevel = entryLevelBox.innerHTML;
-    var actionBox = document.getElementById(id + '-actions');
-
-    entryLevelBox.innerHTML = "<form method='post' action='/api/editEntry'><input type='hidden' name='contest_id' value='<%= contest_id %>'><input type='hidden' name='entry_id' value='" + id + "'><select name='edited_level'><option value='tbd'>TBD</option><option value='Beginner'>Beginner</option><option value='Intermediate'>Intermediate</option><option value='Advanced'>Advanced</option></select><input class='check-icon' type='image' src='../static/images/checkmark.png' border='0' alt='Submit'/></form>";
-  }
-
-  function post(path, params, method) {
-    method = method || "post"; // Set method to post by default if not specified.
-
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    var form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
-
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
+        if (shouldDelete) {
+            post('/api/deleteEntry', {'entry_id': id, 'contest_id': contest_id});
         }
     }
 
-    document.body.appendChild(form);
-    form.submit();
-  }
-  </script>
-  <script src="/static/js/entries.js"></script>
+    function editEntry(id) {
+        /*var row = document.getElementById(id);
+        var entryLevelBox = document.getElementById(id + '-level');
+        var currentLevel = entryLevelBox.innerHTML;
+        var actionBox = document.getElementById(id + '-actions');
+
+        entryLevelBox.innerHTML = "<form method='post' action='/api/editEntry'><input type='hidden' name='contest_id' value='<%= contest_id %>'><input type='hidden' name='entry_id' value='" + id + "'><select name='edited_level'><option value='tbd'>TBD</option><option value='Beginner'>Beginner</option><option value='Intermediate'>Intermediate</option><option value='Advanced'>Advanced</option></select><input class='check-icon' type='image' src='../static/images/checkmark.png' border='0' alt='Submit'/></form>";*/
+
+        let form = document.getElementById("edit-entry-page");
+        form.style.display = "block";
+
+        let list = document.getElementById("entry-list");
+        list.style.display = "none";
+    }
+
+    function post(path, params, method) {
+        method = method || "post"; // Set method to post by default if not specified.
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        for(var key in params) {
+            if(params.hasOwnProperty(key)) {
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", key);
+                hiddenField.setAttribute("value", params[key]);
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+    </script>
+    <script src="/static/js/entries.js"></script>
 </html>
