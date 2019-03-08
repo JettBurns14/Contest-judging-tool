@@ -124,18 +124,12 @@
     }
 
     function editEntry(id) {
-        /*var row = document.getElementById(id);
+        var row = document.getElementById(id);
         var entryLevelBox = document.getElementById(id + '-level');
         var currentLevel = entryLevelBox.innerHTML;
         var actionBox = document.getElementById(id + '-actions');
 
-        entryLevelBox.innerHTML = "<form method='post' action='/api/editEntry'><input type='hidden' name='contest_id' value='<%= contest_id %>'><input type='hidden' name='entry_id' value='" + id + "'><select name='edited_level'><option value='tbd'>TBD</option><option value='Beginner'>Beginner</option><option value='Intermediate'>Intermediate</option><option value='Advanced'>Advanced</option></select><input class='check-icon' type='image' src='../static/images/checkmark.png' border='0' alt='Submit'/></form>";*/
-
-        let form = document.getElementById("edit-entry-page");
-        form.style.display = "block";
-
-        let list = document.getElementById("entry-list");
-        list.style.display = "none";
+        entryLevelBox.innerHTML = "<form method='post' action='/api/editEntry'><input type='hidden' name='contest_id' value='<%= contest_id %>'><input type='hidden' name='entry_id' value='" + id + "'><select name='edited_level'><option value='tbd'>TBD</option><option value='Beginner'>Beginner</option><option value='Intermediate'>Intermediate</option><option value='Advanced'>Advanced</option></select><input class='check-icon' type='image' src='../static/images/checkmark.png' border='0' alt='Submit'/></form>";
     }
 
     function post(path, params, method) {
