@@ -8,8 +8,47 @@ body {
     margin: 0px 0px;
 }
 
+#create-contest-container, #edit-contest-container,
+#create-user-container, #edit-user-container {
+    display: none;
+}
+#whitelisted-kaids p {
+    margin: 7px 10px 7px 0
+}
+
+#view-stats-container {
+    width: 25%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.stats-box {
+    background: #343a40;
+    width: 33%;
+    text-align: center;
+    color: white;
+    padding: 10px;
+}
+.stats-box i.font-25 {
+    font-size: 25px;
+}
+.stats-box h4 {
+    margin: 10px 0;
+}
+
 .hidden {
-  display: none !important;
+    display: none !important;
+}
+
+.control-btn {
+    font-size: 20px;
+}
+
+.control-btn:hover {
+    cursor: pointer;
+}
+.control-btn.red {
+    color: firebrick;
 }
 
 /* General Styling and Colors */
@@ -26,104 +65,139 @@ body {
 }
 
 .admin-btn {
-	width: 10%;
+    font-size: 14px;
 	background-color: #54820a;
 	color: white;
 	text-align: center;
-	padding: 10px;
-	border-radius: 5px;
-}
-
-.admin-btn:hover {
+	padding: 8px 10px;
+	border-radius: 3px;
     cursor: pointer;
 }
 
 /* Side bar and its buttons */
 #side-bar {
-    background: #f8f8f8;
-    border-right: 1px solid #e7e7e7;
-    color: #54820a;
-    width: 15%;
+    background: rgb(100, 160, 100);
+    /* border-right: 1px solid #e7e7e7; */
+    min-width: 250px;
 }
 .nav-button {
-    display: block;
-    border-bottom: 1px solid #e7e7e7;
-    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    padding: 15px 0 15px 16px;
     font-size: 14px;
     text-decoration: none;
-    color: #54820a;
+    color: #fff;
+}
+.nav-button p {
+    width: 100%;
+    margin: 0;
+}
+.nav-button i {
+    width: 35px;
+    padding: 0 6px 0 0;
+    text-align: center;
+    font-size: 23px;
+    vertical-align: sub;
 }
 .nav-button.selected {
-    background: #eee;
+    background-color: rgba(255, 255, 255, 0.15);
 }
-.nav-button:hover {
-    background: #eee;
+
+/*.nav-button.selected::after {
+    content: "";
+    background: url(/static/images/scoring-arrow.png) no-repeat;
+    width: 17px;
+    height: 9px;
+    top: 39%;
+    right: -5px;
+    position: absolute;
+    transform: rotate(90deg);
+}*/
+.nav-button:not(.selected):hover {
+    background: rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }
 
 /* Container of preview containers and header */
 .page-content {
-    background: #FFF;
+    background: #f7f8fa;
     min-height: 100vh;
     padding: 0px 30px;
-    width: 85%;
-    flex-wrap: wrap;
-    /* This messes up if there are 2 boxes, fix! */
-    justify-content: space-evenly;
+    flex-grow: 1;
+    flex-direction: column;
     display: none;
 }
 
 /* Main header inside page container */
 #content-header {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    border-bottom: 1px solid #eee;
-    padding: 10px 0px;
+    margin: 20px 0;
+}
+#content-header h2 {
+    margin: 0;
+    /* margin: 20px 0; */
+}
+
+.previews-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 /* Boxes inside page container */
-.preview-container {
+.preview {
     background: white;
     display: inline-block;
     border-radius: 5px;
     position: relative;
-    margin: 0px 20px 20px 0px;
-    width: 45%;
-    min-height: 200px;
+    margin: 0 0 30px;
 }
-.preview-container.current-contest {
+.preview.col-12 {
+    width: 100%;
+}
+.preview.col-6 {
+    width: 48%;
+}
+.preview.col-4 {
+    width: 32%;
+}
+.preview.current-contest {
     border: 3px solid green;
 }
-.preview-container.standard {
+.preview.standard {
     border: 1px solid #ddd;
 }
-.preview-container.warning {
+.preview.warning {
     border: 1px solid #ebccd1;
 }
-.preview-container.warning .db-header {
+.preview .db-header {
+    display: flex;
+    padding: 10px 15px;
+    margin: 0px;
+    border-radius: 4px 4px 0px 0px;
+    justify-content: space-between;
+    align-items: center;
+}
+.preview.warning .db-header {
     color: #a94442;
     background: #f2dede;
     border-bottom: 1px solid #ebccd1;
 }
-.preview-container.standard .db-header {
+.preview.standard .db-header {
     color: black;
     background: #f5f5f5;
     border-bottom: 1px solid #ddd;
 }
-.preview-container .db-header {
-    padding: 10px 15px;
+.db-header p {
     margin: 0px;
-    border-radius: 4px 4px 0px 0px;
+    font-size: 14px;
 }
 .contest-options {
     float: right;
-}
-.contest-options span {
-    margin-left: 10px;
-    cursor: pointer;
-}
-.contest-options span:hover {
-    text-decoration: underline;
 }
 .preview-content {
     padding: 20px;
@@ -131,9 +205,6 @@ body {
 }
 .preview-thumb {
     max-width: 200px;
-}
-.wide-box {
-  width: 92%;
 }
 
 .large-stat {
@@ -155,20 +226,11 @@ body {
 
 /* User page */
 .edit-user-btn {
-	float: right;
+	/* float: right; */
 }
 
 .edit-user-btn:hover {
-	cursor: pointer;
-}
-
-img.delete-icon {
-  width: 4%;
-  margin: 0px 5% 0px 5%;
-}
-
-img.delete-icon:hover {
-  cursor: pointer;
+	/* cursor: pointer; */
 }
 
 

@@ -6,20 +6,38 @@ body {
 #page-header {
     align-items: center;
     box-sizing: border-box;
-    padding: 0 10%;
+    padding: 0 16px 0 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    border-bottom: 1px solid #e7e7e7;
-    background-color: #fff;
-    height: 71px;
+    /* border-bottom: 1px solid #e7e7e7; */
+    background-color: #333;
+    height: 59px;
 }
-.nav a {
-    color: #777;
+.logo-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 250px;
+    background-color: #333;
+}
+.logo-container a {
+    display: flex;
+    align-items: center;
     text-decoration: none;
+    color: white;
 }
-.nav:hover {
+.logo svg {
+    width: 35px;
+    height: 35px;
+    padding: 0 10px 0 16px;
+}
+.logo h1 {
+    letter-spacing: 3px;
+    margin: 0;
+}
+.nav a:hover {
     text-decoration: none;
 }
 #page-header .left {
@@ -29,13 +47,19 @@ body {
     cursor: pointer;
 }
 .nav.user {
-    position: relative;
+    color: white;
     cursor: pointer;
 }
 .user span:hover {
     text-decoration: underline;
 }
+.dropdown-btn i {
+    vertical-align: middle;
+    width: 15px;
+    text-align: right;
+}
 .dropdown {
+    margin-right: 5px;
     position: absolute;
     background: #fff;
     display: none;
@@ -75,6 +99,8 @@ body {
 .dropdown-option {
     padding: 7px 0 7px 20px;
     font-size: 16px;
+    text-decoration: none;
+    color: black;
 }
 .dropdown-option:hover {
     background-color: #eee;

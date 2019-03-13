@@ -6,6 +6,10 @@
   margin-top: 5%;
 }
 
+#create-message-container, #edit-message-container {
+    display: none;
+}
+
 .message-container {
   border-top: 1px solid gray;
 }
