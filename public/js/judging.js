@@ -1,7 +1,17 @@
 let viewerIframe = document.getElementById("entry-viewer-iframe");
 let spinner = document.getElementById("loading-spinner");
 
-let Slider = function({ title, name, description, id, max, color, borderColor, leftLabel, rightLabel }) {
+let Slider = function({
+    title,
+    name,
+    description,
+    id,
+    max,
+    color,
+    borderColor,
+    leftLabel,
+    rightLabel
+}) {
     this.title = title;
     this.name = name;
     this.description = description;
@@ -66,7 +76,7 @@ Slider.prototype.create = function() {
     container.appendChild(ticks);
 };
 
-const creativitySlider = new Slider({
+let creativitySlider = new Slider({
     title: "CREATIVITY",
     name: "creativity",
     description: "Does this program put an unexpected spin on the ordinary? Do they use shapes or ideas in cool ways?",
@@ -78,7 +88,7 @@ const creativitySlider = new Slider({
     rightLabel: "Inventive"
 });
 creativitySlider.create();
-const complexitySlider = new Slider({
+let complexitySlider = new Slider({
     title: "COMPLEXITY",
     name: "complexity",
     description: "Does this program appear to have taken lots of work? Is the code complex or output intricate?",
@@ -90,7 +100,7 @@ const complexitySlider = new Slider({
     rightLabel: "Elaborate"
 });
 complexitySlider.create();
-const qualityCodeSlider = new Slider({
+let qualityCodeSlider = new Slider({
     title: "QUALITY CODE",
     name: "quality_code",
     description: "Does this program have cleanly indented, commented code? Are there any syntax errors or program logic errors?",
@@ -102,7 +112,7 @@ const qualityCodeSlider = new Slider({
     rightLabel: "Elegant"
 });
 qualityCodeSlider.create();
-const interpretationSlider = new Slider({
+let interpretationSlider = new Slider({
     title: "INTERPRETATION",
     name: "interpretation",
     description: "Does this program portray the overall theme of the contest?",

@@ -1,4 +1,4 @@
-const submitForm = e => {
+let submitForm = e => {
     e.preventDefault();
     fetch("/api/auth/connect", {
         method: "POST",
@@ -13,6 +13,3 @@ const submitForm = e => {
         }
     });
 };
-
-let navBtn = document.getElementsByClassName("nav");
-navBtn[0].parentNode.removeChild(navBtn[0]);

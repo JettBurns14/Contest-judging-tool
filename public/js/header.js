@@ -1,4 +1,4 @@
-const logout = e => {
+let logout = e => {
     e.preventDefault();
     fetch("/api/auth/logout", {
         method: "POST",
