@@ -1,296 +1,446 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Admin | Challenge Council</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    </head>
-    <body>
+
+<head>
+    <title>Admin | Challenge Council</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
+    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+
+<body>
 
     <%- include ../partials/header %>
 
     <div id="page-container">
         <div id="side-bar">
-            <a class="nav-button selected" onclick="showpage(0)">Dashboard</a>
-            <a class="nav-button" onclick="showpage(1)">Contests</a>
-            <a class="nav-button" href="/entries/1">Entries</a>
-            <a class="nav-button" href="/results/1">Results</a>
-            <a class="nav-button hidden" onclick="showpage(4)">Activity</a>
-            <a class="nav-button hidden" onclick="showpage(5)">Controls</a>
+            <a class="nav-button selected" onclick="showpage(0)">
+                <i class="fas fa-th-large"></i>
+                <p>Dashboard</p>
+            </a>
+            <a class="nav-button" onclick="showpage(1)">
+                <!-- <i class="fas fa-laptop-code"></i> -->
+                <!-- <i class="fas fa-code"></i> -->
+                <i class="fas fa-trophy"></i>
+                <p>Contests</p>
+            </a>
             <% if (is_admin) { %>
-                <a class="nav-button" onclick="showpage(6)">Users</a>
+            <a class="nav-button" onclick="showpage(2)">
+                <i class="fas fa-users"></i>
+                <p>Users</p>
+            </a>
+            <a class="nav-button hidden" onclick="showpage(3)">
+                <p>Controls</p>
+            </a>
             <% } %>
+            <a class="nav-button" href="/entries/1">
+                <i class="fas fa-list"></i>
+                <p>Entries</p>
+            </a>
+            <a class="nav-button" href="/results/1">
+                <!-- <i class="fas fa-trophy"></i> -->
+                <i class="fas fa-list-ol"></i>
+                <p>Results</p>
+            </a>
         </div>
 
         <div class="page-content" id="dashboard-page">
-            <h1 id="content-header">Dashboard</h1>
+            <div id="content-header">
+                <h2>Dashboard</h2>
+            </div>
 
-            <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Your reviewed entries for current contest:</p>
-                <div class="preview-content">
-                    <p class="large-stat">
-                        <%= reviewedCount %> / <%= entryCount %>
-                    </p>
+            <div class="previews-container">
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Your reviewed entries for current contest:</p>
+                    </div>
+                    <div class="preview-content">
+                        <p class="large-stat">
+                            <%= reviewedCount %> /
+                            <%= entryCount %>
+                        </p>
+                    </div>
+                </div>
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Total reviewed entries for current contest:</p>
+                    </div>
+                    <div class="preview-content">
+                        <p class="large-stat">
+                            <%= totalEvaluationsCount %> /
+                            <%= totalEvaluationsNeeded %>
+                        </p>
+                    </div>
                 </div>
             </div>
-            <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Total reviewed entries for current contest:</p>
-                <div class="preview-content">
-                    <p class="large-stat">
-                        <%= totalEvaluationsCount %> / <%= totalEvaluationsNeeded %>
-                    </p>
+            <!--<div id="view-stats-container">
+                <div class="stats-box">
+                    <i class="far fa-chart-bar font-25"></i>
+                    <h4>
+                        <%= reviewedCount %> /
+                        <%= entryCount %>
+                    </h4>
+                    <small>Your Reviews</small>
                 </div>
-            </div>
+                <div class="stats-box">
+                    <i class="far fa-chart-bar font-25"></i>
+                    <h4>
+                        <%= totalEvaluationsCount %> /
+                        <%= totalEvaluationsNeeded %>
+                    </h4>
+                    <small>Total Reviews</small>
+                </div>
+                <div class="stats-box">
+                    <i class="far fa-chart-bar font-25"></i>
+                    <h4>
+                        24 / 90
+                    </h4>
+                    <small>Lol Hey Folks</small>
+                </div>
+                <div class="stats-box">
+                    <i class="far fa-chart-bar font-25"></i>
+                    <h4>
+                        1920 / 2939
+                    </h4>
+                    <small>Things Here</small>
+                </div>
+            </div>-->
         </div>
 
         <div class="page-content" id="contests-page">
-            <h1 id="content-header">Contests</h1>
-            <% if (is_admin) { %>
-                <h4 id="add-contest-btn" class="admin-btn" onclick="showpage(9)">Add Contest</h4>
-            <% } %>
-
-            <% contests.forEach((c) => { %>
-                <% if (c.current) { %>
-                    <div class="preview-container current-contest">
-                <% } else { %>
-                    <div class="preview-container standard">
-                <% } %>
-                <p class="db-header">
-                    <%= c.contest_name + " - #" + c.contest_id %><% if (is_admin) { %>
-                        <span class="contest-options">
-                            <span>Edit</span>
-                            <span>Delete</span>
-                        </span>
+            <div id="view-contests-container">
+                <div id="content-header">
+                    <h2>Contests</h2>
+                    <% if (is_admin) { %>
+                    <span id="add-contest-btn" class="admin-btn" onclick="showCreateContestForm('<%= evaluator_name %>')">Add Contest</span>
                     <% } %>
-                </p>
-                <div class="preview-content">
-                    <a href="<%= c.contest_url %>" target="_blank">
-                        <img class="preview-thumb" src="<%= c.contest_url + '/latest.png' %>">
-                    </a>
-                    <p>Start: <%= c.date_start %></p>
-                    <p>End: <%= c.date_end %></p>
                 </div>
+
+                <div class="previews-container">
+                    <% contests.forEach((c) => { %>
+                    <div class="preview col-4 <%if (c.current) {%>current-contest<%} else {%>standard<%}%>">
+                        <div class="db-header">
+                            <p>
+                                <%= c.contest_name + " - #" + c.contest_id %>
+                            </p>
+                            <% if (is_admin) { %>
+                            <div class="contest-options">
+                                <i class="control-btn far fa-edit" onclick="showEditContestForm(<%= c.contest_id %>, '<%= c.contest_name %>', '<%= c.contest_url %>', '<%= c.contest_author %>', '<%= c.date_start %>', '<%= c.date_end %>', '<%= c.current %>');"></i>
+                                <i class="control-btn red far fa-trash-alt" onclick="deleteContest(<%= c.contest_id %>)"></i>
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="preview-content">
+                            <a href="<%= c.contest_url %>" target="_blank">
+                                <img class="preview-thumb" src="<%= c.contest_url + '/latest.png' %>">
+                            </a>
+                            <p>Start:
+                                <%= c.date_start %>
+                            </p>
+                            <p>End:
+                                <%= c.date_end %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
                 </div>
-            <% }); %>
+            </div>
+            <div id="edit-contest-container">
+                <div id="content-header">
+                    <h2>Edit Contest</h2>
+                </div>
+
+                <form id="edit-contest-form" method="post" action="/api/editContest" target="_self">
+                    <div class='row'>
+                        <div class='col-75'><input type='hidden' id='edit_contest_id' name='edit_contest_id'></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_name">Name</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_contest_name" name="edit_contest_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_url">URL</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_contest_url" name="edit_contest_url">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_author">Author</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_contest_author" name="edit_contest_author">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_contest_start_date" name="edit_contest_start_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_contest_end_date" name="edit_contest_end_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_contest_current">Current</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="checkbox" id="edit_contest_current" name="edit_contest_current" checked disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-contest-container">
+                <div id="content-header">
+                    <h2>Add Contest</h2>
+                </div>
+
+                <form id="add-contest-form" method="post" action="/api/addContest" target="_self">
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_name">Name</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="contest_name" name="contest_name" value="Contest: ">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_url">URL</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="contest_url" name="contest_url" placeholder="URL">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_author">Author</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="contest_author" name="contest_author" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="contest_current">Current</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="checkbox" id="contest_current" name="contest_current" checked disabled>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="page-content" id="entries-page">
-            <p>If you're seeing this, please refresh the page.</p>
-        </div>
+        <div class="page-content" id="users-page">
+            <div id="view-users-container">
+                <div id="content-header">
+                    <h2>Users</h2>
+                    <% if (is_admin) { %>
+                    <span id="add-user-btn" class="admin-btn" onclick="showCreateUserForm('<%= evaluator_name %>')">Add User</span>
+                    <% } %>
+                </div>
 
-        <div class="page-content" id="results-page">
-            <h1 id="content-header">Results</h1>
-        </div>
+                <div class="previews-container">
+                    <% evaluators.forEach((c) => { %>
+                    <div class="preview col-4 standard">
+                        <div class="db-header">
+                            <p>
+                                <%= c.evaluator_name %>
+                            </p>
+                            <div class="contest-options">
+                                <i class="control-btn far fa-edit" onclick="showEditUserForm(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);"></i>
+                            </div>
+                        </div>
+                        <div class="preview-content">
+                            <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
+                            <p>
+                                <span class="bold">ID:</span>
+                                <%= c.evaluator_id %>
+                            </p>
+                            <p>
+                                <span class="bold">KAID:</span>
+                                <%= c.evaluator_kaid %>
+                            </p>
+                            <% if (c.account_locked) { %>
+                            <p>
+                                <span class="bold">Status:</span>
+                                <span class="red">Deactivated</span>
+                            </p>
+                            <% } else { %>
+                            <p>
+                                <span class="bold">Status:</span>
+                                <span class="green">Active</span>
+                            </p>
+                            <% } %>
+                            <p>
+                                <span class="bold">Permission Level:</span>
+                                <% if (c.is_admin) { %>
+                                Admin
+                                <% } else { %>
+                                Standard User
+                                <% } %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
 
-        <div class="page-content" id="activity-page">
-            <h1 id="content-header">Activity</h1>
-            <p>Coming soon.</p>
+                <div class="previews-container">
+                    <div class="preview col-4 standard">
+                        <div class="db-header">
+                            <p>Whitelisted Kaids</p>
+                        </div>
+                        <div class="preview-content">
+                            <table id="whitelisted-kaids">
+                                <% whitelisted_kaids.forEach((c) => { %>
+                                <tr>
+                                    <td>
+                                        <p>
+                                            <%= c.kaid %>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <i class="control-btn red far fa-trash-alt" onclick="deleteWhitelistedUser('<%= c.kaid %>')"></i>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-user-container">
+                <div id="content-header">
+                    <h2>Edit User</h2>
+                </div>
+
+                <form id="edit-user-form" method="post" action="/api/editUser" target="_self">
+                    <div class="row">
+                        <input type="hidden" id="edit_user_id" name="edit_user_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_user_name">User's Name</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_user_name" name="edit_user_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_user_is_admin">Make user an administrator</label>
+                        </div>
+                        <div class="col-25">
+                            <!-- <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin"> -->
+                            <select id="edit_user_is_admin" name="edit_user_is_admin">
+                                <option class="user_option" value="true">Yes</option>
+                                <option class="user_option" value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="edit_account_locked">Is account locked</label>
+                        </div>
+                        <div class="col-25">
+                            <!-- <input type="checkbox" id="edit_account_locked" name="edit_account_locked"> -->
+                            <select id="edit_account_locked" name="edit_account_locked">
+                                <option class="user_option" value="true">Yes</option>
+                                <option class="user_option" value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-user-container">
+                <div id="content-header">
+                    <h2>Add User</h2>
+                </div>
+                <form id="add-user-form" method="post" action="/api/whitelistUser" target="_self">
+                    <div class="row">
+                        <div class="col-25">
+                            <label for="user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-75">
+                            <input type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="page-content" id="controls-page">
-            <h1 id="content-header">Controls</h1>
-            <div class="preview-container warning">
-                <h4 class="db-header">Update entries</h4>
+            <div id="content-header">
+                <h2>Controls</h2>
+            </div>
+            <div class="preview warning">
+                <div class="db-header">
+                    <h4>Update entries</h4>
+                </div>
                 <div class="preview-content">
                     <p>Be careful! These settings must be used with care, ask Jett before clicking these buttons.</p>
                     <button type="button" class="button red" id="update-entries-button">Update Entries</button>
                 </div>
             </div>
         </div>
-
-        <div class="page-content" id="users-page">
-            <h1 id="content-header">Users</h1>
-            <h4 id="add-user-btn" class="admin-btn" onclick="showpage(7)">Add User</h4>
-
-            <!-- whitelisted_kaids box -->
-            <div class="preview-container wide-box standard">
-                <p class="db-header">Whitelisted Kaids</p>
-                <div class="preview-content">
-                <table id="whitelisted-kaids">
-                    <% whitelisted_kaids.forEach((c) => { %>
-                        <tr>
-                            <td><%= c.kaid %></td>
-                            <td>
-                                <img class="delete-icon" onclick="removeWhitelistedUser('<%= c.kaid %>')" src="../static/images/delete-icon.png">
-                            </td>
-                        </tr>
-                    <% }); %>
-                </table>
-            </div>
-        </div>
-
-        <!-- User boxes -->
-        <% evaluators.forEach((c) => { %>
-            <div class="preview-container standard">
-                <p class="db-header">
-                    <%= c.evaluator_name %>
-                    <span class="edit-user-btn" onclick="showpage(8); edituser(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);">Edit</span></p>
-                <div class="preview-content">
-                    <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
-                    <p>
-                        <span class="bold">ID:</span>
-                        <%= c.evaluator_id %>
-                    </p>
-                    <p>
-                        <span class="bold">KAID:</span>
-                        <%= c.evaluator_kaid %></p>
-                    <% if (c.account_locked) { %>
-                        <p>
-                            <span class="bold">Status:</span>
-                            <span class="red">Deactivated</span>
-                        </p>
-                    <% } else { %>
-                        <p>
-                            <span class="bold">Status:</span>
-                            <span class="green">Active</span>
-                        </p>
-                    <% } %>
-                    <p>
-                        <span class="bold">Permission Level:</span>
-                        <% if (c.is_admin) { %>
-                            Admin
-                        <% } else { %>
-                            Standard User
-                        <% } %>
-                    </p>
-                </div>
-            </div>
-        <% }); %>
     </div>
 
-        <!-- Add User Form -->
-        <div class="page-content" id="add-user-page">
-        	<h1 id="content-header">Add User</h1>
-        	<div class="form-container">
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin.js"></script>
 
-            <form id="add-user-form" method="post" action="/api/whitelistUser" target="_self">
-  					<div class="row">
-    					<div class="col-25">
-      						<label for="user_kaid">User's KAID</label>
-    					</div>
-   						<div class="col-75">
-      						<input type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
-    					</div>
-  					</div>
-  					<div class="row">
-      					<input type="submit" value="Save">
-  					</div>
-  				</form>
-          </div>
-        </div>
-
-        <div class="page-content" id="edit-user-page">
-        	<h1 id="content-header">Edit User</h1>
-        	<div class="form-container">
-            <form id="edit-user-form" method="post" action="/api/editUser" target="_self">
-  					  <div class="row">
-      				  <input type="hidden" id="edit_user_id" name="edit_user_id">
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="edit_user_name">User's Name</label>
-    					  </div>
-    					  <div class="col-75">
-      						<input type="text" id="edit_user_name" name="edit_user_name">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="edit_user_kaid">User's KAID</label>
-    					  </div>
-   						  <div class="col-75">
-      						<input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="edit_user_is_admin">Make user an administrator</label>
-    					  </div>
-    					  <div class="col-25">
-      						<!-- <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin"> -->
-                            <select id="edit_user_is_admin" name="edit_user_is_admin">
-                                <option value="true">Yes</option>
-                                <option value="false" selected>No</option>
-                            </select>
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="edit_account_locked">Is account locked</label>
-    					  </div>
-    					  <div class="col-25">
-      						<!-- <input type="checkbox" id="edit_account_locked" name="edit_account_locked"> -->
-                            <select id="edit_account_locked" name="edit_account_locked">
-                                <option value="true">Yes</option>
-                                <option value="false" selected>No</option>
-                            </select>
-    					  </div>
-  					  </div>
-  					  <div class="row">
-      					<input type="submit" value="Save">
-  					  </div>
-  				  </form>
-        	</div>
-        </div>
-
-        <!-- Add Contest Form -->
-        <div class="page-content" id="add-contest-page">
-        	<h1 id="content-header">Add Contest</h1>
-        	<div class="form-container">
-            <form id="add-contest-form" method="post" action="/api/addContest" target="_self">
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="contest_name">Contest Name</label>
-    					  </div>
-    					  <div class="col-75">
-      						<input type="text" id="contest_name" name="contest_name" value="Contest: ">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="contest_url">Contest URL</label>
-    					  </div>
-   						  <div class="col-75">
-      						<input type="text" id="contest_url" name="contest_url" placeholder="URL">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="contest_author">Author</label>
-    					  </div>
-    					  <div class="col-75">
-      						<input type="text" id="contest_author" name="contest_author" placeholder="Name">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="contest_start_date">Start Date</label>
-    					  </div>
-    					  <div class="col-75">
-      						<input type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
-    					  </div>
-  					  </div>
-  					  <div class="row">
-    					  <div class="col-25">
-      						<label for="contest_end_date">End Date</label>
-    					  </div>
-    					  <div class="col-75">
-      						<input type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
-    					  </div>
-  				  	</div>
-  					  <div class="row">
-      					<input type="submit" value="Save">
-  					  </div>
-  				  </form>
-          </div>
-        </div>
-
-    </div> <!-- Page container -->
-
-    </body>
-    <script src="/static/js/general.js"></script>
-    <script src="/static/js/admin.js"></script>
 </html>
