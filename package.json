@@ -28,5 +28,8 @@
         "heroku",
         "express"
     ],
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "prettier": "1.16.4"
+    }
 }
