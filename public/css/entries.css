@@ -8,6 +8,10 @@ body {
     margin: 0px 0px;
 }
 
+.edit-entry-level {
+    display: none;
+}
+
 .green {
 	color: #54820a;
 }
@@ -22,85 +26,81 @@ body {
 
 /* Side bar and its buttons */
 #side-bar {
-    background: #f8f8f8;
-    border-right: 1px solid #e7e7e7;
-    color: #54820a;
-    width: 15%;
+    background: rgb(100, 160, 100);
+    min-width: 250px;
 }
 .nav-button {
-    display: block;
-    border-bottom: 1px solid #e7e7e7;
-    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    padding: 15px 0 15px 16px;
     font-size: 14px;
     text-decoration: none;
-    color: #54820a;
+    color: #fff;
+    max-width: 250px;
+}
+.nav-button p {
+    width: 100%;
+    margin: 0;
+}
+.nav-button i {
+    width: 35px;
+    padding: 0 6px 0 0;
+    text-align: center;
+    font-size: 23px;
+    vertical-align: sub;
 }
 .nav-button.selected {
-    background: #eee;
+    background-color: rgba(255, 255, 255, 0.15);
 }
-.nav-button:hover {
-    background: #eee;
+.nav-button:not(.selected):hover {
+    background: rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }
 
 /* Container of preview containers and header */
 .page-content {
-    background: #FFF;
+    background: #f7f8fa;
     min-height: 100vh;
     padding: 0px 30px;
-    width: 85%;
-    flex-wrap: wrap;
-    /* This messes up if there are 2 boxes, fix! */
-    justify-content: space-evenly;
-}
-
-/* Main header inside page container */
-#content-header {
-    display: block;
-    width: 100%;
-    border-bottom: 1px solid #eee;
-    padding: 10px 0px;
 }
 
 /* Boxes inside page container */
-.preview-container {
-    display: inline-block;
-    border-radius: 5px;
-    position: relative;
-    margin: 0px 2% 2% 0px;
-    width: 45%;
-    min-height: 200px;
+.previews-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
-.preview-container.standard {
+.preview.standard {
     background: white; /* #f5f5f5; */
     border: 1px solid #ddd;
 }
-.preview-container.warning {
+.preview.warning {
     background: white;
     border: 1px solid #ebccd1;
 }
-.preview-container.warning .db-header {
+.preview.warning .db-header {
     color: #a94442;
     background: #f2dede;
     border-bottom: 1px solid #ebccd1;
 }
-.preview-container.standard .db-header {
+.preview.standard .db-header {
     color: black;
     background: #f5f5f5;
     border-bottom: 1px solid #ddd;
 }
-.preview-container .db-header {
+.preview .db-header {
     padding: 10px 15px;
     margin: 0px;
     border-radius: 4px 4px 0px 0px;
 }
+.db-header p {
+    margin: 0px;
+    font-size: 14px;
+}
 .preview-content {
+    background: #fff;
     padding: 20px;
     margin: 0px;
-}
-
-.wide-box {
-  width: 92%;
 }
 
 /* Data tables */
@@ -137,11 +137,14 @@ td img.delete-icon, td img.edit-icon {
   margin: 0px 5% 0px 5%;
 }
 
-input.check-icon {
-  width: 12%;
-  margin-left: 5%;
+.check-icon {
+    padding: 2px;
+}
+.check-icon i {
+    font-size: 14px;
+    width: 20px;
 }
 
-td img.delete-icon:hover, td img.edit-icon:hover, td input.check-icon {
-  cursor: pointer;
+td img.delete-icon:hover, td img.edit-icon:hover, td .check-icon {
+    cursor: pointer;
 }

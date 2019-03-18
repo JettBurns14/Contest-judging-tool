@@ -1,127 +1,178 @@
 <!DOCTYPE HTML>
 <html lang="en" dir="ltr">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Results | Challenge Council</title>
     <link rel="stylesheet" type="text/css" href="/static/css/results.css">
     <link rel="stylesheet" type="text/css" href="/static/css/header.css">
     <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+
+<body>
     <%- include ../partials/header %>
 
     <div id="page-container">
-      <div id="side-bar">
-        <% contests.forEach((c) => { %>
-          <a class="nav-button" href="<%= '/results/' + c.contest_id%>" %>"><%= c.contest_name%></a>
-        <% }); %>
-      </div>
+        <div id="side-bar">
+            <% contests.forEach((c) => { %>
+            <a class="nav-button" href="<%= '/results/' + c.contest_id %>">
+                <i class="fas fa-trophy"></i>
+                <p>
+                    <%= c.contest_name %>
+                </p>
+            </a>
+            <% }); %>
+        </div>
 
-      <div class="page-content" id="contest-results">
-        <h1 id="content-header">Results for <%= contests[contest_id - 1].contest_name %></h1>
-
-          <div class="preview-container standard">
-            <p class="db-header">Entries scored per judge</p>
-            <div class="preview-content">
-              <table>
-                <thead>
-                  <th>Judge Name</th>
-                  <th>Entries Scored</th>
-                </thead>
-                <tbody>
-                  <% evaluationsPerEvaluator.forEach((a) => { %>
-                    <tr>
-                      <td><%= a.evaluator_name%></td>
-                      <td><%= a.cnt + ' / ' + entryCount[0].count %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
+        <div class="page-content" id="contest-results">
+            <div id="content-header">
+                <h2>Results for
+                    <%= contests[contest_id - 1].contest_name %>
+                </h2>
             </div>
-          </div>
 
-          <div class="preview-container standard">
-            <p class="db-header">Entries scored per level</p>
-            <div class="preview-content">
-              <table>
-                <thead>
-                  <th>Level</th>
-                  <th>Number of Entries</th>
-                </thead>
-                <tbody>
-                  <% evaluationsPerLevel.forEach((a) => { %>
-                    <tr>
-                      <td><%= a.evaluation_level%></td>
-                      <td><%= a.cnt %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
+            <div class="previews-container">
+                <div class="preview col-4 standard">
+                    <div class="db-header">
+                        <p>Entries scored per judge</p>
+                    </div>
+                    <div class="preview-content">
+                        <table>
+                            <thead>
+                                <th>Judge Name</th>
+                                <th>Entries Scored</th>
+                            </thead>
+                            <tbody>
+                                <% evaluationsPerEvaluator.forEach((a) => { %>
+                                <tr>
+                                    <td>
+                                        <%= a.evaluator_name%>
+                                    </td>
+                                    <td>
+                                        <%= a.cnt + ' / ' + entryCount[0].count %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="preview col-4 standard">
+                    <div class="db-header">
+                        <p>Entries scored per level</p>
+                    </div>
+                    <div class="preview-content">
+                        <table>
+                            <thead>
+                                <th>Level</th>
+                                <th>Number of Entries</th>
+                            </thead>
+                            <tbody>
+                                <% evaluationsPerLevel.forEach((a) => { %>
+                                <tr>
+                                    <td>
+                                        <%= a.evaluation_level%>
+                                    </td>
+                                    <td>
+                                        <%= a.cnt %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="preview col-4 standard">
+                    <div class="db-header">
+                        <p>Selected Winners</p>
+                        <%if (is_admin) { %><span class="add-winner-btn admin-btn" onclick="addWinner('<%= contest_id %>');">Add Winner</span>
+                        <% } %>
+                    </div>
+                    <div class="preview-content">
+                        <table>
+                            <thead>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Skill Level</th>
+                            </thead>
+                            <tbody>
+                                <% winners.forEach((a) => { %>
+                                <tr>
+                                    <td>
+                                        <%= a.entry_id %>
+                                    </td>
+                                    <td><a href="<%= a.entry_url %>" target="_blank">
+                                            <%= a.entry_title%></a></td>
+                                    <td>
+                                        <%= a.entry_author %>
+                                    </td>
+                                    <td>
+                                        <%= a.entry_level %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="preview col-12 standard wide-box">
+                    <div class="db-header">
+                        <p>Entries by average score</p>
+                    </div>
+                    <div class="preview-content">
+                        <table>
+                            <thead>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Evaluations</th>
+                                <th>Skill Level</th>
+                                <th>Avg Score</th>
+                            </thead>
+                            <tbody>
+                                <% entriesByAvgScore.forEach((a) => { %>
+                                <tr>
+                                    <td>
+                                        <%= a.entry_id %>
+                                    </td>
+                                    <td><a href="<%= a.entry_url %>" target="_blank">
+                                            <%= a.replace%></a></td>
+                                    <td>
+                                        <%= a.entry_author %>
+                                    </td>
+                                    <td>
+                                        <%= a.evaluations %>
+                                    </td>
+                                    <td>
+                                        <%= a.entry_level %>
+                                    </td>
+                                    <td>
+                                        <%= a.avg_score %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div class="preview-container standard wide-box">
-            <p class="db-header">Entries by average score</p>
-            <div class="preview-content">
-              <table>
-                <thead>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th>Evaluations</th>
-                  <th>Skill Level</th>
-                  <th>Avg Score</th>
-                </thead>
-                <tbody>
-                  <% entriesByAvgScore.forEach((a) => { %>
-                    <tr>
-                      <td><%= a.entry_id %></td>
-                      <td><a href="<%= a.entry_url %>" target="_blank"><%= a.replace%></a></td>
-                      <td><%= a.entry_author %></td>
-                      <td><%= a.evaluations %></td>
-                      <td><%= a.entry_level %></td>
-                      <td><%= a.avg_score %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="preview-container standard wide-box">
-            <p class="db-header">Selected Winners <%if (is_admin) { %><span class="add-winner-btn" onclick="addWinner('<%= contest_id %>');">Add Winner</span><% } %></p>
-            <div class="preview-content">
-              <table>
-                <thead>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Author</th>
-                  <th>Skill Level</th>
-                </thead>
-                <tbody>
-                  <% winners.forEach((a) => { %>
-                    <tr>
-                      <td><%= a.entry_id %></td>
-                      <td><a href="<%= a.entry_url %>" target="_blank"><%= a.entry_title%></a></td>
-                      <td><%= a.entry_author %></td>
-                      <td><%= a.entry_level %></td>
-                    </tr>
-                  <% }); %>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
 
         </div> <!-- Page content -->
 
     </div> <!-- Page container -->
-  </body>
-  <script>
+</body>
+<script>
     var navButtons = document.getElementsByClassName('nav-button');
     navButtons[<%= contest_id %> - 1].classList.add('selected');
-  </script>
-  <script src="/static/js/general.js"></script>
-  <script src="/static/js/results.js"></script>
+
+</script>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/results.js"></script>
+
 </html>

@@ -87,6 +87,7 @@ body {
     font-size: 14px;
     text-decoration: none;
     color: #fff;
+    max-width: 250px;
 }
 .nav-button p {
     width: 100%;
