@@ -4,18 +4,18 @@
 <head>
     <meta charset="utf-8">
     <title>Entries | Challenge Council</title>
+    <%- include ../partials/styles %>
     <link rel="stylesheet" type="text/css" href="/static/css/entries.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
 </head>
 
 <body>
     <%- include ../partials/header %>
 
-    <div id="page-container">
-        <div id="side-bar">
+    <div class="page-container">
+        <div class="side-bar">
             <% contests.forEach((c) => { %>
             <a class="nav-button" href="<%= '/entries/' + c.contest_id%>" %>">
                 <i class="fas fa-trophy"></i>
@@ -26,14 +26,13 @@
             <% }); %>
         </div>
 
-        <div class="page-content" id="entry-list">
-            <div id="content-header">
+        <div class="content-container" id="entry-list">
+            <div class="content-header">
                 <h2>
                     Entries for
                     <%= contests[contest_id - 1].contest_name %>
                 </h2>
             </div>
-
             <div class="previews-container">
                 <div class="preview col-12 standard">
                     <div class="db-header">
@@ -98,9 +97,8 @@
                     </div>
                 </div>
             </div>
-
-
-        </div> <!-- Page content -->
+        </div>
+    </div> <!-- Page content -->
 
     </div> <!-- Page container -->
 </body>

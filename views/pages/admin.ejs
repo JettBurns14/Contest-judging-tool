@@ -2,28 +2,25 @@
 <html>
 
 <head>
-    <title>Admin | Challenge Council</title>
     <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../partials/styles %>
     <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
 </head>
 
 <body>
 
     <%- include ../partials/header %>
 
-    <div id="page-container">
-        <div id="side-bar">
+    <div class="page-container">
+        <div class="side-bar">
             <a class="nav-button selected" onclick="showpage(0)">
                 <i class="fas fa-th-large"></i>
                 <p>Dashboard</p>
             </a>
             <a class="nav-button" onclick="showpage(1)">
-                <!-- <i class="fas fa-laptop-code"></i> -->
-                <!-- <i class="fas fa-code"></i> -->
                 <i class="fas fa-trophy"></i>
                 <p>Contests</p>
             </a>
@@ -47,8 +44,8 @@
             </a>
         </div>
 
-        <div class="page-content" id="dashboard-page">
-            <div id="content-header">
+        <div class="content-container" id="dashboard-page">
+            <div class="content-header">
                 <h2>Dashboard</h2>
             </div>
 
@@ -110,12 +107,12 @@
             </div>-->
         </div>
 
-        <div class="page-content" id="contests-page">
+        <div class="content-container" id="contests-page">
             <div id="view-contests-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Contests</h2>
                     <% if (is_admin) { %>
-                    <span id="add-contest-btn" class="admin-btn" onclick="showCreateContestForm('<%= evaluator_name %>')">Add Contest</span>
+                    <span id="add-contest-btn" class="admin-button" onclick="showCreateContestForm('<%= evaluator_name %>')">Add Contest</span>
                     <% } %>
                 </div>
 
@@ -149,134 +146,136 @@
                 </div>
             </div>
             <div id="edit-contest-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Edit Contest</h2>
                 </div>
 
-                <form id="edit-contest-form" method="post" action="/api/editContest" target="_self">
+                <form id="edit-contest-form" class="admin-form" method="post" action="/api/editContest" target="_self">
                     <div class='row'>
-                        <div class='col-75'><input type='hidden' id='edit_contest_id' name='edit_contest_id'></div>
+                        <div class='col-90'>
+                            <input type='hidden' id='edit_contest_id' name='edit_contest_id'>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_name">Name</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_contest_name" name="edit_contest_name">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_name" name="edit_contest_name">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_url">URL</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_contest_url" name="edit_contest_url">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_url" name="edit_contest_url">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_author">Author</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_contest_author" name="edit_contest_author">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_author" name="edit_contest_author">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_start_date">Start Date</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_contest_start_date" name="edit_contest_start_date">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_start_date" name="edit_contest_start_date">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_end_date">End Date</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_contest_end_date" name="edit_contest_end_date">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_end_date" name="edit_contest_end_date">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_contest_current">Current</label>
                         </div>
-                        <div class="col-75">
-                            <input type="checkbox" id="edit_contest_current" name="edit_contest_current" checked disabled>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="edit_contest_current" name="edit_contest_current" checked disabled>
                         </div>
                     </div>
                     <div class="row">
-                        <input type="submit" value="Save">
+                        <input class="admin-button" type="submit" value="Save">
                     </div>
                 </form>
             </div>
             <div id="create-contest-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Add Contest</h2>
                 </div>
 
-                <form id="add-contest-form" method="post" action="/api/addContest" target="_self">
+                <form id="add-contest-form" class="admin-form" method="post" action="/api/addContest" target="_self">
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_name">Name</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="contest_name" name="contest_name" value="Contest: ">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_name" name="contest_name" value="Contest: ">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_url">URL</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="contest_url" name="contest_url" placeholder="URL">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_url" name="contest_url" placeholder="URL">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_author">Author</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="contest_author" name="contest_author" placeholder="Name">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_author" name="contest_author" placeholder="Name">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_start_date">Start Date</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_end_date">End Date</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="contest_current">Current</label>
                         </div>
-                        <div class="col-75">
-                            <input type="checkbox" id="contest_current" name="contest_current" checked disabled>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="contest_current" name="contest_current" checked disabled>
                         </div>
                     </div>
                     <div class="row">
-                        <input type="submit" value="Save">
+                        <input class="admin-button" type="submit" value="Save">
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="page-content" id="users-page">
+        <div class="content-container" id="users-page">
             <div id="view-users-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Users</h2>
                     <% if (is_admin) { %>
-                    <span id="add-user-btn" class="admin-btn" onclick="showCreateUserForm('<%= evaluator_name %>')">Add User</span>
+                    <span id="add-user-btn" class="admin-button" onclick="showCreateUserForm('<%= evaluator_name %>')">Add User</span>
                     <% } %>
                 </div>
 
@@ -350,35 +349,35 @@
                 </div>
             </div>
             <div id="edit-user-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Edit User</h2>
                 </div>
 
-                <form id="edit-user-form" method="post" action="/api/editUser" target="_self">
+                <form id="edit-user-form" class="admin-form" method="post" action="/api/editUser" target="_self">
                     <div class="row">
                         <input type="hidden" id="edit_user_id" name="edit_user_id">
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_user_name">User's Name</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_user_name" name="edit_user_name">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_name" name="edit_user_name">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_user_kaid">User's KAID</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_user_is_admin">Make user an administrator</label>
                         </div>
-                        <div class="col-25">
+                        <div class="col-10">
                             <!-- <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin"> -->
                             <select id="edit_user_is_admin" name="edit_user_is_admin">
                                 <option class="user_option" value="true">Yes</option>
@@ -387,10 +386,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="edit_account_locked">Is account locked</label>
                         </div>
-                        <div class="col-25">
+                        <div class="col-10">
                             <!-- <input type="checkbox" id="edit_account_locked" name="edit_account_locked"> -->
                             <select id="edit_account_locked" name="edit_account_locked">
                                 <option class="user_option" value="true">Yes</option>
@@ -399,32 +398,32 @@
                         </div>
                     </div>
                     <div class="row">
-                        <input type="submit" value="Save">
+                        <input class="admin-button" type="submit" value="Save">
                     </div>
                 </form>
             </div>
             <div id="create-user-container">
-                <div id="content-header">
+                <div class="content-header">
                     <h2>Add User</h2>
                 </div>
-                <form id="add-user-form" method="post" action="/api/whitelistUser" target="_self">
+                <form id="add-user-form" class="admin-form" method="post" action="/api/whitelistUser" target="_self">
                     <div class="row">
-                        <div class="col-25">
+                        <div class="col-10">
                             <label for="user_kaid">User's KAID</label>
                         </div>
-                        <div class="col-75">
-                            <input type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
                         </div>
                     </div>
                     <div class="row">
-                        <input type="submit" value="Save">
+                        <input class="admin-button" type="submit" value="Save">
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="page-content" id="controls-page">
-            <div id="content-header">
+        <div class="content-container" id="controls-page">
+            <div class="content-header">
                 <h2>Controls</h2>
             </div>
             <div class="preview warning">

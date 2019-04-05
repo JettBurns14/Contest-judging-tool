@@ -4,18 +4,18 @@
 <head>
     <meta charset="utf-8">
     <title>Results | Challenge Council</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/results.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <%- include ../partials/styles %>
+    <!-- <link rel="stylesheet" type="text/css" href="/static/css/results.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
 </head>
 
 <body>
     <%- include ../partials/header %>
 
-    <div id="page-container">
-        <div id="side-bar">
+    <div class="page-container">
+        <div class="side-bar">
             <% contests.forEach((c) => { %>
             <a class="nav-button" href="<%= '/results/' + c.contest_id %>">
                 <i class="fas fa-trophy"></i>
@@ -26,8 +26,8 @@
             <% }); %>
         </div>
 
-        <div class="page-content" id="contest-results">
-            <div id="content-header">
+        <div class="content-container" id="contest-results">
+            <div class="content-header">
                 <h2>Results for
                     <%= contests[contest_id - 1].contest_name %>
                 </h2>
@@ -89,7 +89,7 @@
                 <div class="preview col-4 standard">
                     <div class="db-header">
                         <p>Selected Winners</p>
-                        <%if (is_admin) { %><span class="add-winner-btn admin-btn" onclick="addWinner('<%= contest_id %>');">Add Winner</span>
+                        <%if (is_admin) { %><span class="add-winner-btn admin-button" onclick="addWinner('<%= contest_id %>');">Add Winner</span>
                         <% } %>
                     </div>
                     <div class="preview-content">
@@ -167,11 +167,6 @@
 
     </div> <!-- Page container -->
 </body>
-<script>
-    var navButtons = document.getElementsByClassName('nav-button');
-    navButtons[<%= contest_id %> - 1].classList.add('selected');
-
-</script>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/results.js"></script>
 

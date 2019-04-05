@@ -1,5 +1,5 @@
 let navButtons = document.getElementsByClassName("nav-button");
-let pages = document.getElementsByClassName("page-content");
+let pages = document.getElementsByClassName("content-container");
 let updateButton = document.getElementById("update-entries-button");
 
 let showpage = (page) => {

@@ -1,0 +1,71 @@
+/* Main styles all pages will use */
+body {
+    height: 100vh;
+    /* For when the user scrolls beyond the normal body view */
+    background-color: #f8f8f8;
+}
+
+/* Everything on the page under the header */
+.page-container {
+    display: flex;
+    margin: 0px 0px;
+}
+/* Container of preview containers and header */
+.content-container {
+    background: #f7f8fa;
+    min-height: 100vh;
+    padding: 0px 30px;
+    flex-grow: 1;
+    flex-direction: column;
+}
+/* Main header inside content containers */
+.content-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 20px 0;
+}
+.content-header h2 {
+    margin: 0;
+}
+
+/* Button class used for settings icons */
+.control-btn {
+    font-size: 20px;
+    cursor: pointer;
+}
+/* Any red that is needed will use this class */
+.red {
+    /* color: #a94442; */
+    color: firebrick;
+}
+/* Any green that is needed will use this class */
+.green {
+	/* color: #54820a; */
+    color: rgb(100, 160, 100)
+}
+.bold {
+	font-weight: bold;
+}
+
+/*  Solid green buttons for admin actions */
+.admin-button {
+    font-size: 14px;
+	background-color: rgb(100, 160, 100);
+	color: white;
+	text-align: center;
+	padding: 8px 10px;
+	border-radius: 3px;
+    cursor: pointer;
+    border: none;
+}
+
+span.add-winner-btn {
+    float: right;
+}
+
+span.add-winner-btn:hover {
+    cursor: pointer;
+}

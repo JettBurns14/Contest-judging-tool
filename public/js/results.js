@@ -1,3 +1,12 @@
+let navButtons = document.getElementsByClassName("nav-button");
+let hasHashInUrl = document.location.href.indexOf("#") != -1;
+let currentContestId = (
+    hasHashInUrl ?
+    document.location.href.split("#")[0].split("/")[4] :
+    document.location.href.split("/")[4]
+);
+navButtons[currentContestId - 1].classList.add("selected");
+
 let addWinner = contest_id => {
     let entry_id = window.prompt("Enter the ID of the entry you want to add:");
 
