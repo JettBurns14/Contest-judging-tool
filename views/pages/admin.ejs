@@ -125,7 +125,7 @@
                             </p>
                             <% if (is_admin) { %>
                             <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditContestForm(<%= c.contest_id %>, '<%= c.contest_name %>', '<%= c.contest_url %>', '<%= c.contest_author %>', '<%= c.date_start %>', '<%= c.date_end %>', '<%= c.current %>');"></i>
+                                <i class="control-btn far fa-edit" onclick="showEditContestForm(<%= c.contest_id %>, '<%= c.contest_name %>', '<%= c.contest_url %>', '<%= c.contest_author %>', '<%- c.date_start %>', '<%- c.date_end %>', <%= c.current %>);"></i>
                                 <i class="control-btn red far fa-trash-alt" onclick="deleteContest(<%= c.contest_id %>)"></i>
                             </div>
                             <% } %>
@@ -150,7 +150,7 @@
                     <h2>Edit Contest</h2>
                 </div>
 
-                <form id="edit-contest-form" class="admin-form" method="post" action="/api/editContest" target="_self">
+                <form id="edit-contest-form" class="admin-form" onsubmit="return editContest(event)">
                     <div class='row'>
                         <div class='col-90'>
                             <input type='hidden' id='edit_contest_id' name='edit_contest_id'>
@@ -201,7 +201,7 @@
                             <label for="edit_contest_current">Current</label>
                         </div>
                         <div class="col-90">
-                            <input class="form-input" type="checkbox" id="edit_contest_current" name="edit_contest_current" checked disabled>
+                            <input class="form-input" type="checkbox" id="edit_contest_current" name="edit_contest_current">
                         </div>
                     </div>
                     <div class="row">
@@ -214,7 +214,7 @@
                     <h2>Add Contest</h2>
                 </div>
 
-                <form id="add-contest-form" class="admin-form" method="post" action="/api/addContest" target="_self">
+                <form id="add-contest-form" class="admin-form" onSubmit="return addContest(event)">
                     <div class="row">
                         <div class="col-10">
                             <label for="contest_name">Name</label>
@@ -244,7 +244,7 @@
                             <label for="contest_start_date">Start Date</label>
                         </div>
                         <div class="col-90">
-                            <input class="form-input" type="text" id="contest_start_date" name="contest_start_date" placeholder="YYYY-MM-DD">
+                            <input class="form-input" type="text" id="contest_start_date" name="contest_start_date" placeholder="MM-DD-YYYY">
                         </div>
                     </div>
                     <div class="row">
@@ -252,7 +252,7 @@
                             <label for="contest_end_date">End Date</label>
                         </div>
                         <div class="col-90">
-                            <input class="form-input" type="text" id="contest_end_date" name="contest_end_date" placeholder="YYYY-MM-DD">
+                            <input class="form-input" type="text" id="contest_end_date" name="contest_end_date" placeholder="MM-DD-YYYY">
                         </div>
                     </div>
                     <div class="row">
@@ -260,7 +260,7 @@
                             <label for="contest_current">Current</label>
                         </div>
                         <div class="col-90">
-                            <input class="form-input" type="checkbox" id="contest_current" name="contest_current" checked disabled>
+                            <input class="form-input" type="checkbox" id="contest_current" name="contest_current">
                         </div>
                     </div>
                     <div class="row">
@@ -275,7 +275,7 @@
                 <div class="content-header">
                     <h2>Users</h2>
                     <% if (is_admin) { %>
-                    <span id="add-user-btn" class="admin-button" onclick="showCreateUserForm('<%= evaluator_name %>')">Add User</span>
+                    <span id="add-user-btn" class="admin-button" onclick="showCreateUserForm()">Add User</span>
                     <% } %>
                 </div>
 
@@ -287,7 +287,7 @@
                                 <%= c.evaluator_name %>
                             </p>
                             <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditUserForm(<%=c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);"></i>
+                                <i class="control-btn far fa-edit" onclick="showEditUserForm(<%= c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);"></i>
                             </div>
                         </div>
                         <div class="preview-content">
@@ -353,7 +353,7 @@
                     <h2>Edit User</h2>
                 </div>
 
-                <form id="edit-user-form" class="admin-form" method="post" action="/api/editUser" target="_self">
+                <form id="edit-user-form" class="admin-form" onsubmit="return editUser(event)">
                     <div class="row">
                         <input type="hidden" id="edit_user_id" name="edit_user_id">
                     </div>
@@ -375,26 +375,18 @@
                     </div>
                     <div class="row">
                         <div class="col-10">
-                            <label for="edit_user_is_admin">Make user an administrator</label>
+                            <label for="edit_user_is_admin">Make an admin</label>
                         </div>
                         <div class="col-10">
-                            <!-- <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin"> -->
-                            <select id="edit_user_is_admin" name="edit_user_is_admin">
-                                <option class="user_option" value="true">Yes</option>
-                                <option class="user_option" value="false">No</option>
-                            </select>
+                            <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-10">
-                            <label for="edit_account_locked">Is account locked</label>
+                            <label for="edit_account_locked">Lock account</label>
                         </div>
                         <div class="col-10">
-                            <!-- <input type="checkbox" id="edit_account_locked" name="edit_account_locked"> -->
-                            <select id="edit_account_locked" name="edit_account_locked">
-                                <option class="user_option" value="true">Yes</option>
-                                <option class="user_option" value="false">No</option>
-                            </select>
+                            <input type="checkbox" id="edit_account_locked" name="edit_user_account_locked">
                         </div>
                     </div>
                     <div class="row">
@@ -406,7 +398,7 @@
                 <div class="content-header">
                     <h2>Add User</h2>
                 </div>
-                <form id="add-user-form" class="admin-form" method="post" action="/api/whitelistUser" target="_self">
+                <form id="add-user-form" class="admin-form" onsubmit="return whitelistUser(event)">
                     <div class="row">
                         <div class="col-10">
                             <label for="user_kaid">User's KAID</label>

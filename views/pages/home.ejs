@@ -2,102 +2,145 @@
 <html>
 
 <head>
-    <title>Home | Challenge Council</title>
     <meta charset="utf-8">
+    <title>Home | Challenge Council</title>
+    <%- include ../partials/styles %>
     <link rel="stylesheet" type="text/css" href="/static/css/home.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
 </head>
 
 <body>
     <%- include ../partials/header %>
-    <div id="page-container">
-        <p>Welcome to the Challenge Council Judging tool!</p>
-        <p>Chances are, you are here to judge the contest entries. Please see the header above ^ to navigate.</p>
-        <p>If you have any questions at all about using this tool, ask Jett since he built it.</p>
-        <p>If you would like to build new features, adjust the interface, or just look under the hood, check out all the code on <a href="https://github.com/JettBurns14/Contest-judging-tool">GitHub</a>.</p>
-
-        <section id="message-section">
-            <div id="create-message-container">
-                <div id='messages-heading'>
-                    <h2>New Announcement:</h2>
-                </div>
-                <form id='create-message-form' method='post' action='/api/addMessage' target='_self'>
-                    <div class='row'>
-                        <div class='col-75'>
-                            <input type='hidden' id='message_author' name='message_author'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_date'>Date</label></div>
-                        <div class='col-75'><input type='text' id='message_date' name='message_date' placeholder='YYYY-MM-DD'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_title'>Announcement Title</label></div>
-                        <div class='col-75'><input type='text' id='message_title' name='message_title'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_content'>Message</label></div>
-                        <div class='col-75'><textarea id='message_content' name='message_content' maxlength='5000'></textarea></div>
-                    </div>
-                    <div class='row'><input type='submit' value='Save'></div>
-                </form>
+    <div class="page-container">
+        <div class="content-container">
+            <div class="content-header">
+                <h2>Home</h2>
             </div>
-            <div id="edit-message-container">
-                <div id='messages-heading'>
-                    <h2>Edit Announcement:</h2>
+            <section>
+                <p>Welcome to the Challenge Council Judging tool!</p>
+                <p>Chances are, you are here to judge the contest entries. Please see the header above ^ to navigate.</p>
+                <p>If you have any questions at all about using this tool, ask Jett since he built it.</p>
+                <p>If you would like to build new features, adjust the interface, or just look under the hood, check out all the code on <a href="https://github.com/JettBurns14/Contest-judging-tool">GitHub</a>.</p>
+            </section>
+            <section id="message-section">
+                <div id="create-message-container">
+                    <div class="message-form-heading">
+                        <h2>New Announcement:</h2>
+                    </div>
+                    <form id='create-message-form' class="admin-form" onSubmit="return addMessage(event)">
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_date'>Date</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_title'>Announcement Title</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_content'>Message</label>
+                            </div>
+                            <div class='col-90'>
+                                <textarea id='message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <input class="admin-button" type='submit' value='Save'>
+                        </div>
+                    </form>
                 </div>
-                <form id='edit-message-form' method='post' action='/api/editMessage' target='_self'>
-                    <div class='row'>
-                        <div class='col-75'><input type='hidden' id='message_id' name='message_id'></div>
+                <div id="edit-message-container">
+                    <div class='message-form-heading'>
+                        <h2>Edit Announcement:</h2>
                     </div>
-                    <div class='row'>
-                        <div class='col-75'><input type='hidden' id='message_author' name='message_author'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_date'>Date</label></div>
-                        <div class='col-75'><input type='text' id='message_date' name='message_date' placeholder='YYYY-MM-DD' required></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_title'>Announcement Title</label></div>
-                        <div class='col-75'><input type='text' id='message_title' name='message_title'></div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-25'><label for='message_content'>Message</label></div>
-                        <div class='col-75'><textarea id='message_content' name='message_content' maxlength='5000'></textarea></div>
-                    </div>
-                    <div class='row'><input type='submit' value='Save'></div>
-                </form>
-            </div>
-            <div id="view-messages-container">
-                <div id="messages-heading">
-                    <h2>Announcements:</h2>
-                    <%if (is_admin) { %>
-                    <p id="new-announcement-btn" onclick="showCreateMessageForm('<%= evaluator_name %>')">New Announcement</p>
-                    <% } %>
+                    <form id='edit-message-form' class="admin-form" onSubmit="return editMessage(event)">
+                        <div class='row'>
+                            <div class='col-10'>
+                                <input type='hidden' id='message_id' name='message_id'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_date'>Date</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY' required>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_title'>Title</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_content'>Message</label>
+                            </div>
+                            <div class='col-90'>
+                                <textarea id='edit-message-content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <input type='submit' class="admin-button" value='Save'>
+                        </div>
+                    </form>
                 </div>
-                <% messages.forEach((c) => { %>
-                <div class="message-container">
-                    <h3>
-                        <%= c.message_title %>
-                        <%if (is_admin) { %>
-                        <img class="control-btn" onclick="deleteMessage(<%= c.message_id %>)" src="../static/images/delete-icon.png">
-                        <img class="control-btn" onclick="showEditMessageForm(<%= c.message_id %>, '<%= c.message_author %>', '<%= c.message_date %>', '<%= c.message_title %>', `<%= c.message_content %>`);" src="../static/images/edit-icon.png">
-                        <% } %>
-                    </h3>
-                    <p id="message-author">By.
-                        <%= c.message_author %>
-                    </p>
-                    <p id="message-date">Posted on
-                        <%= c.message_date %>
-                    </p>
-                    <div id="message-content">
-                        <%- c.message_content %>
+                <div id="view-messages-container">
+                    <div class="previews-container">
+                        <div class="preview col-12 standard">
+                            <div class="db-header">
+                                <p>Announcements</p>
+                                <%if (is_admin) { %>
+                                <p class="admin-button" onclick="showCreateMessageForm()">New Announcement</p>
+                                <% } %>
+                            </div>
+                            <div class="preview-content">
+                                <% messages.forEach((c) => { %>
+                                <div class="message-container">
+                                    <div class="message-header">
+                                        <h3>
+                                            <%= c.message_title %>
+                                        </h3>
+                                    </div>
+                                    <div class="message-content">
+                                        <%- c.message_content.replace(/\n/g, '<br>') %>
+                                    </div>
+                                    <div class="message-bottom">
+                                        <div class="message-options">
+                                            <%if (is_admin) { %>
+                                            <i class="control-btn far fa-edit" onclick="showEditMessageForm(<%= c.message_id %>, '<%= c.message_date %>', '<%= c.message_title %>', `<%= c.message_content %>`);"></i>
+                                            <i class="control-btn red far fa-trash-alt" onclick="deleteMessage(<%= c.message_id %>)"></i>
+                                            <% } %>
+                                        </div>
+                                        <div class="message-meta">
+                                            <p class="message-author">By
+                                                <%= c.message_author %>
+                                            </p>
+                                            <p class="message-date">Posted
+                                                <%= c.message_date %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <% }); %>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 </body>
 <script src="/static/js/general.js"></script>

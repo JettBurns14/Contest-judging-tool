@@ -41,7 +41,7 @@
                     <div class="preview-content">
                         <table>
                             <thead>
-                                <th style="width: 3%">Entry ID</th>
+                                <th style="width: 3%">ID</th>
                                 <th style="width: 10%">Title</th>
                                 <th style="width: 10%">Author</th>
                                 <th style="width: 10%">Skill Level</th>
@@ -66,8 +66,7 @@
                                             <%= a.entry_level %>
                                         </div>
                                         <div class="edit-entry-level">
-                                            <form class="edit-entry-level-form" method="post" action="/api/editEntry">
-                                                <input type="hidden" name="contest_id">
+                                            <form class="edit-entry-level-form" onSubmit="return editEntry(event)">
                                                 <input type="hidden" name="entry_id">
                                                 <select name="edited_level">
                                                     <option value="tbd">TBD</option>
@@ -86,7 +85,7 @@
                                     </td>
                                     <% if (is_admin) { %>
                                     <td id="<%= a.entry_id + '-actions'%>">
-                                        <i class="control-btn far fa-edit" onclick="editEntry(<%= a.entry_id %>, <%= idx %>, <%= contest_id %>)"></i>
+                                        <i class="control-btn far fa-edit" onclick="showEditEntryForm(<%= a.entry_id %>, <%= idx %>, <%= contest_id %>)"></i>
                                         <i class="control-btn red far fa-trash-alt" onclick="deleteEntry(<%= a.entry_id %>, <%= contest_id %>)"></i>
                                     </td>
                                     <% } %>

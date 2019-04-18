@@ -34,7 +34,7 @@
             </div>
 
             <div class="previews-container">
-                <div class="preview col-4 standard">
+                <div class="preview col-3 standard">
                     <div class="db-header">
                         <p>Entries scored per judge</p>
                     </div>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
 
-                <div class="preview col-4 standard">
+                <div class="preview col-3 standard">
                     <div class="db-header">
                         <p>Entries scored per level</p>
                     </div>
@@ -86,10 +86,10 @@
                     </div>
                 </div>
 
-                <div class="preview col-4 standard">
+                <div class="preview col-6 standard">
                     <div class="db-header">
                         <p>Selected Winners</p>
-                        <%if (is_admin) { %><span class="add-winner-btn admin-button" onclick="addWinner('<%= contest_id %>');">Add Winner</span>
+                        <%if (is_admin) { %><span class="add-winner-btn admin-button" onclick="addWinner();">Add Winner</span>
                         <% } %>
                     </div>
                     <div class="preview-content">
@@ -99,6 +99,9 @@
                                 <th>Title</th>
                                 <th>Author</th>
                                 <th>Skill Level</th>
+                                <%if (is_admin) { %>
+                                <th style="width: 3%">Actions</th>
+                                <% } %>
                             </thead>
                             <tbody>
                                 <% winners.forEach((a) => { %>
@@ -106,14 +109,22 @@
                                     <td>
                                         <%= a.entry_id %>
                                     </td>
-                                    <td><a href="<%= a.entry_url %>" target="_blank">
-                                            <%= a.entry_title%></a></td>
+                                    <td>
+                                        <a href="<%= a.entry_url %>" target="_blank">
+                                            <%= a.entry_title%>
+                                        </a>
+                                    </td>
                                     <td>
                                         <%= a.entry_author %>
                                     </td>
                                     <td>
                                         <%= a.entry_level %>
                                     </td>
+                                    <% if (is_admin) { %>
+                                    <td id="<%= a.entry_id + '-actions'%>">
+                                        <i class="control-btn red far fa-trash-alt" onclick="deleteWinner(<%= a.entry_id %>)"></i>
+                                    </td>
+                                    <% } %>
                                 </tr>
                                 <% }); %>
                             </tbody>
