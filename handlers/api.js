@@ -169,6 +169,40 @@ exports.deleteContest = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.addEntry = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let contest_id = request.body.contest_id;
+            let entry_url = request.body.entry_url;
+            let entry_kaid = request.body.entry_kaid;
+            let entry_title = request.body.entry_title;
+            let entry_author = request.body.entry_author;
+            let entry_level = request.body.entry_level;
+            let entry_votes = request.body.entry_votes;
+            let entry_created = request.body.entry_created;
+            let entry_height = request.body.entry_height;
+            let {
+                is_admin,
+                evaluator_name
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);", [contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem editing this entry");
+                    }
+                    response.redirect("/entries/" + contest_id);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem adding this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 exports.editEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
@@ -191,7 +225,7 @@ exports.editEntry = (request, response, next) => {
                 return handleNext(next, 403, "Insufficient access");
             }
         } catch (err) {
-            return handleNext(next, 400, "There was a problem adding this user");
+            return handleNext(next, 400, "There was a problem editing this entry");
         }
     }
     return handleNext(next, 401, "Unauthorized");
@@ -414,13 +448,15 @@ exports.submitEvaluation = (request, response, next) => {
 // WIP, could be used to load all entries into DB once contest deadline is past.
 exports.updateEntries = (request, response, next) => {
     if (request.decodedToken) {
-        return db.query("SELECT * FROM contest WHERE current = true", [], res => {
-            if (res.error) {
-                return handleNext(next, 400, "There was a problem getting the current contest");
-            }
-            let contest_id = res.rows[0].contest_url.split("/")[5];
+        let contest_id = request.body.contest_id;
 
-            return Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${contest_id}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
+        return db.query("SELECT * FROM contest WHERE contest_id = $1", [contest_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem finding this contest");
+            }
+            let program_id = res.rows[0].contest_url.split("/")[5];
+
+            return Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${program_id}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
                 console.log("Request callback called.");
                 if (err) {
                     return handleNext(next, 400, "There was a problem with the request");
@@ -429,36 +465,68 @@ exports.updateEntries = (request, response, next) => {
                 let data = JSON.parse(body);
                 if (data) {
                     console.log("Data exists.");
-                    // When data is received (which is sorted already)...
-                    // SELECT all current entries in DB table.
-                    // Sort current table entries by created date.
-                    // Get most recent entry from table, TOP().
+                    // Find most recently created entry for given contest
                     try {
-                        return db.query("SELECT MAX(entry_created) FROM entry", [], res => {
+                        return db.query("SELECT COUNT(*) FROM entry WHERE contest_id = $1", [contest_id], res => {
                             if (res.error) {
-                                return handleNext(next, 400, "There was a problem getting the most recent entry");
+                                return handleNext(next, 400, "There was a problem getting the entry count for this contest");
                             }
-                            console.log("Query callback called.");
-                            // Handle error
-                            console.log(`${res.rows[0].max} --- ${data.scratchpads.length} new programs.`);
-                            for (var i = 0; i < data.scratchpads.length; ++i) {
-                                // moment docs: http://momentjs.com/docs/#/query/
-                                if (Moment(res.rows[0].max).isBefore(data.scratchpads[i].created)) {
-                                    //console.log(`Program ${data.scratchpads[i].title} was created after ${res.rows[0].max} on ${data.scratchpads[i].created}.`);
-                                    console.log(`${data.scratchpads[i].created} - ${data.scratchpads[i].url}`)
+                            if (res.rows[0].count > 0) {
+                                return db.query("SELECT MAX(entry_created) FROM entry WHERE contest_id = $1", [contest_id], res => {
+                                    if (res.error) {
+                                        return handleNext(next, 400, "There was a problem getting the most recent entry");
+                                    }
+                                    let query = "INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES"; // Query to be ran later
+                                    let entryFound = false;
+
+                                    for (var i = 0; i < data.scratchpads.length; ++i) {
+                                        // moment docs: http://momentjs.com/docs/#/query/
+                                        if (Moment(res.rows[0].max).isBefore(data.scratchpads[i].created)) {
+
+                                            let program = data.scratchpads[i];
+
+                                            if (!entryFound) {
+                                                query += `(${contest_id}, '${program.url}', '${program.url.split("/")[5]}', '${program.title.replace(/\'/g,"\'\'")}', '${program.authorNickname.replace(/\'/g,"\'\'")}', 'TBD', ${program.sumVotesIncremented}, '${program.created}', 400)`;
+                                                entryFound = true;
+                                            } else {
+                                                query += `,(${contest_id}, '${program.url}', '${program.url.split("/")[5]}', '${program.title.replace(/\'/g,"\'\'")}', '${program.authorNickname.replace(/\'/g,"\'\'")}', 'TBD', ${program.sumVotesIncremented}, '${program.created}', 400)`;
+                                            }
+
+                                            if (entryFound) {
+                                                return db.query(query, [], res => {
+                                                    if (res.error) {
+                                                        return handleNext(next, 400, "There was a problem inserting this entry");
+                                                    }
+                                                    response.redirect("/entries/" + contest_id);
+                                                });
+                                            }
+                                        }
+                                    }
+                                    response.redirect("/entries/" + contest_id);
+
+                                });
+                            } else {
+                                let query = "INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES"; // Query to be ran later
+                                for (var i = 0; i < data.scratchpads.length; i++) {
+                                    let program = data.scratchpads[i];
+
+                                    if (i === 0) {
+                                        query += `(${contest_id}, '${program.url}', '${program.url.split("/")[5]}', '${program.title.replace(/\'/g,"\'\'")}', '${program.authorNickname.replace(/\'/g,"\'\'")}', 'TBD', ${program.sumVotesIncremented}, '${program.created}', 400)`;
+                                    } else {
+                                        query += `,(${contest_id}, '${program.url}', '${program.url.split("/")[5]}', '${program.title.replace(/\'/g,"\'\'")}', '${program.authorNickname.replace(/\'/g,"\'\'")}', 'TBD', ${program.sumVotesIncremented}, '${program.created}', 400)`;
+                                    }
                                 }
-                                // console.log(`Program "${data.scratchpads[i].title}" created on ${data.scratchpads[i].created}. ${Moment(res.rows[0].max).isBefore(data.scratchpads[i].created)}`);
+                                return db.query(query, [], res => {
+                                    if (res.error) {
+                                        return handleNext(next, 400, "There was a problem inserting this entry");
+                                    }
+                                    response.redirect("/entries/" + contest_id);
+                                });
                             }
-                            return response.send("Done");
-                            // Store all API entries created after this returned date.
-                            // Loop through entries, and check if each moment(res.row).isBefore(data[i].created)
                         });
                     } catch (err) {
                         return handleNext(next, 400, "There was a problem logging the entry data");
                     }
-                    // Now compare most recent table entry creation date to all dates in API entries.
-                    // If programs have been created since the most recent in table, store them.
-                    // Once all have been compared, INSERT stored entries into table.
                 } else {
                     return handleNext(next, 400, "There is no parsed JSON data");
                 }

@@ -32,6 +32,10 @@
                     Entries for
                     <%= contests[contest_id - 1].contest_name %>
                 </h2>
+                <% if (is_admin) { %>
+                <h4 id="import-entries-btn" class="admin-btn" onclick="updateEntries(<%= contest_id %>)">Import Entries</h4>
+                <h4 id="add-entry-btn" class="admin-btn" onclick="addEntry(<%= contest_id %>)">Add Single Entry</h4>
+                <% } %>
             </div>
             <div class="previews-container">
                 <div class="preview col-12 standard">

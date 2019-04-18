@@ -121,6 +121,33 @@ router.post("/deleteContest", [
 ], wasValidated, handlers.deleteContest);
 
 // Entries //
+router.post("/addEntry", [
+    check("contest_id")
+    .isInt()
+    .withMessage("Contest ID must be an integer"),
+    check("entry_url")
+    .isURL()
+    .withMessage("Entry url must be a valid URL"),
+    check("entry_kaid")
+    .isInt()
+    .withMessage("Entry KAID must be an integer"),
+    check("entry_title")
+    .isLength(nameChars)
+    .withMessage("Entry title cannot be empty or longer than 200 characters"),
+    check("entry_author")
+    .isLength(nameChars)
+    .withMessage("Entry author cannot be empty or longer than 200 characters"),
+    check("entry_level")
+    .isIn(["Advanced", "Intermediate", "Beginner", "TBD"])
+    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'TBD'"),
+    check("entry_votes")
+    .isInt()
+    .withMessage("Entry votes must be an integer"),
+    check("entry_height")
+    .isInt()
+    .withMessage("Entry height must be an integer")
+], wasValidated, handlers.addEntry);
+
 router.post("/editEntry", [
     check("entry_id")
     .isInt()
@@ -208,6 +235,10 @@ router.post("/submitEvaluation", [
     .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
 ], wasValidated, handlers.submitEvaluation);
 
-router.post("/update-entries", handlers.updateEntries);
+router.post("/updateEntries", [
+    check("contest_id")
+    .isInt()
+    .withMessage("Contest ID must be an integer")
+], wasValidated, handlers.updateEntries);
 
 module.exports = router;
