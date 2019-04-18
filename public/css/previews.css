@@ -17,14 +17,17 @@
 .preview.col-12 {
     width: 100%;
 }
-.preview.col-6 {
-    width: 48%;
-}
 .preview.col-8 {
     width: 64%;
 }
+.preview.col-6 {
+    width: 48%;
+}
 .preview.col-4 {
     width: 32%;
+}
+.preview.col-3 {
+    width: 24%;
 }
 .preview.current-contest {
     border: 3px solid green;

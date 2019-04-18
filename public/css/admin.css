@@ -8,46 +8,8 @@
 #create-user-container, #edit-user-container {
     display: none;
 }
-.admin-form {
-    width: 100%;
-}
-.admin-form .row {
-    display: flex;
-    align-items: center;
-    margin: 8px 0 0;
-}
-.admin-form .form-input {
-    width: 50%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-    margin: 0;
-}
-.admin-form input[type=submit] {
-    margin-top: 20px;
-}
-.col-10 {
-    width: 10%;
-}
-.col-90 {
-    width: 90%;
-}
 
-/* Responsive layout - when the screen is less than 600px wide, make the two
-columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
-    .admin-form .row {
-        flex-direction: row;
-    }
-    .col-10, .col-90, input[type=submit] {
-        width: 100%;
-        margin-top: 0;
-    }
-}
-
-/*
-Test styles
+/* Test styles, will use later
 #view-stats-container {
     width: 25%;
     display: flex;
