@@ -1,63 +1,25 @@
 const {
     handleNext,
-    jsonMessage
+    jsonMessage,
+    successMsg
 } = require("../functions");
 const db = require("../db");
 const Request = require("request");
 const Moment = require("moment");
-
-exports.submitEvaluation = (request, response, next) => {
-    if (request.decodedToken) {
-        try {
-            const {
-                entry_id,
-                creativity,
-                complexity,
-                quality_code,
-                interpretation,
-                skill_level
-            } = request.body;
-            const {
-                evaluator_id,
-                is_admin
-            } = request.decodedToken;
-            const values = [entry_id, evaluator_id, (creativity / 2), (complexity / 2), (quality_code / 2), (interpretation / 2), skill_level]
-            return db.query("SELECT evaluate($1, $2, $3, $4, $5, $6, $7)", values, res => {
-                if (res.error) {
-                    return handleNext(next, 400, "There was a problem evaluating this entry");
-                }
-                if (is_admin) {
-                    return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [skill_level, entry_id], res => {
-                        if (res.error) {
-                            return handleNext(next, 400, "There was a problem setting the skill level of this entry");
-                        }
-                        return response.redirect("/judging");
-                    });
-                } else {
-                    return response.redirect("/judging");
-                }
-            });
-        } catch (err) {
-            return handleNext(next, 400, "There was a problem evaluating this entry");
-        }
-    }
-    handleNext(next, 401, "Unauthorized");
-}
 
 exports.whitelistUser = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let kaid = request.body.kaid;
             let {
-                is_admin,
-                evaluator_name
+                is_admin
             } = request.decodedToken;
             if (is_admin) {
                 return db.query("INSERT INTO whitelisted_kaids (kaid) VALUES ($1)", [kaid], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem whitelisting this user");
                     }
-                    response.redirect("/admin");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -74,15 +36,14 @@ exports.removeWhitelistedUser = (request, response, next) => {
         try {
             let kaid = request.body.kaid;
             let {
-                is_admin,
-                evaluator_name
+                is_admin
             } = request.decodedToken;
             if (is_admin) {
                 return db.query("DELETE FROM whitelisted_kaids WHERE kaid = $1;", [kaid], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem removing this user");
                     }
-                    response.redirect("/admin");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -100,18 +61,18 @@ exports.editUser = (request, response, next) => {
             let edit_evaluator_id = request.body.edit_user_id;
             let edit_evaluator_name = request.body.edit_user_name;
             let edit_evaluator_kaid = request.body.edit_user_kaid;
-            let edit_is_admin = (request.body.edit_user_is_admin == "true" ? true : false);
-            let edit_account_locked = (request.body.edit_account_locked == "true" ? true : false);
+            let edit_is_admin = request.body.edit_user_is_admin;
+            let edit_user_account_locked = request.body.edit_user_account_locked;
             let {
                 is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("UPDATE evaluator SET evaluator_name = $1, evaluator_kaid = $2, account_locked = $3, is_admin = $4 WHERE evaluator_id = $5;", [edit_evaluator_name, edit_evaluator_kaid, edit_account_locked, edit_is_admin, edit_evaluator_id], res => {
+                return db.query("UPDATE evaluator SET evaluator_name = $1, evaluator_kaid = $2, account_locked = $3, is_admin = $4 WHERE evaluator_id = $5;", [edit_evaluator_name, edit_evaluator_kaid, edit_user_account_locked, edit_is_admin, edit_evaluator_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this user");
                     }
-                    response.redirect("/admin");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -126,22 +87,24 @@ exports.editUser = (request, response, next) => {
 exports.addContest = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let contest_name = request.body.contest_name;
-            let contest_URL = request.body.contest_url;
-            let contest_author = request.body.contest_author;
-            let contest_start_date = request.body.contest_start_date;
-            let contest_end_date = request.body.contest_end_date;
             let {
-                is_admin,
-                evaluator_name
+                contest_name,
+                contest_url,
+                contest_author,
+                contest_start_date,
+                contest_end_date,
+                contest_current
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("INSERT INTO contest (contest_name, contest_url, contest_author, date_start, date_end) VALUES ($1, $2, $3, $4, $5)", [contest_name, contest_URL, contest_author, contest_start_date, contest_end_date], res => {
+                return db.query("INSERT INTO contest (contest_name, contest_url, contest_author, date_start, date_end, current) VALUES ($1, $2, $3, $4, $5, $6)", [contest_name, contest_url, contest_author, contest_start_date, contest_end_date, contest_current], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this contest");
                     }
-                    response.redirect("/admin");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -171,7 +134,7 @@ exports.editContest = (request, response, next) => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this contest");
                     }
-                    response.redirect("/admin");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -193,8 +156,8 @@ exports.deleteContest = (request, response, next) => {
                 return db.query("DELETE FROM contest WHERE contest_id = $1", [contest_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem deleting this contest");
-                    }
-                    response.redirect("/admin");
+                    };
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -209,21 +172,20 @@ exports.deleteContest = (request, response, next) => {
 exports.editEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entry_id = request.body.entry_id;
-            let entry_level = request.body.edited_level;
-            let contest_id = request.body.contest_id;
-            let next_entry = 1 + parseInt(entry_id);
             let {
-                is_admin,
-                evaluator_name
+                entry_id,
+                edited_level
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [entry_level, entry_id], res => {
+                return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [edited_level, entry_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this entry");
                     }
-                    response.redirect("/entries/" + contest_id + "#" + next_entry);
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -238,11 +200,12 @@ exports.editEntry = (request, response, next) => {
 exports.deleteEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entry_id = request.body.entry_id;
-            let contest_id = request.body.contest_id;
             let {
-                is_admin,
-                evaluator_name
+                entry_id,
+                contest_id
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
@@ -254,7 +217,7 @@ exports.deleteEntry = (request, response, next) => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem deleting this entry");
                         }
-                        response.redirect("/entries/" + contest_id);
+                        successMsg(response);
                     });
                 });
             } else {
@@ -270,11 +233,11 @@ exports.deleteEntry = (request, response, next) => {
 exports.addWinner = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entry_id = request.body.entry_id;
-            let contest_id = request.body.contest_id;
             let {
-                is_admin,
-                evaluator_name
+                entry_id
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
@@ -282,7 +245,7 @@ exports.addWinner = (request, response, next) => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this winner");
                     }
-                    response.redirect("/results/" + contest_id);
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -294,24 +257,52 @@ exports.addWinner = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.deleteWinner = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE entry SET is_winner = false WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem deleting this winner");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem deleting this winner");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 exports.addMessage = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let message_author = request.body.message_author;
-            let message_date = request.body.message_date;
-            let message_title = request.body.message_title;
-            let message_content = request.body.message_content;
+            let {
+                message_date,
+                message_title,
+                message_content
+            } = request.body;
             let {
                 is_admin,
                 evaluator_name
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content) VALUES ($1, $2, $3, $4);", [message_author, message_date, message_title, message_content], res => {
+                return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content) VALUES ($1, $2, $3, $4);", [evaluator_name, message_date, message_title, message_content], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this message");
                     }
-                    response.redirect("/");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -326,22 +317,22 @@ exports.addMessage = (request, response, next) => {
 exports.editMessage = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let message_id = request.body.message_id;
-            let message_author = request.body.message_author;
-            let message_date = request.body.message_date;
-            let message_title = request.body.message_title;
-            let message_content = request.body.message_content;
             let {
-                is_admin,
-                evaluator_name
+                message_id,
+                message_date,
+                message_title,
+                message_content
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("UPDATE messages SET message_author = $1, message_date = $2, message_title = $3, message_content = $4 WHERE message_id = $5", [message_author, message_date, message_title, message_content, message_id], res => {
+                return db.query("UPDATE messages SET message_date = $1, message_title = $2, message_content = $3 WHERE message_id = $4", [message_date, message_title, message_content, message_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this message");
                     }
-                    response.redirect("/");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -356,10 +347,11 @@ exports.editMessage = (request, response, next) => {
 exports.deleteMessage = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let message_id = request.body.message_id;
             let {
-                is_admin,
-                evaluator_name
+                message_id
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
@@ -367,7 +359,7 @@ exports.deleteMessage = (request, response, next) => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem deleting this message");
                     }
-                    response.redirect("/");
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -377,6 +369,46 @@ exports.deleteMessage = (request, response, next) => {
         }
     }
     return handleNext(next, 401, "Unauthorized");
+}
+
+exports.submitEvaluation = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            const {
+                entry_id,
+                creativity,
+                complexity,
+                quality_code,
+                interpretation,
+                skill_level
+            } = request.body;
+            const {
+                evaluator_id,
+                is_admin
+            } = request.decodedToken;
+            const values = [entry_id, evaluator_id, (creativity / 2), (complexity / 2), (quality_code / 2), (interpretation / 2), skill_level]
+            return db.query("SELECT evaluate($1, $2, $3, $4, $5, $6, $7)", values, res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem evaluating this entry");
+                }
+                if (is_admin) {
+                    return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [skill_level, entry_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem setting the skill level of this entry");
+                        }
+                        // return response.redirect("/judging");
+                        successMsg(response);
+                    });
+                } else {
+                    successMsg(response);
+                    // return response.redirect("/judging");
+                }
+            });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem evaluating this entry");
+        }
+    }
+    handleNext(next, 401, "Unauthorized");
 }
 
 // WIP, could be used to load all entries into DB once contest deadline is past.

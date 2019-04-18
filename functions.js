@@ -7,7 +7,17 @@ exports.createJWTToken = (kaid, token, tokenSecret) => {
             if (result.error) {
                 throw new Error("There was a problem while searching for this evaluator_kaid, please try again");
             }
-            let { evaluator_id, evaluator_name, evaluator_kaid, is_admin, account_locked, email, username, nickname, avatarUrl } = result.rows[0];
+            let {
+                evaluator_id,
+                evaluator_name,
+                evaluator_kaid,
+                is_admin,
+                account_locked,
+                email,
+                username,
+                nickname,
+                avatarUrl
+            } = result.rows[0];
             let jwtToken = jwt.sign({
                 evaluator_id,
                 evaluator_name,
@@ -53,9 +63,18 @@ exports.handleNext = (next, status, message) => {
     });
 }
 
+exports.successMsg = (res) => {
+    return res.json({
+        message: "Success! Refreshing now..."
+    });
+}
+
 // Respond with JSON message.
 exports.jsonMessage = (res, code, msg) => {
-    return res.json({ code: code, message: msg });
+    return res.json({
+        code: code,
+        message: msg
+    });
 }
 
 module.exports = exports;

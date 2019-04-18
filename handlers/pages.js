@@ -1,19 +1,31 @@
-const { handleNext, jsonMessage } = require("../functions");
+const {
+    handleNext,
+    jsonMessage
+} = require("../functions");
 const db = require("../db");
+const dateFormat = "FMMM-FMDD-YYYY";
+const fancyDateFormat = "FMMM-FMDD-YYYY FMHH12:FMMI:FMSS AM";
 
 exports.home = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let messages;
-            let { is_admin, evaluator_name } = request.decodedToken;
-            return db.query("SELECT * FROM messages ORDER BY message_date DESC", [], res => {
+            let {
+                is_admin,
+                evaluator_name
+            } = request.decodedToken;
+            return db.query("SELECT *, to_char(m.message_date, $1) as message_date FROM messages m ORDER BY m.message_date ASC", [dateFormat], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting the messages");
                 }
                 messages = res.rows;
-                response.render("pages/home", { messages, is_admin, evaluator_name });
+                response.render("pages/home", {
+                    messages,
+                    is_admin,
+                    evaluator_name
+                });
             });
-        } catch(err) {
+        } catch (err) {
             return handleNext(next, 400, err);
         }
     }
@@ -24,20 +36,28 @@ exports.login = (request, response) => {
     if (request.decodedToken) {
         return response.redirect("/");
     }
-    response.render("pages/login", { evaluator_name: false });
+    response.render("pages/login", {
+        evaluator_name: false
+    });
 }
 
 exports.judging = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let { evaluator_id, evaluator_name } = request.decodedToken;
+            let {
+                evaluator_id,
+                evaluator_name
+            } = request.decodedToken;
             return db.query("SELECT * FROM get_entry_and_create_placeholder($1)", [evaluator_id], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting an entry");
                 }
-                return response.render("pages/judging", { entry: res.rows[0], evaluator_name });
+                return response.render("pages/judging", {
+                    entry: res.rows[0],
+                    evaluator_name
+                });
             });
-        } catch(err) {
+        } catch (err) {
             return handleNext(next, 400, err);
         }
     }
@@ -49,7 +69,11 @@ exports.admin = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, activeEvaluatorCount, totalEvaluationsCount, totalEntryCount, totalEvaluationsNeeded;
-            let { evaluator_id, evaluator_name, is_admin } = request.decodedToken;
+            let {
+                evaluator_id,
+                evaluator_name,
+                is_admin
+            } = request.decodedToken;
 
             // TODO: Add results to a new table? Maybe add results link to contests table.
             // TODO: Get count of only this contest's entries.
@@ -68,7 +92,7 @@ exports.admin = (request, response, next) => {
                     } else {
                         reviewedCount = 0;
                     }
-                    db.query("SELECT * FROM contest ORDER BY contest_id DESC", [], res => {
+                    db.query("SELECT *, to_char(date_start, $1) as date_start, to_char(date_end, $2) as date_end FROM contest ORDER BY contest_id DESC", [dateFormat, dateFormat], res => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem getting the contests");
                         }
@@ -99,7 +123,17 @@ exports.admin = (request, response, next) => {
                                             }
                                             totalEntryCount = res.rows[0].count;
                                             totalEvaluationsNeeded = activeEvaluatorCount * totalEntryCount;
-                                            response.render("pages/admin", { evaluator_name, entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, totalEvaluationsNeeded, totalEvaluationsCount, is_admin });
+                                            response.render("pages/admin", {
+                                                evaluator_name,
+                                                entryCount,
+                                                reviewedCount,
+                                                contests,
+                                                evaluators,
+                                                whitelisted_kaids,
+                                                totalEvaluationsNeeded,
+                                                totalEvaluationsCount,
+                                                is_admin
+                                            });
                                         });
                                     });
                                 });
@@ -108,7 +142,7 @@ exports.admin = (request, response, next) => {
                     });
                 });
             });
-        } catch(err) {
+        } catch (err) {
             return handleNext(next, 400, err);
         }
     }
@@ -117,7 +151,9 @@ exports.admin = (request, response, next) => {
 
 exports.profile = (request, response, next) => {
     if (request.decodedToken) {
-        return response.render("pages/profile", { evaluator_name: request.decodedToken.evaluator_name });
+        return response.render("pages/profile", {
+            evaluator_name: request.decodedToken.evaluator_name
+        });
     }
     handleNext(next, 400, "Unauthorized");
 }
@@ -125,7 +161,10 @@ exports.profile = (request, response, next) => {
 exports.results = (request, response, next) => {
     if (request.decodedToken) {
         let contest_id = request.params.contestId;
-        let { evaluator_name, is_admin } = request.decodedToken;
+        let {
+            evaluator_name,
+            is_admin
+        } = request.decodedToken;
         let contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners;
 
         return db.query("SELECT contest_id, contest_name FROM contest ORDER BY contest_id;", [], res => {
@@ -158,7 +197,17 @@ exports.results = (request, response, next) => {
                                     return handleNext(next, 400, "There was a problem getting the results kaids");
                                 }
                                 winners = res.rows;
-                                response.render("pages/results", { evaluator_name, contests, evaluationsPerLevel, entriesByAvgScore, entryCount, evaluationsPerEvaluator, winners, contest_id: contest_id, is_admin });
+                                response.render("pages/results", {
+                                    evaluator_name,
+                                    contests,
+                                    evaluationsPerLevel,
+                                    entriesByAvgScore,
+                                    entryCount,
+                                    evaluationsPerEvaluator,
+                                    winners,
+                                    contest_id,
+                                    is_admin
+                                });
                             });
                         });
                     });
@@ -172,22 +221,31 @@ exports.results = (request, response, next) => {
 exports.entries = (request, response, next) => {
     if (request.decodedToken) {
         let contest_id = request.params.contestId;
-        let { evaluator_name, is_admin } = request.decodedToken;
+        let {
+            evaluator_name,
+            is_admin
+        } = request.decodedToken;
         let contests, entries;
 
         return db.query("SELECT contest_id, contest_name FROM contest ORDER BY contest_id;", [], res => {
             if (res.error) {
-                return handleNext(next, 400, "There was a problem getting the contests kaids");
+                return handleNext(next, 400, "There was a problem getting the contests");
             }
             contests = res.rows;
-            db.query("SELECT * FROM entry WHERE contest_id = $1 ORDER BY entry_id", [contest_id], res => {
+            db.query("SELECT *, to_char(entry_created, $1) as entry_created FROM entry WHERE contest_id = $2 ORDER BY entry_id", [fancyDateFormat, contest_id], res => {
                 if (res.error) {
-                    return handleNext(next, 400, "There was a problem getting the whitelisted kaids");
+                    return handleNext(next, 400, "There was a problem getting the entries");
                 }
                 entries = res.rows;
-                response.render("pages/entries", { contests, entries, contest_id: contest_id, is_admin, evaluator_name });
+                response.render("pages/entries", {
+                    contests,
+                    entries,
+                    contest_id,
+                    is_admin,
+                    evaluator_name
+                });
             });
-         });
+        });
     }
     return handleNext(next, 400, "Unauthorized");
 }
