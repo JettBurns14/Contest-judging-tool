@@ -5,3 +5,16 @@ let dropdownBtn = document.querySelector(".dropdown-btn");
 dropdownBtn.addEventListener("click", function() {
     dropdown.classList.toggle("open");
 });
+
+let request = (method = "post", path, data, callback) => {
+    fetch(path, {
+            method,
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => callback(data))
+        .catch(err => alert(err)); // Will change later.
+};

@@ -129,3 +129,23 @@ viewerIframe.addEventListener("load", () => {
     viewerIframe.style.display = "block";
     spinner.style.display = "none";
 });
+
+let submitEvaluation = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "edit_contest_current") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/submitEvaluation", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}

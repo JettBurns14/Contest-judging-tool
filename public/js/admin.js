@@ -1,6 +1,5 @@
 let navButtons = document.getElementsByClassName("nav-button");
 let pages = document.getElementsByClassName("content-container");
-let updateButton = document.getElementById("update-entries-button");
 
 let showpage = (page) => {
     for (let i = 0; i < pages.length; ++i) {
@@ -18,14 +17,114 @@ let showpage = (page) => {
 };
 showpage(0);
 
-let showCreateContestForm = (evaluator_name) => {
-    // evaluator_name is passed into this displayed HTML.
+///// These send form post requests /////
+let addContest = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "contest_current") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/addContest", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let editContest = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "edit_contest_current") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/editContest", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let deleteContest = (contest_id) => {
+    let confirm = window.confirm("Are you sure you want to delete this contest?");
+    if (confirm) {
+        request("post", "/api/deleteContest", {
+            contest_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+};
+
+let whitelistUser = (e) => {
+    e.preventDefault();
+    let kaid = e.target[0].value;
+    request("post", "/api/whitelistUser", {
+        kaid
+    }, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let deleteWhitelistedUser = (kaid) => {
+    let confirm = window.confirm("Are you sure you want to remove this user from the whitelist?");
+    if (confirm) {
+        request("post", "/api/removeWhitelistedUser", {
+            kaid
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
+let editUser = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "edit_user_is_admin" || key.name === "edit_user_account_locked") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/editUser", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+
+///// HTML modifier functions (like displaying forms) /////
+let showCreateContestForm = () => {
     let createContest = document.querySelector("#create-contest-container");
     let viewContests = document.querySelector("#view-contests-container");
-    // let createContestForm = document.querySelector("#create-contest-form");
     viewContests.style.display = "none";
     createContest.style.display = "block";
-    // createContestForm[0].value = evaluator_name;
 }
 let showEditContestForm = (...args) => {
     let editContest = document.querySelector("#edit-contest-container");
@@ -35,86 +134,34 @@ let showEditContestForm = (...args) => {
     editContest.style.display = "block";
     // Just need to set values of inputs to provided params.
     for (let i = 0; i < editContestForm.length - 1; i++) {
-        console.log(args[i]);
-        editContestForm[i].value = args[i];
-    }
-};
-let deleteContest = (id) => {
-    let confirm = window.confirm("Are you sure you want to delete this contest?");
-
-    if (confirm) {
-        post("/api/deleteContest", {
-            'contest_id': id
-        });
+        if (editContestForm[i].name === "edit_contest_current") {
+            editContestForm[i].checked = args[i];
+        } else {
+            editContestForm[i].value = args[i];
+        }
     }
 };
 
-let showCreateUserForm = (evaluator_name) => {
-    // evaluator_name is passed into this displayed HTML.
+let showCreateUserForm = () => {
     let createUser = document.querySelector("#create-user-container");
     let viewUsers = document.querySelector("#view-users-container");
-    // let createContestForm = document.querySelector("#create-contest-form");
     viewUsers.style.display = "none";
     createUser.style.display = "block";
 }
+
 let showEditUserForm = (...args) => {
     // id, name, kaid, is_admin, account_locked
     let editUser = document.querySelector("#edit-user-container");
     let viewUsers = document.querySelector("#view-users-container");
     let editUserForm = document.querySelector("#edit-user-form");
-    let userOptions = document.querySelectorAll(".user_option");
     viewUsers.style.display = "none";
     editUser.style.display = "block";
     // Just need to set values of inputs to provided params.
-    for (let i = 0; i < editUserForm.length - 3; i++) {
-        console.log(args[i]);
-        editUserForm[i].value = args[i];
-    }
-
-    if (args[3]) {
-        userOptions[0].setAttribute("selected", true);
-    } else {
-        userOptions[1].setAttribute("selected", true);
-    }
-
-    if (args[4]) {
-        userOptions[2].setAttribute("selected", true);
-    } else {
-        userOptions[3].setAttribute("selected", true);
-    }
-};
-let deleteWhitelistedUser = (kaid) => {
-    var approval = window.confirm("Are you sure you want to remove this user from the whitelist?");
-
-    if (approval) {
-        post('/api/removeWhitelistedUser', {
-            kaid: kaid
-        });
-    }
-}
-
-
-// Send post requests without visible form element
-let post = (path, params, method) => {
-    method = method || "post"; // Set method to post by default if not specified.
-
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    let form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
-
-    for (let key in params) {
-        if (params.hasOwnProperty(key)) {
-            let hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
+    for (let i = 0; i < editUserForm.length - 1; i++) {
+        if (editUserForm[i].name === "edit_user_is_admin" || editUserForm[i].name === "edit_user_account_locked") {
+            editUserForm[i].checked = args[i];
+        } else {
+            editUserForm[i].value = args[i];
         }
     }
-
-    document.body.appendChild(form);
-    form.submit();
-}
+};

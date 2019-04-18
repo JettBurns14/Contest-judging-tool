@@ -7,47 +7,50 @@ let currentContestId = (
 );
 navButtons[currentContestId - 1].classList.add("selected");
 
-let deleteEntry = (id, contest_id) => {
+///// These send form post requests /////
+let editEntry = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "edit_contest_current") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/editEntry", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let deleteEntry = (entry_id, contest_id) => {
     let shouldDelete = confirm("Are you sure you want to delete this entry?");
 
     if (shouldDelete) {
-        post("/api/deleteEntry", {
-            "entry_id": id,
-            "contest_id": contest_id
+        request("post", "/api/deleteEntry", {
+            entry_id,
+            contest_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
         });
     }
 }
 
-let editEntry = (id, elementIndex, contest_id) => {
+///// HTML modifier functions (like displaying forms) /////
+let showEditEntryForm = (id, elementIndex, contest_id) => {
     let viewEntryLevel = document.querySelectorAll(".view-entry-level")[elementIndex];
     let editEntryLevel = document.querySelectorAll(".edit-entry-level")[elementIndex];
     let editEntryLevelForm = document.querySelectorAll(".edit-entry-level-form")[elementIndex];
     viewEntryLevel.style.display = "none";
     editEntryLevel.style.display = "block";
-    editEntryLevelForm[0].value = contest_id;
-    editEntryLevelForm[1].value = id;
-}
-
-let post = (path, params, method) => {
-    method = method || "post"; // Set method to post by default if not specified.
-
-    // The rest of this code assumes you are not using a library.
-    // It can be made less wordy if you use one.
-    let form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
-
-    for (let key in params) {
-        if (params.hasOwnProperty(key)) {
-            let hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-
-            form.appendChild(hiddenField);
-        }
-    }
-
-    document.body.appendChild(form);
-    form.submit();
+    editEntryLevelForm[0].value = id;
 }
