@@ -23,6 +23,6 @@ tr:nth-child(even) {
 th {
     padding-top: 12px;
     padding-bottom: 12px;
-    background-color: #54820a;
+    background-color: rgb(100, 160, 100);
     color: white;
 }

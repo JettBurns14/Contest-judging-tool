@@ -1,12 +1,12 @@
 body {
     background-color: rgb(35, 100, 238);
     background-image: url("/static/images/blue-mountains.svg");
-    background-position: 0 -2px;
+    background-position: 0;
     background-size: cover;
     height: 100vh;
     overflow-y: hidden;
     font-family: "Lato", Arial;
-    margin: 2px 0;
+    margin: 0;
 }
 .center.vertical {
     height: 100vh;

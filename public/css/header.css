@@ -1,32 +1,57 @@
-body {
-    font-family: "Lato", Arial;
-    margin: 0px;
-}
-
-#page-header {
-    align-items: center;
+.page-header {
     box-sizing: border-box;
-    padding: 0 16px 0 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    /* border-bottom: 1px solid #e7e7e7; */
     background-color: #333;
     height: 59px;
+    color: #fff;
 }
+.page-header .nav {
+    padding: 0 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 59px;
+}
+.page-header.hero {
+    background-image: url("/static/images/volunteers.png");
+    height: 400px;
+    background-position: center top;
+    background-size: cover;
+    color: #fff;
+}
+.page-header.hero .heading {
+    display: block;
+}
+.page-header.hero .nav {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.page-header.hero .nav:hover {
+    background-color: #fff;
+    color: #333;
+}
+.page-header.hero .nav .logo-container {
+    background: none;
+}
+.heading {
+    display: none;
+}
+.heading h1 {
+    text-align: center;
+    font-size: 50px;
+    text-shadow: 0 0 10px #555;
+    margin-top: 100px;
+}
+
 .logo-container {
     display: flex;
     align-items: center;
     height: 100%;
-    /*width: 250px;*/
-    background-color: #333;
+    background-color: inherit;
 }
 .logo-container a {
     display: flex;
     align-items: center;
     text-decoration: none;
-    color: white;
+    color: inherit; /* #fff or #333 */
 }
 .logo svg {
     width: 35px;
@@ -34,25 +59,29 @@ body {
     padding: 0 10px 0 16px;
 }
 .logo h1 {
+    color: inherit; /* #fff or #333 */
     letter-spacing: 3px;
     margin: 0;
 }
-.nav a:hover {
+.links a:hover {
     text-decoration: none;
 }
-#page-header .left {
+.page-header .left {
     flex-grow: 1;
 }
 .logo:hover {
     cursor: pointer;
 }
-.nav.user {
-    color: white;
+.links span a {
+    color: inherit; /* #fff or #333 */
+    text-decoration: none;
+    margin-left: 20px;
     cursor: pointer;
 }
-.user span:hover {
+.links span a:hover {
     text-decoration: underline;
 }
+/*
 .dropdown-btn i {
     vertical-align: middle;
     width: 15px;
@@ -106,25 +135,4 @@ body {
     background-color: #eee;
     text-decoration: none;
 }
-
-
-.button {
-    color: #fff;
-    border: 0;
-    cursor: pointer;
-    display: block;
-    font-size: 16px;
-    padding: 10px 24px;
-    border-radius: 4px;
-    transition: box-shadow 0.1s linear;
-}
-.button.green {
-    background-color: #54820a;
-}
-.button.red {
-    background-color: #a94442;
-}
-
-.button:hover {
-    box-shadow: 0px 1px 6px grey;
-}
+*/

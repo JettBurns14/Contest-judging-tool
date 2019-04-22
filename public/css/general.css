@@ -1,5 +1,7 @@
 /* Main styles all pages will use */
 body {
+    font-family: "Lato", Arial;
+    margin: 0;
     height: 100vh;
     /* For when the user scrolls beyond the normal body view */
     background-color: #f7f8fa;
@@ -25,10 +27,13 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin: 20px 0;
+    margin: 30px 0;
 }
 .content-header h2 {
     margin: 0;
+}
+.content-header span.admin-button {
+    margin-left: 5px;
 }
 
 /* Button class used for settings icons */
@@ -60,4 +65,18 @@ body {
 	border-radius: 3px;
     cursor: pointer;
     border: none;
+}
+
+/* Footer style, not really enough for its own file yet. */
+.footer {
+    padding: 10px;
+    background-color: rgb(100, 160, 100);
+    color: #fff;
+}
+.footer p {
+    margin: 0;
+    text-align: center;
+}
+.footer a {
+    color: white;
 }
