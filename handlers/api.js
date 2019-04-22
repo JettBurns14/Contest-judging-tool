@@ -172,26 +172,27 @@ exports.deleteContest = (request, response, next) => {
 exports.addEntry = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let contest_id = request.body.contest_id;
-            let entry_url = request.body.entry_url;
-            let entry_kaid = request.body.entry_kaid;
-            let entry_title = request.body.entry_title;
-            let entry_author = request.body.entry_author;
-            let entry_level = request.body.entry_level;
-            let entry_votes = request.body.entry_votes;
-            let entry_created = request.body.entry_created;
-            let entry_height = request.body.entry_height;
             let {
-                is_admin,
-                evaluator_name
+                contest_id,
+                entry_url,
+                entry_kaid,
+                entry_title,
+                entry_author,
+                entry_level,
+                entry_votes,
+                entry_created,
+                entry_height
+            } = request.body;
+            let {
+                is_admin
             } = request.decodedToken;
 
             if (is_admin) {
                 return db.query("INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);", [contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height], res => {
                     if (res.error) {
-                        return handleNext(next, 400, "There was a problem editing this entry");
+                        return handleNext(next, 400, "There was a problem adding this entry");
                     }
-                    response.redirect("/entries/" + contest_id);
+                    successMsg(response);
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
@@ -430,12 +431,10 @@ exports.submitEvaluation = (request, response, next) => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem setting the skill level of this entry");
                         }
-                        // return response.redirect("/judging");
                         successMsg(response);
                     });
                 } else {
                     successMsg(response);
-                    // return response.redirect("/judging");
                 }
             });
         } catch (err) {
@@ -457,14 +456,12 @@ exports.updateEntries = (request, response, next) => {
             let program_id = res.rows[0].contest_url.split("/")[5];
 
             return Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${program_id}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
-                console.log("Request callback called.");
                 if (err) {
                     return handleNext(next, 400, "There was a problem with the request");
                 }
 
                 let data = JSON.parse(body);
                 if (data) {
-                    console.log("Data exists.");
                     // Find most recently created entry for given contest
                     try {
                         return db.query("SELECT COUNT(*) FROM entry WHERE contest_id = $1", [contest_id], res => {
@@ -497,13 +494,12 @@ exports.updateEntries = (request, response, next) => {
                                                     if (res.error) {
                                                         return handleNext(next, 400, "There was a problem inserting this entry");
                                                     }
-                                                    response.redirect("/entries/" + contest_id);
+                                                    successMsg(response);
                                                 });
                                             }
                                         }
                                     }
-                                    response.redirect("/entries/" + contest_id);
-
+                                    successMsg(response);
                                 });
                             } else {
                                 let query = "INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES"; // Query to be ran later
@@ -520,7 +516,7 @@ exports.updateEntries = (request, response, next) => {
                                     if (res.error) {
                                         return handleNext(next, 400, "There was a problem inserting this entry");
                                     }
-                                    response.redirect("/entries/" + contest_id);
+                                    successMsg(response);
                                 });
                             }
                         });

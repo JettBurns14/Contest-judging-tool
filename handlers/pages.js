@@ -14,7 +14,7 @@ exports.home = (request, response, next) => {
                 is_admin,
                 evaluator_name
             } = request.decodedToken;
-            return db.query("SELECT *, to_char(m.message_date, $1) as message_date FROM messages m ORDER BY m.message_date ASC", [dateFormat], res => {
+            return db.query("SELECT *, to_char(m.message_date, $1) as message_date FROM messages m ORDER BY m.message_date DESC", [dateFormat], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting the messages");
                 }
