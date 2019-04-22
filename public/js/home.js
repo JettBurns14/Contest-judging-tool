@@ -1,3 +1,6 @@
+let header = document.querySelector(".page-header");
+header.classList.add("hero");
+
 ///// These send form post requests /////
 let addMessage = (e) => {
     e.preventDefault();

@@ -1,3 +1,8 @@
+let avatars = document.querySelectorAll(".avatar-dancer");
+avatars.forEach(el => {
+    el.style.marginBottom = Math.random()*200 + "px";
+});
+
 let viewerIframe = document.getElementById("entry-viewer-iframe");
 let spinner = document.getElementById("loading-spinner");
 

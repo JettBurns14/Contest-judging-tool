@@ -59,15 +59,15 @@ const updateEntries = (contest_id) => {
 const addEntry = (contest_id) => {
     let program_id = prompt("Enter the program ID");
 
-    let s = document.createElement('script');
-    s.setAttribute('src', "https://www.khanacademy.org/api/internal/scratchpads/" + program_id + "?callback=getProgramData");
-    document.body.appendChild(s);
+    if (program_id) {
+        request("get", `https://www.khanacademy.org/api/internal/scratchpads/${program_id}`, {}, (data) => {
+            getProgramData(data);
+        });
+    }
 }
 
 const getProgramData = (data) => {
-    let location = window.location;
-    let pos = location.toString().lastIndexOf('/') + 1;
-    let contest_id = location.toString().substring(pos);
+    let contest_id = currentContestId;
     let entry_url = data.url;
     let entry_kaid = entry_url.split("/")[5];
     let entry_title = data.title;
