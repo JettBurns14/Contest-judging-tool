@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
 </head>
 
 <body>
@@ -15,34 +16,7 @@
     <%- include ../partials/header %>
 
     <div class="page-container">
-        <div class="side-bar">
-            <a class="nav-button selected" onclick="showpage(0)">
-                <i class="fas fa-th-large"></i>
-                <p>Dashboard</p>
-            </a>
-            <a class="nav-button" onclick="showpage(1)">
-                <i class="fas fa-trophy"></i>
-                <p>Contests</p>
-            </a>
-            <% if (is_admin) { %>
-            <a class="nav-button" onclick="showpage(2)">
-                <i class="fas fa-users"></i>
-                <p>Users</p>
-            </a>
-            <a class="nav-button hidden" onclick="showpage(3)">
-                <p>Controls</p>
-            </a>
-            <% } %>
-            <a class="nav-button" href="/entries/1">
-                <i class="fas fa-list"></i>
-                <p>Entries</p>
-            </a>
-            <a class="nav-button" href="/results/1">
-                <!-- <i class="fas fa-trophy"></i> -->
-                <i class="fas fa-list-ol"></i>
-                <p>Results</p>
-            </a>
-        </div>
+        <%- include ../partials/sidebar %>
 
         <div class="content-container" id="dashboard-page">
             <div class="content-header">
@@ -118,7 +92,7 @@
 
                 <div class="previews-container">
                     <% contests.forEach((c) => { %>
-                    <div class="preview col-4 <%if (c.current) {%>current-contest<%} else {%>standard<%}%>">
+                    <div class="preview col-4 standard <%if (c.current) {%>current-contest<%} %>">
                         <div class="db-header">
                             <p>
                                 <%= c.contest_name + " - #" + c.contest_id %>
@@ -429,7 +403,7 @@
             </div>
         </div>
     </div>
-
+    <%- include ../partials/footer %>
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/admin.js"></script>

@@ -33,8 +33,10 @@
                     <%= contests[contest_id - 1].contest_name %>
                 </h2>
                 <% if (is_admin) { %>
-                <h4 id="import-entries-btn" class="admin-btn" onclick="updateEntries(<%= contest_id %>)">Import Entries</h4>
-                <h4 id="add-entry-btn" class="admin-btn" onclick="addEntry(<%= contest_id %>)">Add Single Entry</h4>
+                <div>
+                    <span id="import-entries-btn" class="admin-button" onclick="updateEntries(<%= contest_id %>)">Import Entries</span>
+                    <span id="add-entry-btn" class="admin-button" onclick="addEntry(<%= contest_id %>)">Add Single Entry</span>
+                </div>
                 <% } %>
             </div>
             <div class="previews-container">
@@ -104,6 +106,7 @@
     </div> <!-- Page content -->
 
     </div> <!-- Page container -->
+    <%- include ../partials/footer %>
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/entries.js"></script>

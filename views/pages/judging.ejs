@@ -13,8 +13,18 @@
 
     <% if (entry.o_entry_id == -1) { %>
     <div id="all-judged-message">
-        <h1>All entries evaluated!</h1>
-        <p>Go check out [<a href="/results/1">this page</a>] to check current voting results.</p>
+        <h1>All entries are judged!</h1>
+        <p>Go check out <a href="/results/1">this page</a> to check current voting results.</p>
+        <img class="avatar-dancer" src="/static/images/avatars/mr-pants.png">
+        <img class="avatar-dancer" src="/static/images/avatars/winston.png">
+        <img class="avatar-dancer" src="/static/images/avatars/orange-juice-squid.png">
+        <img class="avatar-dancer" src="/static/images/avatars/hopper-jumping.png">
+        <img class="avatar-dancer" src="/static/images/avatars/ohnoes.png">
+        <img class="avatar-dancer" src="/static/images/avatars/marcimus.png">
+        <img class="avatar-dancer" src="/static/images/avatars/old-spice-man.png">
+        <img class="avatar-dancer" src="/static/images/avatars/spunky-sam.png">
+        <img class="avatar-dancer" src="/static/images/avatars/mr-pink.png">
+        <img class="avatar-dancer" src="/static/images/avatars/purple-pi.png">
     </div>
     <% } else { %>
     <h1 id="entry-title">
@@ -45,17 +55,19 @@
                 <div class="sliderContainer" id="interpretation-slider"></div>
             </div>
         </div>
-        <select id="skill-selector" name="skill_level">
-            <option class="skill-option" value="Advanced">Advanced</option>
-            <option class="skill-option" value="Intermediate">Intermediate</option>
-            <option class="skill-option" value="Beginner">Beginner</option>
-        </select>
+        <div id="form-options">
+            <select id="skill-selector" name="skill_level">
+                <option class="skill-option" value="Advanced">Advanced</option>
+                <option class="skill-option" value="Intermediate">Intermediate</option>
+                <option class="skill-option" value="Beginner">Beginner</option>
+            </select>
 
-        <input type="submit" id="submit-form-button" class="button green" value="Submit"></input>
+            <input type="submit" class="admin-button" value="Submit"></input>
+        </div>
     </form>
-    <script src="/static/js/judging.js"></script>
     <% } %>
+    <%- include ../partials/footer %>
 </body>
 <script src="/static/js/general.js"></script>
-
+<script src="/static/js/judging.js"></script>
 </html>
