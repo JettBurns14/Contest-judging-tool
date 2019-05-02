@@ -10,8 +10,8 @@ navButtons[currentContestId - 1].classList.add("selected");
 let addWinner = () => {
     let entry_id = window.prompt("Enter the ID of the entry you want to add:");
     entry_id = +entry_id;
-    contest_id = +contest_id;
-
+    let contest_id = +currentContestId;
+    
     if (entry_id > 0) {
         request("post", "/api/addWinner", {
             entry_id
