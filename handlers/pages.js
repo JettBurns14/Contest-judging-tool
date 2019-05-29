@@ -1,8 +1,8 @@
 const {
     handleNext,
     jsonMessage
-} = require("../functions");
-const db = require("../db");
+} = require(process.cwd() + "/util/functions");
+const db = require(process.cwd() + "/util/db");
 const dateFormat = "FMMM-FMDD-YYYY";
 const fancyDateFormat = "FMMM-FMDD-YYYY FMHH12:FMMI:FMSS AM";
 

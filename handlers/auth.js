@@ -1,10 +1,10 @@
 // Thanks Ethan for the OAuth example, very helpful:
 // https://github.com/EthanLuisMcDonough/ka-oauth-example
 
-const db = require("../db");
+const db = require(process.cwd() + "/util/db");
 const jwt = require("jsonwebtoken");
 const OAuthClient = require("oauth-1-client");
-const { createJWTToken, handleNext, jsonMessage } = require("../functions");
+const { createJWTToken, handleNext, jsonMessage } = require(process.cwd() + "/util/functions");
 const { KA_CONSUMER_KEY, KA_CONSUMER_SECRET, PORT } = process.env;
 const OAUTH_CALLBACK_PATH = `/api/auth/oauth_callback`;
 const KA = "www.khanacademy.org";

@@ -1,6 +1,6 @@
 const {
     handleNext
-} = require("../functions");
+} = require(process.cwd() + "/util/functions");
 
 const hasBody = (request, response, next) => {
     if (request.method === "POST" && request.url.split("/")[1] !== "auth") {

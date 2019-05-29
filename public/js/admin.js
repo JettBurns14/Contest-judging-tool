@@ -17,7 +17,7 @@ let showpage = (page) => {
 };
 showpage(0);
 
-///// These send form post requests /////
+///// These send form requests /////
 let addContest = (e) => {
     e.preventDefault();
     let body = {};
@@ -29,7 +29,7 @@ let addContest = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/addContest", body, (data) => {
+    request("post", "/api/internal/contests", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -48,7 +48,7 @@ let editContest = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/editContest", body, (data) => {
+    request("put", "/api/internal/contests", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -59,7 +59,7 @@ let editContest = (e) => {
 let deleteContest = (contest_id) => {
     let confirm = window.confirm("Are you sure you want to delete this contest?");
     if (confirm) {
-        request("post", "/api/deleteContest", {
+        request("delete", "/api/internal/contests", {
             contest_id
         }, (data) => {
             if (!data.error) {
@@ -74,7 +74,7 @@ let deleteContest = (contest_id) => {
 let whitelistUser = (e) => {
     e.preventDefault();
     let kaid = e.target[0].value;
-    request("post", "/api/whitelistUser", {
+    request("post", "/api/internal/users/whitelist", {
         kaid
     }, (data) => {
         if (!data.error) {
@@ -87,7 +87,7 @@ let whitelistUser = (e) => {
 let deleteWhitelistedUser = (kaid) => {
     let confirm = window.confirm("Are you sure you want to remove this user from the whitelist?");
     if (confirm) {
-        request("post", "/api/removeWhitelistedUser", {
+        request("delete", "/api/internal/users/whitelist", {
             kaid
         }, (data) => {
             if (!data.error) {
@@ -110,7 +110,7 @@ let editUser = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/editUser", body, (data) => {
+    request("put", "/api/internal/users", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {

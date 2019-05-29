@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const handlers = require("../handlers/auth");
+const handlers = require(process.cwd() + "/handlers/auth");
 
 router.get("/ping", (req, res) => {
     res.send("Pong!");

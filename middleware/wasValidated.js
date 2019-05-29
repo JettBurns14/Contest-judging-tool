@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator/check');
-const { handleNext } = require("../functions");
+const { handleNext } = require(process.cwd() + "/util/functions");
 
 const wasValidated = (request, response, next) => {
     const errors = validationResult(request);

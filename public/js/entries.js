@@ -20,7 +20,7 @@ let editEntry = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/editEntry", body, (data) => {
+    request("put", "/api/internal/entries", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -32,7 +32,7 @@ let deleteEntry = (entry_id, contest_id) => {
     let shouldDelete = confirm("Are you sure you want to delete this entry?");
 
     if (shouldDelete) {
-        request("post", "/api/deleteEntry", {
+        request("delete", "/api/internal/entries", {
             entry_id,
             contest_id
         }, (data) => {
@@ -45,7 +45,7 @@ let deleteEntry = (entry_id, contest_id) => {
     }
 }
 const updateEntries = (contest_id) => {
-    request("post", "/api/updateEntries", {
+    request("post", "/api/internal/entries/import", {
         contest_id
     }, (data) => {
         if (!data.error) {
@@ -77,7 +77,7 @@ const getProgramData = (data) => {
     let entry_created = data.created;
     let entry_height = data.height;
 
-    request("post", "/api/addEntry", {
+    request("post", "/api/internal/entries", {
         contest_id,
         entry_url,
         entry_kaid,

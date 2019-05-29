@@ -10,10 +10,9 @@ navButtons[currentContestId - 1].classList.add("selected");
 let addWinner = () => {
     let entry_id = window.prompt("Enter the ID of the entry you want to add:");
     entry_id = +entry_id;
-    contest_id = +contest_id;
 
     if (entry_id > 0) {
-        request("post", "/api/addWinner", {
+        request("post", "/api/internal/winners", {
             entry_id
         }, (data) => {
             if (!data.error) {
@@ -31,7 +30,7 @@ let deleteWinner = entry_id => {
     let shouldDelete = confirm("Are you sure you want to delete this winner?");
 
     if (shouldDelete) {
-        request("post", "/api/deleteWinner", {
+        request("delete", "/api/internal/winners", {
             entry_id
         }, (data) => {
             if (!data.error) {

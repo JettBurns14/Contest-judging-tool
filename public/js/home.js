@@ -14,7 +14,7 @@ let addMessage = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/addMessage", body, (data) => {
+    request("post", "/api/internal/messages", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -35,7 +35,7 @@ let editMessage = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/editMessage", body, (data) => {
+    request("put", "/api/internal/messages", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -48,7 +48,7 @@ let deleteMessage = (message_id) => {
     let confirm = window.confirm("Are you sure you want to delete this message?");
 
     if (confirm) {
-        request("post", "/api/deleteMessage", {
+        request("delete", "/api/internal/messages", {
             message_id
         }, (data) => {
             if (!data.error) {

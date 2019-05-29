@@ -146,7 +146,7 @@ let submitEvaluation = (e) => {
         }
     }
     delete body[""];
-    request("post", "/api/submitEvaluation", body, (data) => {
+    request("post", "/api/internal/judging/submit", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
