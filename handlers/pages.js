@@ -10,7 +10,9 @@ exports.home = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let messages;
+            let tasks;
             let {
+                evaluator_id,
                 is_admin,
                 evaluator_name
             } = request.decodedToken;
@@ -19,10 +21,17 @@ exports.home = (request, response, next) => {
                     return handleNext(next, 400, "There was a problem getting the messages");
                 }
                 messages = res.rows;
-                response.render("pages/home", {
-                    messages,
-                    is_admin,
-                    evaluator_name
+                db.query("SELECT *, to_char(t.due_date, $1) as due_date FROM task t WHERE assigned_member = $2 ORDER BY t.due_date DESC", [dateFormat, evaluator_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem getting the tasks");
+                    }
+                    tasks = res.rows;
+                    response.render("pages/home", {
+                        messages,
+                        tasks,
+                        is_admin,
+                        evaluator_name
+                    });
                 });
             });
         } catch (err) {
@@ -68,7 +77,7 @@ exports.judging = (request, response, next) => {
 exports.admin = (request, response, next) => {
     if (request.decodedToken) {
         try {
-            let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, activeEvaluatorCount, totalEvaluationsCount, totalEntryCount, totalEvaluationsNeeded;
+            let entryCount, reviewedCount, contests, evaluators, whitelisted_kaids, activeEvaluatorCount, totalEvaluationsCount, totalEntryCount, totalEvaluationsNeeded, tasks;
             let {
                 evaluator_id,
                 evaluator_name,
@@ -121,16 +130,24 @@ exports.admin = (request, response, next) => {
                                             }
                                             totalEntryCount = res.rows[0].count;
                                             totalEvaluationsNeeded = activeEvaluatorCount * totalEntryCount;
-                                            response.render("pages/admin", {
-                                                evaluator_name,
-                                                entryCount,
-                                                reviewedCount,
-                                                contests,
-                                                evaluators,
-                                                whitelisted_kaids,
-                                                totalEvaluationsNeeded,
-                                                totalEvaluationsCount,
-                                                is_admin
+
+                                            db.query("SELECT t.task_id, t.task_title, t.task_status, t.assigned_member, evaluator.evaluator_name, to_char(t.due_date, $1) as due_date FROM task t INNER JOIN evaluator ON t.assigned_member = evaluator.evaluator_id;", [dateFormat], res => {
+                                                if (res.error) {
+                                                    return handleNext(next, 400, "There was a problem getting the tasks");
+                                                }
+                                                tasks = res.rows;
+                                                response.render("pages/admin", {
+                                                    evaluator_name,
+                                                    entryCount,
+                                                    reviewedCount,
+                                                    contests,
+                                                    evaluators,
+                                                    whitelisted_kaids,
+                                                    totalEvaluationsNeeded,
+                                                    totalEvaluationsCount,
+                                                    is_admin,
+                                                    tasks
+                                                });
                                             });
                                         });
                                     });

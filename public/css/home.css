@@ -38,3 +38,9 @@
     font-size: 14px;
     margin: 5px 0;
 }
+#task-section {
+    margin-top: 50px;
+}
+.task-action:hover {
+    cursor: pointer;
+}

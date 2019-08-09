@@ -213,6 +213,46 @@ router.post("/deleteMessage", [
     .withMessage("Message ID must be an integer")
 ], wasValidated, handlers.deleteMessage);
 
+// Tasks //
+router.post("/addTask", [
+    check("task_title")
+    .isLength(contentChars)
+    .withMessage("Task title cannot be empty or longer than 200 characters"),
+    check("due_date")
+    .matches(datePattern)
+    .withMessage(`Due date must be a valid date ${dateFormat}`),
+    check("task_status")
+    .isIn(["Not Started", "Started", "Completed"])
+    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
+    check("assigned_member")
+    .isInt()
+    .withMessage("Assigned member must be an integer")
+], wasValidated, handlers.addTask);
+
+router.post("/editTask", [
+    check("edit_task_id")
+    .isInt()
+    .withMessage("Task id must be an integer"),
+    check("edit_task_title")
+    .isLength(contentChars)
+    .withMessage("Task title cannot be empty or longer than 200 characters"),
+    check("edit_due_date")
+    .matches(datePattern)
+    .withMessage(`Due date must be a valid date ${dateFormat}`),
+    check("edit_task_status")
+    .isIn(["Not Started", "Started", "Completed"])
+    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
+    check("edit_assigned_member")
+    .isInt()
+    .withMessage("Assigned member must be an integer")
+], wasValidated, handlers.editTask);
+
+router.post("/deleteTask", [
+    check("task_id")
+    .isInt()
+    .withMessage("Task id must be an integer"),
+], wasValidated, handlers.deleteTask);
+
 // Evaluting //
 router.post("/submitEvaluation", [
     check("entry_id")

@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
 </head>
 
 <body>
@@ -388,21 +389,163 @@
             </div>
         </div>
 
-        <div class="content-container" id="controls-page">
-            <div class="content-header">
-                <h2>Controls</h2>
+        <div class="content-container" id="tasks-page">
+            <div id="view-tasks-container">
+                <div class="content-header">
+                    <h2>Tasks</h2>
+                    <% if (is_admin) { %>
+                    <span id="add-task-btn" class="admin-button" onclick="showCreateTaskForm();">Add Task</span>
+                    <% } %>
+                </div>
+                <table>
+                    <thead>
+                        <th>Task</th>
+                        <th style="width: 10%">Due Date</th>
+                        <th style="width: 10%">Assigned Member</th>
+                        <th style="width: 10%">Status</th>
+                        <%if (is_admin) { %>
+                        <th style="width: 10%">Actions</th>
+                        <% } %>
+                    </thead>
+                    <tbody>
+                        <% tasks.forEach((a, idx) => { %>
+                        <tr id="<%= a.task_id%>">
+                            <td>
+                                <%= a.task_title %>
+                            </td>
+                            <td>
+                                <%= a.due_date %>
+                            </td>
+                            <td>
+                                <%= a.evaluator_name %>
+                            </td>
+                            <td>
+                                <%= a.task_status %>
+                            </td>
+                            <% if (is_admin) { %>
+                            <td id="<%= a.task_id + '-actions'%>">
+                                <i class="control-btn far fa-edit" onclick="showEditTaskForm(<%= a.task_id %>, '<%= a.task_title %>', '<%= a.due_date %>', '<%= a.assigned_member %>', '<%- a.task_status %>');"></i>
+                                <i class="control-btn red far fa-trash-alt" onclick="deleteTask(<%= a.task_id %>);"></i>
+                            </td>
+                            <% } %>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
             </div>
-            <div class="preview warning">
-                <div class="db-header">
-                    <h4>Update entries</h4>
+            <div id="create-task-container">
+                <div class="content-header">
+                    <h2>Add Task</h2>
                 </div>
-                <div class="preview-content">
-                    <p>Be careful! These settings must be used with care, ask Jett before clicking these buttons.</p>
-                    <button type="button" class="button red" id="update-entries-button">Update Entries</button>
+
+                <form id="add-task-form" class="admin-form" onSubmit="return addTask(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="task_title" name="task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="due_date" name="due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="assigned_member" name="assigned_member">
+                                <% evaluators.forEach((c) => { %>
+                                    <%if (!c.account_locked) { %>
+                                        <option value="<%= c.evaluator_id %>"><%= c.evaluator_name %></option>
+                                    <% } %>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="task_status" name="task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="edit-task-container">
+                <div class="content-header">
+                    <h2>Edit Task</h2>
                 </div>
+
+                <form id="edit-task-form" class="admin-form" onsubmit="return editTask(event)">
+                    <div class="row">
+                        <input type="hidden" id="edit_task_id" name="edit_task_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_task_title" name="edit_task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_due_date" name="edit_due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_assigned_member" name="edit_assigned_member">
+                                <% evaluators.forEach((c) => { %>
+                                    <%if (!c.account_locked) { %>
+                                        <option value="<%= c.evaluator_id %>"><%= c.evaluator_name %></option>
+                                    <% } %>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_task_status" name="edit_task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
             </div>
         </div>
+
     </div>
+
     <%- include ../partials/footer %>
 </body>
 <script src="/static/js/general.js"></script>

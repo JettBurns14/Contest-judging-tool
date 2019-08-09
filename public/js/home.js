@@ -60,6 +60,21 @@ let deleteMessage = (message_id) => {
     }
 }
 
+let editTask = (edit_task_id, edit_task_title, edit_due_date, edit_assigned_member, edit_task_status) => {
+    let confirm = window.confirm("Are you sure you want to mark this task as " + edit_task_status + "?");
+    if (confirm) {
+        request("post", "/api/editTask", {
+            edit_task_id, edit_task_title, edit_due_date, edit_assigned_member, edit_task_status
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
 ///// HTML modifier functions (like displaying forms) /////
 let showCreateMessageForm = () => {
     let createMsg = document.querySelector("#create-message-container");

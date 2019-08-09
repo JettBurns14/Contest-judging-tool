@@ -406,6 +406,94 @@ exports.deleteMessage = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.addTask = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                task_title,
+                due_date,
+                assigned_member,
+                task_status
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("INSERT INTO task (task_title, due_date, assigned_member, task_status) VALUES ($1, $2, $3, $4)", [task_title, due_date, assigned_member, task_status], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem adding this task");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem adding this task");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.editTask = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                edit_task_id,
+                edit_task_title,
+                edit_due_date,
+                edit_assigned_member,
+                edit_task_status
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE task SET task_title = $1, due_date = $2, assigned_member = $3, task_status = $4 WHERE task_id = $5", [edit_task_title, edit_due_date, edit_assigned_member, edit_task_status, edit_task_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem editing this task");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem editing this task");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.deleteTask = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                task_id
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("DELETE FROM task WHERE task_id = $1;", [task_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem deleting this task");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem deleting this task");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 exports.submitEvaluation = (request, response, next) => {
     if (request.decodedToken) {
         try {

@@ -119,6 +119,59 @@ let editUser = (e) => {
     });
 }
 
+let addTask = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "edit_contest_current") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+    request("post", "/api/addTask", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+
+let editTask = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    delete body[""];
+    request("post", "/api/editTask", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+
+let deleteTask = (task_id) => {
+    let confirm = window.confirm("Are you sure you want to delete this task?");
+    if (confirm) {
+        request("post", "/api/deleteTask", {
+            task_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
 ///// HTML modifier functions (like displaying forms) /////
 let showCreateContestForm = () => {
     let createContest = document.querySelector("#create-contest-container");
@@ -165,3 +218,22 @@ let showEditUserForm = (...args) => {
         }
     }
 };
+
+let showCreateTaskForm = () => {
+    let createTask = document.querySelector("#create-task-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
+    viewTasks.style.display = "none";
+    createTask.style.display = "block";
+}
+
+let showEditTaskForm = (...args) => {
+    let editTask = document.querySelector("#edit-task-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
+    let editTaskForm = document.querySelector("#edit-task-form");
+    viewTasks.style.display = "none";
+    editTask.style.display = "block";
+    // Just need to set values of inputs to provided params.
+    for (let i = 0; i < editTaskForm.length - 1; i++) {
+        editTaskForm[i].value = args[i];
+    }
+}
