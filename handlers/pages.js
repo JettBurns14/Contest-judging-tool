@@ -21,7 +21,7 @@ exports.home = (request, response, next) => {
                     return handleNext(next, 400, "There was a problem getting the messages");
                 }
                 messages = res.rows;
-                db.query("SELECT *, to_char(t.due_date, $1) as due_date FROM task t WHERE assigned_member = $2 ORDER BY t.due_date DESC", [dateFormat, evaluator_id], res => {
+                db.query("SELECT *, to_char(t.due_date, $1) as due_date FROM task t WHERE assigned_member = $2 AND task_status != 'Completed' ORDER BY t.due_date DESC", [dateFormat, evaluator_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem getting the tasks");
                     }

@@ -13,10 +13,10 @@
     flex-direction: column;
     padding-top: 30px;
 }
-.message-container:first-child {
+.task:first-child, .message-container:first-child {
     padding-top: 0;
 }
-.message-container:last-child {
+.task:last-child, .message-container:last-child {
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -41,6 +41,12 @@
 #task-section {
     margin-top: 50px;
 }
+
+.task {
+    border-bottom: 1px solid gray;
+    padding-bottom: 10px;
+}
+
 .task-action:hover {
     cursor: pointer;
 }

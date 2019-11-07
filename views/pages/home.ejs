@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="/static/css/home.css">
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
 </head>
 
 <body>
@@ -26,37 +25,25 @@
                                 <p>My Tasks</p>
                             </div>
                             <div class="preview-content">
-                                <h3>Current Tasks:</h3>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Task</th>
-                                            <th style="width: 10%">Due Date</th>
-                                            <th style="width: 10%">Status</th>
-                                            <th style="width: 10%">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% tasks.forEach((c) => { %>
-                                            <%if (c.task_status !== "Completed") { %>
-                                                <tr>
-                                                    <td><%= c.task_title %></td>
-                                                    <td><%= c.due_date %></td>
-                                                    <td><%= c.task_status %></td>
-                                                    <td>
-                                                        <%if (c.task_status === "Not Started") { %>
-                                                            <span class="task-action" onclick="editTask(<%= c.task_id %>, '<%= c.task_title %>', '<%= c.due_date %>', <%= c.assigned_member %>, 'Started');">Mark as Started</span>
-                                                        <% } %>
+                                <%if (tasks.length == 0) { %>
+                                    <p>Woohoo! There are no tasks currently assigned to you!</p>
+                                <% } else { %>
+                                    <% tasks.forEach((c) => { %>
+                                        <div class="task">
+                                            <h3><%= c.task_title %></h3>
+                                            <p><strong>Due by: </strong><%= c.due_date %></p>
+                                            <p><strong>Actions: </strong>
+                                                <%if (c.task_status === "Not Started") { %>
+                                                    <span class="task-action" onclick="editTask(<%= c.task_id %>, '<%= c.task_title %>', '<%= c.due_date %>', <%= c.assigned_member %>, 'Started');">Mark as Started</span>
+                                                <% } %>
 
-                                                        <%if (c.task_status === "Started") { %>
-                                                            <span class="task-action" onclick="editTask(<%= c.task_id %>, '<%= c.task_title %>', '<%= c.due_date %>', <%= c.assigned_member %>, 'Completed');">Mark as Completed</span>
-                                                        <% } %>
-                                                    </td>
-                                                </tr>
-                                            <% } %>
-                                        <% }); %>
-                                    </tbody>
-                                </table>
+                                                <%if (c.task_status === "Started") { %>
+                                                    <span class="task-action" onclick="editTask(<%= c.task_id %>, '<%= c.task_title %>', '<%= c.due_date %>', <%= c.assigned_member %>, 'Completed');">Mark as Completed</span>
+                                                <% } %>
+                                            </p>
+                                        </div>
+                                    <% }); %>
+                                <% } %>
                             </div>
                         </div>
                     </div>
