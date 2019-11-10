@@ -1,10 +1,23 @@
-/** Handlers for ADDING, EDITING, and DELETING contests **/
+/** Handlers for GETTING, ADDING, EDITING, and DELETING contests **/
 
 const {
     handleNext,
     successMsg
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
+const { displayDateFormat } = require(process.cwd() + "/util/variables");
+
+exports.get = (request, response, next) => {
+    return db.query("SELECT *, to_char(date_start, $1) as date_start, to_char(date_end, $2) as date_end FROM contest ORDER BY contest_id DESC", [displayDateFormat, displayDateFormat], res => {
+        if (res.error) {
+            return handleNext(next, 400, "There was a problem getting the contests");
+        }
+        response.json({
+            is_admin: request.decodedToken ? request.decodedToken.is_admin : false,
+            contests: res.rows
+        });
+    });
+};
 
 exports.add = (request, response, next) => {
     if (request.decodedToken) {

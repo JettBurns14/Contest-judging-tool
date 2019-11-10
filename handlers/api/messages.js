@@ -5,6 +5,32 @@ const {
     successMsg
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
+const { displayDateFormat } = require(process.cwd() + "/util/variables");
+
+exports.get = (request, response, next) => {
+    if (request.decodedToken) {
+        return db.query("SELECT *, to_char(m.message_date, $1) as message_date FROM messages m ORDER BY m.message_date DESC", [displayDateFormat], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the messages");
+            }
+            response.json({
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin,
+                messages: res.rows
+            });
+        });
+    }
+    return db.query("SELECT *, to_char(m.message_date, $1) as message_date FROM messages m WHERE public = true ORDER BY m.message_date DESC", [displayDateFormat], res => {
+        if (res.error) {
+            return handleNext(next, 400, "There was a problem getting the messages");
+        }
+        response.json({
+            logged_in: false,
+            is_admin: false,
+            messages: res.rows
+        });
+    });
+};
 
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
@@ -12,7 +38,8 @@ exports.add = (request, response, next) => {
             let {
                 message_date,
                 message_title,
-                message_content
+                message_content,
+                public
             } = request.body;
             let {
                 is_admin,
@@ -20,7 +47,7 @@ exports.add = (request, response, next) => {
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content) VALUES ($1, $2, $3, $4);", [evaluator_name, message_date, message_title, message_content], res => {
+                return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content, public) VALUES ($1, $2, $3, $4, $5);", [evaluator_name, message_date, message_title, message_content, public], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this message");
                     }
@@ -43,14 +70,15 @@ exports.edit = (request, response, next) => {
                 message_id,
                 message_date,
                 message_title,
-                message_content
+                message_content,
+                public
             } = request.body;
             let {
                 is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("UPDATE messages SET message_date = $1, message_title = $2, message_content = $3 WHERE message_id = $4", [message_date, message_title, message_content, message_id], res => {
+                return db.query("UPDATE messages SET message_date = $1, message_title = $2, message_content = $3, public = $4 WHERE message_id = $5", [message_date, message_title, message_content, public, message_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this message");
                     }

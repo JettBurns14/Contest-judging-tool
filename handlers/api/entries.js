@@ -1,4 +1,4 @@
-/** Handlers for ADDING, EDITING, DELETING, and IMPORTING entries **/
+/** Handlers for GETTING, ADDING, EDITING, DELETING, and IMPORTING entries **/
 
 const {
     handleNext,
@@ -7,6 +7,34 @@ const {
 const db = require(process.cwd() + "/util/db");
 const Request = require("request");
 const Moment = require("moment");
+const { displayFancyDateFormat } = require(process.cwd() + "/util/variables");
+
+exports.get = (request, response, next) => {
+    let contest_id = request.query.contestId;
+    // Send back all entry info
+    if (request.decodedToken) {
+        return db.query("SELECT *, to_char(entry_created, $1) as entry_created FROM entry WHERE contest_id = $2 ORDER BY entry_id", [displayFancyDateFormat, contest_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the entries");
+            }
+            return response.json({
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin,
+                entries: res.rows
+            });
+        });
+    }
+    return db.query("SELECT entry_id, contest_id, entry_url, entry_kaid, entry_title, entry_author, to_char(entry_created, $1) as entry_created FROM entry WHERE contest_id = $2 ORDER BY entry_id", [displayFancyDateFormat, contest_id], res => {
+        if (res.error) {
+            return handleNext(next, 400, "There was a problem getting the entries");
+        }
+        return response.json({
+            logged_in: false,
+            is_admin: false,
+            entries: res.rows
+        });
+    });
+};
 
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
