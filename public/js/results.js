@@ -11,6 +11,11 @@ let evalsPerLevelSpinner = document.querySelector("#evalsPerLevel-spinner");
 let evalsPerEvaluatorSpinner = document.querySelector("#evalsPerEvaluator-spinner");
 let winnersSpinner = document.querySelector("#winners-spinner");
 let entriesByAvgScoreSpinner = document.querySelector("#entriesByAvgScore-spinner");
+// Hidden tables to be displayed once data is received.
+let evalsPerLevelTable = document.querySelector("#evals-per-level-table");
+let evalsPerEvaluatorTable = document.querySelector("#evals-per-evaluator-table");
+let winnersTable = document.querySelector("#winners-table");
+let entriesByAvgScoreTable = document.querySelector("#entries-by-avg-score-table");
 // Containers to fill
 let sidebar = document.querySelector(".side-bar");
 let evalsPerLevelTableBody = document.querySelector("#evalsPerLevel-table-body");
@@ -44,6 +49,7 @@ request("get", "/api/internal/contests", null, (data) => {
 request("get", `/api/internal/results?contestId=${currentContestId}`, null, (data) => {
     if (!data.error) {
         evalsPerLevelSpinner.style.display = "none";
+        evalsPerLevelTable.style.display = "block";
         data.results.evaluationsPerLevel.forEach(a => {
             evalsPerLevelTableBody.innerHTML += `
             <tr>
@@ -56,6 +62,7 @@ request("get", `/api/internal/results?contestId=${currentContestId}`, null, (dat
             </tr>`;
         });
         evalsPerEvaluatorSpinner.style.display = "none";
+        evalsPerEvaluatorTable.style.display = "block";
         data.results.evaluationsPerEvaluator.forEach(a => {
             evalsPerEvaluatorTableBody.innerHTML += `
             <tr>
@@ -68,6 +75,7 @@ request("get", `/api/internal/results?contestId=${currentContestId}`, null, (dat
             </tr>`;
         });
         winnersSpinner.style.display = "none";
+        winnersTable.style.display = "block";
         data.results.winners.forEach(a => {
             winnersTableBody.innerHTML += `
             <tr>
@@ -94,6 +102,7 @@ request("get", `/api/internal/results?contestId=${currentContestId}`, null, (dat
             </tr>`;
         });
         entriesByAvgScoreSpinner.style.display = "none";
+        entriesByAvgScoreTable.style.display = "block";
         data.results.entriesByAvgScore.forEach(a => {
             entriesByAvgScoreTableBody.innerHTML += `
             <tr>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Results | Challenge Council</title>
     <%- include ../partials/styles %>
-    <!-- <link rel="stylesheet" type="text/css" href="/static/css/results.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/results.css">
     <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
@@ -37,7 +37,7 @@
                 </div>
                 <div class="preview-content">
                     <img id="winners-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
-                    <table>
+                    <table id="winners-table">
                         <thead>
                             <th>ID</th>
                             <th>Title</th>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="preview-content">
                         <img id="evalsPerEvaluator-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
-                        <table>
+                        <table id="evals-per-evaluator-table">
                             <thead>
                                 <th>Judge Name</th>
                                 <th>Entries Scored</th>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="preview-content">
                         <img id="evalsPerLevel-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
-                        <table>
+                        <table id="evals-per-level-table">
                             <thead>
                                 <th>Level</th>
                                 <th>Number of Entries</th>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="preview-content">
                         <img id="entriesByAvgScore-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
-                        <table>
+                        <table id="entries-by-avg-score-table">
                             <thead>
                                 <th>ID</th>
                                 <th>Title</th>
