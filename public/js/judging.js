@@ -4,7 +4,7 @@ avatars.forEach(el => {
 });
 
 let viewerIframe = document.getElementById("entry-viewer-iframe");
-let spinner = document.getElementById("loading-spinner");
+let spinner = document.querySelector(".loading-spinner");
 
 let Slider = function({
     title,
