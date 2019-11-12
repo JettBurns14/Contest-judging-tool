@@ -14,9 +14,6 @@
     <%- include ../partials/header %>
     <div class="page-container">
         <div class="content-container">
-            <!-- <div class="content-header">
-                <h2>Home</h2>
-            </div> -->
             <section id="message-section">
                 <div id="create-message-container">
                     <div class="message-form-heading">
@@ -45,6 +42,14 @@
                             </div>
                             <div class='col-90'>
                                 <textarea id='message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10">
+                                <label for="public">Public</label>
+                            </div>
+                            <div class="col-90">
+                                <input class="form-input" type="checkbox" id="public" name="public">
                             </div>
                         </div>
                         <div class='row'>
@@ -86,6 +91,14 @@
                                 <textarea id='edit-message-content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-10">
+                                <label for="public">Make Public</label>
+                            </div>
+                            <div class="col-90">
+                                <input class="form-input" type="checkbox" id="public" name="public">
+                            </div>
+                        </div>
                         <div class='row'>
                             <input type='submit' class="admin-button" value='Save'>
                         </div>
@@ -97,38 +110,11 @@
                             <div class="db-header">
                                 <p>Announcements</p>
                                 <%if (is_admin) { %>
-                                <p class="admin-button" onclick="showCreateMessageForm()">New Announcement</p>
+                                    <p class="admin-button" onclick="showCreateMessageForm()">New Announcement</p>
                                 <% } %>
                             </div>
-                            <div class="preview-content">
-                                <% messages.forEach((c) => { %>
-                                <div class="message-container">
-                                    <div class="message-header">
-                                        <h3>
-                                            <%= c.message_title %>
-                                        </h3>
-                                    </div>
-                                    <div class="message-content">
-                                        <%- c.message_content.replace(/\n/g, '<br>') %>
-                                    </div>
-                                    <div class="message-bottom">
-                                        <div class="message-options">
-                                            <%if (is_admin) { %>
-                                            <i class="control-btn far fa-edit" onclick="showEditMessageForm(<%= c.message_id %>, '<%= c.message_date %>', '<%= c.message_title %>', `<%= c.message_content %>`);"></i>
-                                            <i class="control-btn red far fa-trash-alt" onclick="deleteMessage(<%= c.message_id %>)"></i>
-                                            <% } %>
-                                        </div>
-                                        <div class="message-meta">
-                                            <p class="message-author">By
-                                                <%= c.message_author %>
-                                            </p>
-                                            <p class="message-date">Posted
-                                                <%= c.message_date %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <% }); %>
+                            <div id="messages-container" class="preview-content">
+                                <img id="messages-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                             </div>
                         </div>
                     </div>
@@ -140,5 +126,4 @@
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/home.js"></script>
-
 </html>

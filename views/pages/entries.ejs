@@ -16,21 +16,15 @@
 
     <div class="page-container">
         <div class="side-bar">
-            <% contests.forEach((c) => { %>
-            <a class="nav-button" href="<%= '/entries/' + c.contest_id%>" %>">
-                <i class="fas fa-trophy"></i>
-                <p>
-                    <%= c.contest_name%>
-                </p>
-            </a>
-            <% }); %>
+            <!-- Contests -->
+            <img id="sidebar-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
         </div>
 
         <div class="content-container" id="entry-list">
             <div class="content-header">
-                <h2>
-                    Entries for
-                    <%= contests[contest_id - 1].contest_name %>
+                <h2 id="entry-contest-name">
+                    <img id="title-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner small">
+                    <!-- contest name -->
                 </h2>
                 <% if (is_admin) { %>
                 <div>
@@ -45,58 +39,22 @@
                         <p>Entry stats</p>
                     </div>
                     <div class="preview-content">
-                        <table>
+                        <img id="entries-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table id="entries-table">
                             <thead>
                                 <th style="width: 3%">ID</th>
                                 <th style="width: 10%">Title</th>
                                 <th style="width: 10%">Author</th>
+                                <% if (logged_in) { %>
                                 <th style="width: 10%">Skill Level</th>
+                                <% } %>
                                 <th style="width: 15%">Created</th>
-                                <%if (is_admin) { %>
+                                <% if (is_admin) { %>
                                 <th style="width: 3%">Actions</th>
                                 <% } %>
                             </thead>
-                            <tbody>
-                                <% entries.forEach((a, idx) => { %>
-                                <tr id="<%= a.entry_id%>">
-                                    <td>
-                                        <%= a.entry_id%>
-                                    </td>
-                                    <td><a href='<%= a.entry_url %>' target='_blank'>
-                                            <%= a.entry_title %></a></td>
-                                    <td>
-                                        <%= a.entry_author %>
-                                    </td>
-                                    <td id="<%= a.entry_id + '-level'%>">
-                                        <div class="view-entry-level">
-                                            <%= a.entry_level %>
-                                        </div>
-                                        <div class="edit-entry-level">
-                                            <form class="edit-entry-level-form" onSubmit="return editEntry(event)">
-                                                <input type="hidden" name="entry_id">
-                                                <select name="edited_level">
-                                                    <option value="tbd">TBD</option>
-                                                    <option value="Beginner">Beginner</option>
-                                                    <option value="Intermediate">Intermediate</option>
-                                                    <option value="Advanced">Advanced</option>
-                                                </select>
-                                                <button class="check-icon">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <%= a.entry_created %>
-                                    </td>
-                                    <% if (is_admin) { %>
-                                    <td id="<%= a.entry_id + '-actions'%>">
-                                        <i class="control-btn far fa-edit" onclick="showEditEntryForm(<%= a.entry_id %>, <%= idx %>, <%= contest_id %>)"></i>
-                                        <i class="control-btn red far fa-trash-alt" onclick="deleteEntry(<%= a.entry_id %>, <%= contest_id %>)"></i>
-                                    </td>
-                                    <% } %>
-                                </tr>
-                                <% }); %>
+                            <tbody id="entries-table-body">
+                                <!-- Entries -->
                             </tbody>
                         </table>
                     </div>

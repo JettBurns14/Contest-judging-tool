@@ -33,7 +33,7 @@
     <p id="entry-identifier">
         <%= entry.o_entry_id %>
     </p>
-    <img src="/static/images/new-loading-spinner.svg" id="loading-spinner">
+    <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
     <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url %>/embedded" height="<%= entry.o_entry_height + 68 %>"></iframe>
 
     <form id="entry-form" onSubmit="return submitEvaluation(event)">
@@ -62,7 +62,7 @@
                 <option class="skill-option" value="Beginner">Beginner</option>
             </select>
 
-            <input type="submit" class="admin-button" value="Submit"></input>
+            <input type="submit" class="admin-button" <%= !logged_in ? 'disabled' : '' %> value="Submit"></input>
         </div>
     </form>
     <% } %>

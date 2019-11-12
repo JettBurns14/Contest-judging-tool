@@ -28,57 +28,21 @@
                     <div class="db-header">
                         <p>Your reviewed entries for current contest:</p>
                     </div>
-                    <div class="preview-content">
-                        <p class="large-stat">
-                            <%= reviewedCount %> /
-                            <%= entryCount %>
-                        </p>
+                    <div id="reviewed-entries-count" class="preview-content">
+                        <!-- reviewedCount -->
+                        <img class="loading-spinner" src="/static/images/new-loading-spinner.svg">
                     </div>
                 </div>
                 <div class="preview col-6 standard">
                     <div class="db-header">
                         <p>Total reviewed entries for current contest:</p>
                     </div>
-                    <div class="preview-content">
-                        <p class="large-stat">
-                            <%= totalEvaluationsCount %> /
-                            <%= totalEvaluationsNeeded %>
-                        </p>
+                    <div id="total-evaluations-count" class="preview-content">
+                        <!-- totalEvaluationsCount -->
+                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                     </div>
                 </div>
             </div>
-            <!--<div id="view-stats-container">
-                <div class="stats-box">
-                    <i class="far fa-chart-bar font-25"></i>
-                    <h4>
-                        <%= reviewedCount %> /
-                        <%= entryCount %>
-                    </h4>
-                    <small>Your Reviews</small>
-                </div>
-                <div class="stats-box">
-                    <i class="far fa-chart-bar font-25"></i>
-                    <h4>
-                        <%= totalEvaluationsCount %> /
-                        <%= totalEvaluationsNeeded %>
-                    </h4>
-                    <small>Total Reviews</small>
-                </div>
-                <div class="stats-box">
-                    <i class="far fa-chart-bar font-25"></i>
-                    <h4>
-                        24 / 90
-                    </h4>
-                    <small>Lol Hey Folks</small>
-                </div>
-                <div class="stats-box">
-                    <i class="far fa-chart-bar font-25"></i>
-                    <h4>
-                        1920 / 2939
-                    </h4>
-                    <small>Things Here</small>
-                </div>
-            </div>-->
         </div>
 
         <div class="content-container" id="contests-page">
@@ -86,37 +50,13 @@
                 <div class="content-header">
                     <h2>Contests</h2>
                     <% if (is_admin) { %>
-                    <span id="add-contest-btn" class="admin-button" onclick="showCreateContestForm('<%= evaluator_name %>')">Add Contest</span>
+                    <span id="add-contest-btn" class="admin-button" onclick="showCreateContestForm()">Add Contest</span>
                     <% } %>
                 </div>
 
-                <div class="previews-container">
-                    <% contests.forEach((c) => { %>
-                    <div class="preview col-4 standard <%if (c.current) {%>current-contest<%} %>">
-                        <div class="db-header">
-                            <p>
-                                <%= c.contest_name + " - #" + c.contest_id %>
-                            </p>
-                            <% if (is_admin) { %>
-                            <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditContestForm(<%= c.contest_id %>, '<%= c.contest_name %>', '<%= c.contest_url %>', '<%= c.contest_author %>', '<%- c.date_start %>', '<%- c.date_end %>', <%= c.current %>);"></i>
-                                <i class="control-btn red far fa-trash-alt" onclick="deleteContest(<%= c.contest_id %>)"></i>
-                            </div>
-                            <% } %>
-                        </div>
-                        <div class="preview-content">
-                            <a href="<%= c.contest_url %>" target="_blank">
-                                <img class="preview-thumb" src="<%= c.contest_url + '/latest.png' %>">
-                            </a>
-                            <p>Start:
-                                <%= c.date_start %>
-                            </p>
-                            <p>End:
-                                <%= c.date_end %>
-                            </p>
-                        </div>
-                    </div>
-                    <% }); %>
+                <div id="contest-preview-box" class="previews-container">
+                    <!-- Contests -->
+                    <img id="contests-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                 </div>
             </div>
             <div id="edit-contest-container">
@@ -244,6 +184,7 @@
             </div>
         </div>
 
+        <% if (is_admin) { %>
         <div class="content-container" id="users-page">
             <div id="view-users-container">
                 <div class="content-header">
@@ -253,49 +194,9 @@
                     <% } %>
                 </div>
 
-                <div class="previews-container">
-                    <% evaluators.forEach((c) => { %>
-                    <div class="preview col-4 standard">
-                        <div class="db-header">
-                            <p>
-                                <%= c.evaluator_name %>
-                            </p>
-                            <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditUserForm(<%= c.evaluator_id %>, '<%= c.evaluator_name %>', '<%= c.evaluator_kaid %>', <%= c.is_admin %>, <%= c.account_locked %>);"></i>
-                            </div>
-                        </div>
-                        <div class="preview-content">
-                            <a href="<%= 'https://www.khanacademy.org/profile/' + c.evaluator_kaid %>" target="_blank">Profile</a>
-                            <p>
-                                <span class="bold">ID:</span>
-                                <%= c.evaluator_id %>
-                            </p>
-                            <p>
-                                <span class="bold">KAID:</span>
-                                <%= c.evaluator_kaid %>
-                            </p>
-                            <% if (c.account_locked) { %>
-                            <p>
-                                <span class="bold">Status:</span>
-                                <span class="red">Deactivated</span>
-                            </p>
-                            <% } else { %>
-                            <p>
-                                <span class="bold">Status:</span>
-                                <span class="green">Active</span>
-                            </p>
-                            <% } %>
-                            <p>
-                                <span class="bold">Permission Level:</span>
-                                <% if (c.is_admin) { %>
-                                Admin
-                                <% } else { %>
-                                Standard User
-                                <% } %>
-                            </p>
-                        </div>
-                    </div>
-                    <% }); %>
+                <div id="users-preview-box" class="previews-container">
+                    <!-- Evaluators -->
+                    <img id="users-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                 </div>
 
                 <div class="previews-container">
@@ -303,20 +204,10 @@
                         <div class="db-header">
                             <p>Whitelisted Kaids</p>
                         </div>
-                        <div class="preview-content">
+                        <div class="preview-content data">
                             <table id="whitelisted-kaids">
-                                <% whitelisted_kaids.forEach((c) => { %>
-                                <tr>
-                                    <td>
-                                        <p>
-                                            <%= c.kaid %>
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <i class="control-btn red far fa-trash-alt" onclick="deleteWhitelistedUser('<%= c.kaid %>')"></i>
-                                    </td>
-                                </tr>
-                                <% }); %>
+                                <!-- Kaids -->
+                                <img id="kaids-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner data">
                             </table>
                         </div>
                     </div>
@@ -387,6 +278,7 @@
                 </form>
             </div>
         </div>
+        <% } %>
 
         <div class="content-container" id="controls-page">
             <div class="content-header">
