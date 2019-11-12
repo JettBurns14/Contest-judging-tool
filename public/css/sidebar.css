@@ -5,6 +5,9 @@
     background: rgb(100, 160, 100);
     min-width: 250px;
 }
+.side-bar > .loading-spinner {
+    margin: 250px auto;
+}
 /* Button links in sidebar */
 .nav-button {
     display: flex;

@@ -9,23 +9,7 @@
     display: none;
 }
 
-/* Test styles, will use later
-#view-stats-container {
-    width: 25%;
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+.loading-spinner {
+    display: block;
+    margin: 0 auto;
 }
-.stats-box {
-    background: #343a40;
-    width: 33%;
-    text-align: center;
-    color: white;
-    padding: 10px;
-}
-.stats-box i.font-25 {
-    font-size: 25px;
-}
-.stats-box h4 {
-    margin: 10px 0;
-} */

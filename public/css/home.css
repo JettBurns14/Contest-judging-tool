@@ -34,7 +34,7 @@
     align-items: center;
     justify-content: space-between;
 }
-.message-author, .message-date {
+.message-author, .message-date, .message-public {
     font-size: 14px;
     margin: 5px 0;
 }

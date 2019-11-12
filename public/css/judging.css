@@ -28,22 +28,9 @@ body {
 .scratchpad-canvas-wrap .canvasWrap_sggodd {
     width: 65% !important;
 }
-#loading-spinner {
-    animation-name: spinner;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-duration: 1s;
+.loading-spinner {
     display: block;
     margin: 200px auto;
-    width: 120px;
-}
-@keyframes spinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 #entry-form {
     width: 84%;

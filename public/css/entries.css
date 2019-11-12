@@ -2,6 +2,10 @@
 .edit-entry-level {
     display: none;
 }
+/* Hides the entries table until the entries are loaded in */
+#entries-table {
+	display: none;
+}
 /* Actions buttons */
 td img.delete-icon, td img.edit-icon {
     width: 25%;

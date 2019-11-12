@@ -66,6 +66,33 @@ body {
     cursor: pointer;
     border: none;
 }
+.admin-button:disabled,
+.admin-button[disabled] {
+    background-color: #999;
+    cursor: default;
+}
+
+/* Loading spinners all use this style */
+.loading-spinner {
+    animation-name: spinner;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    margin: 0 auto;
+    display: block;
+    width: 120px;
+}
+.loading-spinner.small {
+    width: 40px;
+}
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 /* Footer style, not really enough for its own file yet. */
 .footer {
