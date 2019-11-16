@@ -25,7 +25,7 @@ request("get", "/api/internal/messages", null, (data) => {
                 <div class="message-bottom">
                     <div class="message-options">
                         ${ data.is_admin
-                            ? `<i class="control-btn far fa-edit" onclick="showEditMessageForm(${ msg.message_id }, '${ msg.message_date }', '${ msg.message_title }', '${ msg.message_content.replace(/"/g, "'") }', ${ msg.public });"></i>
+                            ? `<i class="control-btn far fa-edit" onclick="showEditMessageForm(${ msg.message_id }, '${ msg.message_date }', '${ msg.message_title }', \`${ msg.message_content.replace(/"/g, "'") }\`, ${ msg.public });"></i>
                                 <i class="control-btn red far fa-trash-alt" onclick="deleteMessage(${ msg.message_id })"></i>`
                             : ""
                         }
