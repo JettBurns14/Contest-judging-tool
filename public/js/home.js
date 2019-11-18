@@ -2,6 +2,7 @@ let header = document.querySelector(".page-header");
 header.classList.add("hero");
 let messagesContainer = document.querySelector("#messages-container");
 let messagesSpinner = document.querySelector("#messages-spinner");
+let tasksContainer = document.querySelector("#tasks-container");
 
 // Get messages, and load into page.
 request("get", "/api/internal/messages", null, (data) => {
@@ -49,6 +50,33 @@ request("get", "/api/internal/messages", null, (data) => {
         alert(data.error.message);
     }
 });
+// Get tasks for user, load into its container.
+request("get", "/api/internal/tasks/user", null, data => {
+    if (!data.error) {
+        if (data.tasks) {
+            if (data.tasks.length === 0) {
+                return tasksContainer.innerHTML = "<p>Woohoo! There are no tasks currently assigned to you!</p>";
+            }
+            data.tasks.forEach(c => {
+                tasksContainer.innerHTML += `
+                    <div class="task">
+                        <h3>${c.task_title}</h3>
+                        <p><strong>Due by: </strong>${c.due_date}</p>
+                        
+                            ${c.task_status === "Not Started" ? `
+                                <span class="task-action" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Started');"><i class="control-btn far fa-edit"></i>Mark as Started</span>
+                            ` : c.task_status === "Started" ? `
+                                <span class="task-action" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Completed');">Mark as Completed</span>
+                            ` : ""}
+                        </p>
+                    </div>
+                `;
+            });
+        }
+    } else {
+        alert(data.error.message);
+    }
+});
 
 ///// HTML modifier functions (like displaying forms) /////
 let showCreateMessageForm = () => {
@@ -57,7 +85,6 @@ let showCreateMessageForm = () => {
     viewMsgs.style.display = "none";
     createMsg.style.display = "block";
 }
-
 let showEditMessageForm = (...args) => {
     // Params are passed into displayed HTML.
     let editMsg = document.querySelector("#edit-message-container");
@@ -72,6 +99,21 @@ let showEditMessageForm = (...args) => {
         } else {
             editMsgForm[i].value = args[i];
         }
+    }
+}
+
+let editTask = (edit_task_id, edit_task_title, edit_due_date, edit_assigned_member, edit_task_status) => {
+    let confirm = window.confirm("Are you sure you want to mark this task as " + edit_task_status + "?");
+    if (confirm) {
+        request("put", "/api/internal/tasks", {
+            edit_task_id, edit_task_title, edit_due_date, edit_assigned_member, edit_task_status
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
     }
 }
 

@@ -8,6 +8,10 @@ let usersSpinner = document.querySelector("#users-spinner");
 let usersPreviewBox = document.querySelector("#users-preview-box");
 let kaidsSpinner = document.querySelector("#kaids-spinner");
 let whitelistedKaidsTable = document.querySelector("#whitelisted-kaids");
+let tasksTableBody = document.querySelector("#tasks-table-body");
+// The "select" tags to display evaluators inside
+let taskAssignedMember = document.querySelector("#assigned_member");
+let editTaskAssignedMember = document.querySelector("#edit_assigned_member");
 
 // Get stats for admin dashboard, and load into page.
 request("get", "/api/internal/admin/stats", null, (data) => {
@@ -98,6 +102,16 @@ request("get", "/api/internal/users", null, data => {
                         </div>
                     </div>
                 `;
+                taskAssignedMember.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
+                editTaskAssignedMember.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
             });
             kaidsSpinner.style.display = "none";
             data.kaids.forEach(c => {
@@ -111,6 +125,30 @@ request("get", "/api/internal/users", null, data => {
                     </td>
                 </tr>
                 `;
+            });
+        }
+    } else {
+        alert(data.error.message);
+    }
+});
+// Get all tasks, load into Tasks tab, if logged in.
+request("get", "/api/internal/tasks", null, data => {
+    if (!data.error) {
+        if (data.logged_in) {
+            data.tasks.forEach(t => {
+                tasksTableBody.innerHTML += `
+                <tr id="${t.task_id}">
+                    <td>${t.task_title}</td>
+                    <td>${t.due_date}</td>
+                    <td>${t.evaluator_name}</td>
+                    <td>${t.task_status}</td>
+                    ${data.is_admin ? `
+                        <td id="${t.task_id}-actions">
+                            <i class="control-btn far fa-edit" onclick="showEditTaskForm(${t.task_id}, '${t.task_title}', '${t.due_date}', '${t.assigned_member}', '${t.task_status}');"></i>
+                            <i class="control-btn red far fa-trash-alt" onclick="deleteTask(${t.task_id});"></i>
+                        </td>
+                    ` : ""}
+                </tr>`;
             });
         }
     } else {
@@ -134,7 +172,11 @@ let showpage = (page) => {
 };
 showpage(0);
 
+
+
 ///// These send form requests /////
+
+// Contests
 let addContest = (e) => {
     e.preventDefault();
     let body = {};
@@ -188,6 +230,9 @@ let deleteContest = (contest_id) => {
     }
 };
 
+
+
+// Users
 let whitelistUser = (e) => {
     e.preventDefault();
     let kaid = e.target[0].value;
@@ -215,7 +260,6 @@ let deleteWhitelistedUser = (kaid) => {
         });
     }
 }
-
 let editUser = (e) => {
     e.preventDefault();
     let body = {};
@@ -236,7 +280,61 @@ let editUser = (e) => {
     });
 }
 
+
+
+// Tasks
+let addTask = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    delete body[""];
+    request("post", "/api/internal/tasks", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let editTask = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    delete body[""];
+    request("put", "/api/internal/tasks", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+let deleteTask = (task_id) => {
+    let confirm = window.confirm("Are you sure you want to delete this task?");
+    if (confirm) {
+        request("delete", "/api/internal/tasks", {
+            task_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
+
+
 ///// HTML modifier functions (like displaying forms) /////
+
+// Contests
 let showCreateContestForm = () => {
     let createContest = document.querySelector("#create-contest-container");
     let viewContests = document.querySelector("#view-contests-container");
@@ -259,13 +357,13 @@ let showEditContestForm = (...args) => {
     }
 };
 
+// Users
 let showCreateUserForm = () => {
     let createUser = document.querySelector("#create-user-container");
     let viewUsers = document.querySelector("#view-users-container");
     viewUsers.style.display = "none";
     createUser.style.display = "block";
 }
-
 let showEditUserForm = (...args) => {
     // id, name, kaid, is_admin, account_locked
     let editUser = document.querySelector("#edit-user-container");
@@ -282,3 +380,24 @@ let showEditUserForm = (...args) => {
         }
     }
 };
+
+
+
+// Tasks
+let showCreateTaskForm = () => {
+    let createTask = document.querySelector("#create-task-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
+    viewTasks.style.display = "none";
+    createTask.style.display = "block";
+}
+let showEditTaskForm = (...args) => {
+    let editTask = document.querySelector("#edit-task-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
+    let editTaskForm = document.querySelector("#edit-task-form");
+    viewTasks.style.display = "none";
+    editTask.style.display = "block";
+    // Just need to set values of inputs to provided params.
+    for (let i = 0; i < editTaskForm.length - 1; i++) {
+        editTaskForm[i].value = args[i];
+    }
+}
