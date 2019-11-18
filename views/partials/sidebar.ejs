@@ -7,8 +7,14 @@
         <i class="fas fa-trophy"></i>
         <p>Contests</p>
     </a>
+    <% if (logged_in) { %>
+        <a class="nav-button" onclick="showpage(2)">
+            <i class="fas fa-tasks"></i>
+            <p>Tasks</p>
+        </a>
+    <% } %>
     <% if (is_admin) { %>
-	    <a class="nav-button" onclick="showpage(2)">
+	    <a class="nav-button" onclick="showpage(3)">
 	        <i class="fas fa-users"></i>
 	        <p>Users</p>
 	    </a>
