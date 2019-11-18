@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Entries | Challenge Council</title>
+    <%- include ../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/entries.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+    <%- include ../partials/header %>
+
+    <div class="page-container">
+        <div class="side-bar">
+            <!-- Contests -->
+            <img id="sidebar-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+        </div>
+
+        <div class="content-container" id="entry-list">
+            <div class="content-header">
+                <h2 id="entry-contest-name">
+                    <img id="title-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner small">
+                    <!-- contest name -->
+                </h2>
+                <% if (is_admin) { %>
+                <div>
+                    <span id="import-entries-btn" class="admin-button" onclick="updateEntries(<%= contest_id %>)">Import Entries</span>
+                    <span id="add-entry-btn" class="admin-button" onclick="addEntry(<%= contest_id %>)">Add Single Entry</span>
+                </div>
+                <% } %>
+            </div>
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Entry stats</p>
+                    </div>
+                    <div class="preview-content">
+                        <img id="entries-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table id="entries-table">
+                            <thead>
+                                <th style="width: 3%">ID</th>
+                                <th style="width: 10%">Title</th>
+                                <th style="width: 10%">Author</th>
+                                <% if (logged_in) { %>
+                                <th style="width: 10%">Skill Level</th>
+                                <% } %>
+                                <th style="width: 15%">Created</th>
+                                <% if (is_admin) { %>
+                                <th style="width: 3%">Actions</th>
+                                <% } %>
+                            </thead>
+                            <tbody id="entries-table-body">
+                                <!-- Entries -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Page content -->
+
+    </div> <!-- Page container -->
+    <%- include ../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/entries.js"></script>
+
+</html>

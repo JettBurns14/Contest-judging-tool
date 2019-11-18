@@ -1,54 +1,94 @@
-body {
-    font-family: "Lato", Arial;
-    margin: 0px;
-}
-
-#page-header {
-    align-items: center;
+.page-header {
     box-sizing: border-box;
+    background-color: #333;
+    height: 59px;
+    color: #fff;
+}
+.page-header .nav {
     padding: 0 10%;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    width: 100%;
-    border-bottom: 1px solid #e7e7e7;
+    align-items: center;
+    height: 59px;
+}
+.page-header.hero {
+    background-image: url("/static/images/volunteers.png");
+    height: 400px;
+    background-position: center top;
+    background-size: cover;
+    color: #fff;
+}
+.page-header.hero .heading {
+    display: block;
+}
+.page-header.hero .nav {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.page-header.hero .nav:hover {
     background-color: #fff;
-    height: 71px;
+    color: #333;
 }
-.nav a {
-    color: #777;
+.page-header.hero .nav .logo-container {
+    background: none;
+}
+.heading {
+    display: none;
+}
+.heading h1 {
+    text-align: center;
+    font-size: 50px;
+    text-shadow: 0 0 10px #555;
+    margin-top: 100px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background-color: inherit;
+}
+.logo-container a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit; /* #fff or #333 */
+}
+.logo svg {
+    width: 35px;
+    height: 35px;
+    padding: 0 10px 0 16px;
+}
+.logo h1 {
+    color: inherit; /* #fff or #333 */
+    letter-spacing: 3px;
+    margin: 0;
+}
+.links a:hover {
     text-decoration: none;
 }
-.nav:hover {
-    text-decoration: none;
-}
-#page-header .left {
+.page-header .left {
     flex-grow: 1;
 }
-.logo {
-    width: 320px;
-    padding: 9px;
-    font-size: 29px;
-    text-align: right;
-    font-weight: bold;
-    background-size: contain;
-    color: #0A2A66;
-    background-image: url(/static/images/ka-logo.png);
-    background-position: left center;
-    background-repeat: no-repeat;
-    text-decoration: none;
-}
 .logo:hover {
-    text-decoration: none;
-}
-.nav.user {
-    position: relative;
     cursor: pointer;
 }
-.user span:hover {
+.links span a {
+    color: inherit; /* #fff or #333 */
+    text-decoration: none;
+    margin-left: 20px;
+    cursor: pointer;
+}
+.links span a:hover {
     text-decoration: underline;
 }
+/*
+.dropdown-btn i {
+    vertical-align: middle;
+    width: 15px;
+    text-align: right;
+}
 .dropdown {
+    margin-right: 5px;
     position: absolute;
     background: #fff;
     display: none;
@@ -60,6 +100,7 @@ body {
     min-width: 200px;
     right: 0;
     left: auto;
+    z-index: 1;
 }
 .dropdown.open {
     display: flex;
@@ -87,30 +128,11 @@ body {
 .dropdown-option {
     padding: 7px 0 7px 20px;
     font-size: 16px;
+    text-decoration: none;
+    color: black;
 }
 .dropdown-option:hover {
     background-color: #eee;
     text-decoration: none;
 }
-
-
-.button {
-    color: #fff;
-    border: 0;
-    cursor: pointer;
-    display: block;
-    font-size: 16px;
-    padding: 10px 24px;
-    border-radius: 4px;
-    transition: box-shadow 0.1s linear;
-}
-.button.green {
-    background-color: #54820a;
-}
-.button.red {
-    background-color: #a94442;
-}
-
-.button:hover {
-    box-shadow: 0px 1px 6px grey;
-}
+*/

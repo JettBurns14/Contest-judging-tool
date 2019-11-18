@@ -1,16 +1,16 @@
 body {
     margin: 0;
     color: #333;
-    /* background-image: url("/static/images/lines.png");
-    background-position: bottom;
-    background-repeat: no-repeat;
-    background-size: 150%; */
+    background-color: #fff;
     height: 100vh;
 }
 
 #all-judged-message {
     text-align: center;
     margin-top: 200px;
+}
+.avatar-dancer {
+    max-width: 128px;
 }
 #entry-title {
     text-align: center;
@@ -28,31 +28,22 @@ body {
 .scratchpad-canvas-wrap .canvasWrap_sggodd {
     width: 65% !important;
 }
-#loading-spinner {
-    animation-name: spinner;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    animation-duration: 1s;
+.loading-spinner {
     display: block;
     margin: 200px auto;
-    width: 120px;
-}
-@keyframes spinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 #entry-form {
     width: 84%;
-    margin: 10px auto;
+    margin: 0 auto 50px;
 }
 #sliders-container {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
+}
+#form-options {
+    display: flex;
     justify-content: space-between;
 }
 #skill-selector {
@@ -65,10 +56,6 @@ body {
     width: 20%;
     height: 40px;
     font: inherit;
-}
-
-#submit-form-button {
-    float: right;
 }
 .form-field-div {
     margin: 0px 0px 40px;

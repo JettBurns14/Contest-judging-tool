@@ -1,0 +1,23 @@
+/* Hide the small edit entry forms */
+.edit-entry-level {
+    display: none;
+}
+/* Hides the entries table until the entries are loaded in */
+#entries-table {
+	display: none;
+}
+/* Actions buttons */
+td img.delete-icon, td img.edit-icon {
+    width: 25%;
+    margin: 0px 5% 0px 5%;
+    cursor: pointer;
+}
+/* For checkmark button when editing an entry */
+button.check-icon {
+    padding: 2px;
+    cursor: pointer;
+}
+button.check-icon i {
+    font-size: 14px;
+    width: 20px;
+}

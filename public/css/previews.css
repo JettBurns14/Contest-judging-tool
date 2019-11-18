@@ -1,0 +1,80 @@
+/* Boxes inside previews container */
+
+.previews-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* Boxes inside page container */
+.preview {
+    background: white;
+    display: inline-block;
+    border-radius: 5px;
+    position: relative;
+    margin: 0 0 30px;
+}
+.preview.col-12 {
+    width: 100%;
+}
+.preview.col-8 {
+    width: 64%;
+}
+.preview.col-6 {
+    width: 48%;
+}
+.preview.col-4 {
+    width: 32%;
+}
+.preview.col-3 {
+    width: 24%;
+}
+.preview.standard {
+    /* background: white; ??? */
+    border: 1px solid #ddd;
+}
+.preview.current-contest {
+    border: 3px solid green;
+}
+.preview.warning {
+    border: 1px solid #ebccd1;
+}
+.preview .db-header {
+    display: flex;
+    padding: 10px 15px;
+    margin: 0px;
+    border-radius: 4px 4px 0px 0px;
+    justify-content: space-between;
+    align-items: center;
+}
+.preview.warning .db-header {
+    color: #a94442;
+    background: #f2dede;
+    border-bottom: 1px solid #ebccd1;
+}
+.preview.standard .db-header {
+    color: black;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+.db-header p {
+    margin: 0px;
+    font-size: 14px;
+}
+.contest-options {
+    float: right;
+}
+.preview-content {
+    padding: 20px;
+    margin: 0px;
+}
+.preview-thumb {
+    max-width: 200px;
+}
+/* Temporary */
+.large-stat {
+    font-size: 48px;
+    margin: auto;
+    text-align: center;
+    margin-top: 4%;
+}

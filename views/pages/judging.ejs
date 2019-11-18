@@ -1,56 +1,73 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Judging | Challenge Council</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/static/css/judging.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    </head>
-    <body>
-        <%- include ../partials/header %>
 
-        <% if (entry.o_entry_id == -1) { %>
-            <div id="all-judged-message">
-                <h1>All entries evaluated!</h1>
-                <p>Go check out [this page] to check current voting results.</p>
+<head>
+    <meta charset="utf-8">
+    <title>Judging | Challenge Council</title>
+    <%- include ../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/judging.css">
+</head>
+
+<body>
+    <%- include ../partials/header %>
+
+    <% if (entry.o_entry_id == -1) { %>
+    <div id="all-judged-message">
+        <h1>All entries are judged!</h1>
+        <p>Go check out <a href="/results/1">this page</a> to check current voting results.</p>
+        <img class="avatar-dancer" src="/static/images/avatars/mr-pants.png">
+        <img class="avatar-dancer" src="/static/images/avatars/winston.png">
+        <img class="avatar-dancer" src="/static/images/avatars/orange-juice-squid.png">
+        <img class="avatar-dancer" src="/static/images/avatars/hopper-jumping.png">
+        <img class="avatar-dancer" src="/static/images/avatars/ohnoes.png">
+        <img class="avatar-dancer" src="/static/images/avatars/marcimus.png">
+        <img class="avatar-dancer" src="/static/images/avatars/old-spice-man.png">
+        <img class="avatar-dancer" src="/static/images/avatars/spunky-sam.png">
+        <img class="avatar-dancer" src="/static/images/avatars/mr-pink.png">
+        <img class="avatar-dancer" src="/static/images/avatars/purple-pi.png">
+    </div>
+    <% } else { %>
+    <h1 id="entry-title">
+        <%= entry.o_entry_title %>
+    </h1>
+    <p id="entry-identifier">
+        <%= entry.o_entry_id %>
+    </p>
+    <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+    <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url %>/embedded" height="<%= entry.o_entry_height + 68 %>"></iframe>
+
+    <form id="entry-form" onSubmit="return submitEvaluation(event)">
+        <input name="entry_id" value="<%= entry.o_entry_id %>" style="display: none;"></input>
+        <div id="sliders-container">
+            <div class="form-field-div">
+                <div class="sliderContainer" id="creativity-slider"></div>
             </div>
-        <% } else { %>
-            <h1 id="entry-title"><%= entry.o_entry_title %></h1>
-            <p id="entry-identifier"><%= entry.o_entry_id %></p>
-            <img src="/static/images/new-loading-spinner.svg" id="loading-spinner">
-            <iframe id="entry-viewer-iframe" src="<%= entry.o_entry_url + "/embedded" %>" height="<%= entry.o_entry_height + 4 %>"></iframe>
 
-            <form id="entry-form" method="post" action="/api/judging" target="_self">
-                <input name="entry_id" value="<%= entry.o_entry_id %>" style="display: none;"></input>
-                <div id="sliders-container">
-                    <div class="form-field-div">
-                        <div class="sliderContainer" id="creativity-slider"></div>
-                    </div>
+            <div class="form-field-div">
+                <div class="sliderContainer" id="complexity-slider"></div>
+            </div>
 
-                    <div class="form-field-div">
-                        <div class="sliderContainer" id="complexity-slider"></div>
-                    </div>
+            <div class="form-field-div">
+                <div class="sliderContainer" id="quality-code-slider"></div>
+            </div>
 
-                    <div class="form-field-div">
-                        <div class="sliderContainer" id="quality-code-slider"></div>
-                    </div>
+            <div class="form-field-div">
+                <div class="sliderContainer" id="interpretation-slider"></div>
+            </div>
+        </div>
+        <div id="form-options">
+            <select id="skill-selector" name="skill_level">
+                <option class="skill-option" value="Advanced">Advanced</option>
+                <option class="skill-option" value="Intermediate">Intermediate</option>
+                <option class="skill-option" value="Beginner">Beginner</option>
+            </select>
 
-                    <div class="form-field-div">
-                        <div class="sliderContainer" id="interpretation-slider"></div>
-                    </div>
-                </div>
-                <select id="skill-selector" name="skill_level">
-                    <option class="skill-option" value="Advanced">Advanced</option>
-                    <option class="skill-option" value="Intermediate">Intermediate</option>
-                    <option class="skill-option" value="Beginner">Beginner</option>
-                </select>
-
-                <input type="submit" id="submit-form-button" class="button green" value="Submit" ></input>
-            </form>
-            <script src="/static/js/judging.js"></script>
-        <% } %>
-    </body>
-    <script src="/static/js/general.js"></script>
+            <input type="submit" class="admin-button" <%= !logged_in ? 'disabled' : '' %> value="Submit"></input>
+        </div>
+    </form>
+    <% } %>
+    <%- include ../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/judging.js"></script>
 </html>

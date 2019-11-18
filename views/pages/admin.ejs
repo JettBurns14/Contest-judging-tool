@@ -1,95 +1,416 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Admin | Challenge Council</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
 
     <%- include ../partials/header %>
 
-    <div id="page-container">
-        <div id="side-bar">
-            <a class="nav-button selected" onclick="showpage(0)">Dashboard</a>
-            <a class="nav-button" onclick="showpage(1)">Contests</a>
-            <a class="nav-button" onclick="showpage(2)">Entries</a>
-            <a class="nav-button" onclick="showpage(3)">Results</a>
-            <a class="nav-button" onclick="showpage(4)">Activity</a>
-            <a class="nav-button" onclick="showpage(5)">Controls</a>
-        </div>
+    <div class="page-container">
+        <%- include ../partials/sidebar %>
 
-        <div class="page-content" id="dashboard-page">
-            <h1 id="content-header">Dashboard</h1>
-
-            <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Number of entries</p>
-                <div class="preview-content">
-                    <p><%= entryCount %></p>
-                </div>
+        <div class="content-container" id="dashboard-page">
+            <div class="content-header">
+                <h2>Dashboard</h2>
             </div>
 
-            <div class="preview-container standard" style="height: 100px">
-                <p class="db-header">Number of reviewed entries</p>
-                <div class="preview-content">
-                    <p><%= reviewedCount %></p>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-content" id="contests-page">
-            <h1 id="content-header">Contests</h1>
-            <% contests.forEach((c) => { %>
-                <% if (c.current) { %>
-                    <div class="preview-container current-contest">
-                <% } else { %>
-                    <div class="preview-container standard">
-                <% } %>
-                    <p class="db-header"><%= c.contest_name + " - #" + c.contest_id %></p>
-                    <div class="preview-content">
-                        <a href="<%= c.contest_url %>" target="_blank">
-                            <img class="preview-thumb" src="<%= c.contest_url + "/latest.png" %>">
-                        </a>
-                        <p>Start: <%= c.date_start %></p>
-                        <p>End: <%= c.date_end %></p>
+            <div class="previews-container">
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Your reviewed entries for current contest:</p>
+                    </div>
+                    <div id="reviewed-entries-count" class="preview-content">
+                        <!-- reviewedCount -->
+                        <img class="loading-spinner" src="/static/images/new-loading-spinner.svg">
                     </div>
                 </div>
-            <% }); %>
-        </div>
-
-        <div class="page-content" id="entries-page">
-            <h1 id="content-header">Entries</h1>
-            <ol id="entries-list"><% entries.forEach((e) => { %>
-                <li><span><%= e.entry_title %></span> created on <em><%= e.entry_created %></em></li>
-            <% }); %></ol>
-        </div>
-
-        <div class="page-content" id="results-page">
-            <h1 id="content-header">Results</h1>
-
-        </div>
-
-        <div class="page-content" id="activity-page">
-            <h1 id="content-header">Activity</h1>
-            <p>Coming soon.</p>
-        </div>
-
-        <div class="page-content" id="controls-page">
-            <h1 id="content-header">Controls</h1>
-            <div class="preview-container warning">
-                <h4 class="db-header">Update entries</h4>
-                <div class="preview-content">
-                    <p>Be careful! These settings must be used with care, ask Jett before clicking these buttons.</p>
-                    <button type="button" class="button red" id="update-entries-button">Update Entries</button>
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Total reviewed entries for current contest:</p>
+                    </div>
+                    <div id="total-evaluations-count" class="preview-content">
+                        <!-- totalEvaluationsCount -->
+                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    </body>
-    <script src="/static/js/general.js"></script>
-    <script src="/static/js/admin.js"></script>
+        <div class="content-container" id="contests-page">
+            <div id="view-contests-container">
+                <div class="content-header">
+                    <h2>Contests</h2>
+                    <% if (is_admin) { %>
+                        <span id="add-contest-btn" class="admin-button" onclick="showCreateContestForm()">Add Contest</span>
+                    <% } %>
+                </div>
+
+                <div id="contest-preview-box" class="previews-container">
+                    <!-- Contests -->
+                    <img id="contests-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                </div>
+            </div>
+            <div id="edit-contest-container">
+                <div class="content-header">
+                    <h2>Edit Contest</h2>
+                </div>
+
+                <form id="edit-contest-form" class="admin-form" onsubmit="return editContest(event)">
+                    <div class='row'>
+                        <div class='col-90'>
+                            <input type='hidden' id='edit_contest_id' name='edit_contest_id'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_name">Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_name" name="edit_contest_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_url">URL</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_url" name="edit_contest_url">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_author">Author</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_author" name="edit_contest_author">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_start_date" name="edit_contest_start_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_end_date" name="edit_contest_end_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_current">Current</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="edit_contest_current" name="edit_contest_current">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-contest-container">
+                <div class="content-header">
+                    <h2>Add Contest</h2>
+                </div>
+
+                <form id="add-contest-form" class="admin-form" onSubmit="return addContest(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_name">Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_name" name="contest_name" value="Contest: ">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_url">URL</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_url" name="contest_url" placeholder="URL">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_author">Author</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_author" name="contest_author" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_start_date" name="contest_start_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_end_date" name="contest_end_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_current">Current</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="contest_current" name="contest_current">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <% if (logged_in) { %>
+        <div class="content-container" id="tasks-page">
+            <div id="view-tasks-container">
+                <div class="content-header">
+                    <h2>Tasks</h2>
+                    <% if (is_admin) { %>
+                        <span id="add-task-btn" class="admin-button" onclick="showCreateTaskForm();">Add Task</span>
+                    <% } %>
+                </div>
+                <table>
+                    <thead>
+                        <th>Task</th>
+                        <th style="width: 10%">Due Date</th>
+                        <th style="width: 10%">Assigned Member</th>
+                        <th style="width: 10%">Status</th>
+                        <% if (is_admin) { %>
+                            <th style="width: 10%">Actions</th>
+                        <% } %>
+                    </thead>
+                    <tbody id="tasks-table-body">
+                        <!-- tasks -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="create-task-container">
+                <div class="content-header">
+                    <h2>Add Task</h2>
+                </div>
+                <form id="add-task-form" class="admin-form" onSubmit="return addTask(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="task_title" name="task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="due_date" name="due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="assigned_member" name="assigned_member">
+                                <!-- evaluators -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="task_status" name="task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="edit-task-container">
+                <div class="content-header">
+                    <h2>Edit Task</h2>
+                </div>
+
+                <form id="edit-task-form" class="admin-form" onsubmit="return editTask(event)">
+                    <div class="row">
+                        <input type="hidden" id="edit_task_id" name="edit_task_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_task_title" name="edit_task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_due_date" name="edit_due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_assigned_member" name="edit_assigned_member">
+                                <!-- evaluators -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_task_status" name="edit_task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+
+        <% if (is_admin) { %>
+        <div class="content-container" id="users-page">
+            <div id="view-users-container">
+                <div class="content-header">
+                    <h2>Users</h2>
+                    <% if (is_admin) { %>
+                        <span id="add-user-btn" class="admin-button" onclick="showCreateUserForm()">Add User</span>
+                    <% } %>
+                </div>
+
+                <div id="users-preview-box" class="previews-container">
+                    <!-- Evaluators -->
+                    <img id="users-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                </div>
+
+                <div class="previews-container">
+                    <div class="preview col-4 standard">
+                        <div class="db-header">
+                            <p>Whitelisted Kaids</p>
+                        </div>
+                        <div class="preview-content data">
+                            <table id="whitelisted-kaids">
+                                <!-- Kaids -->
+                                <img id="kaids-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner data">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-user-container">
+                <div class="content-header">
+                    <h2>Edit User</h2>
+                </div>
+
+                <form id="edit-user-form" class="admin-form" onsubmit="return editUser(event)">
+                    <div class="row">
+                        <input type="hidden" id="edit_user_id" name="edit_user_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_name">User's Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_name" name="edit_user_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_is_admin">Make an admin</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_account_locked">Lock account</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="checkbox" id="edit_account_locked" name="edit_user_account_locked">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-user-container">
+                <div class="content-header">
+                    <h2>Add User</h2>
+                </div>
+                <form id="add-user-form" class="admin-form" onsubmit="return whitelistUser(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <%- include ../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin.js"></script>
+
 </html>

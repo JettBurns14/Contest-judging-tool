@@ -1,4 +1,4 @@
-const submitForm = e => {
+let submitForm = e => {
     e.preventDefault();
     fetch("/api/auth/connect", {
         method: "POST",

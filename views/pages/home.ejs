@@ -1,22 +1,145 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Home | Challenge Council</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="/static/css/home.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
-        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
-        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    </head>
 
-    <body>
-        <%- include ../partials/header %>
-        <div id="page-container">
-            <p>Welcome to the Challenge Council Judging tool!</p>
-            <p>Chances are, you are here to judge the contest entries. Please see the header above ^ to navigate.</p>
-            <p>If you have any questions at all about using this tool, ask Jett since he built it.</p>
-            <p>If you would like to build new features, adjust the interface, or just look under the hood, check out all the code on <a href="https://github.com/JettBurns14/Contest-judging-tool">GitHub</a>.</p>
+<head>
+    <meta charset="utf-8">
+    <title>Home | Challenge Council</title>
+    <%- include ../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+</head>
+
+<body>
+    <%- include ../partials/header %>
+    <div class="page-container">
+        <div class="content-container">
+            <% if (logged_in) { %>
+                <section id="task-section">
+                    <div id="view-tasks-container">
+                        <div class="previews-container">
+                            <div class="preview col-12 standard">
+                                <div class="db-header">
+                                    <p>My Tasks</p>
+                                </div>
+                                <div class="preview-content" id="tasks-container">
+                                    <!-- tasks -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <% } %>
+            <section id="message-section">
+                <div id="create-message-container">
+                    <div class="message-form-heading">
+                        <h2>New Announcement:</h2>
+                    </div>
+                    <form id='create-message-form' class="admin-form" onSubmit="return addMessage(event)">
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_date'>Date</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_title'>Announcement Title</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_content'>Message</label>
+                            </div>
+                            <div class='col-90'>
+                                <textarea id='message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10">
+                                <label for="public">Public</label>
+                            </div>
+                            <div class="col-90">
+                                <input class="form-input" type="checkbox" id="public" name="public">
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <input class="admin-button" type='submit' value='Save'>
+                        </div>
+                    </form>
+                </div>
+                <div id="edit-message-container">
+                    <div class='message-form-heading'>
+                        <h2>Edit Announcement:</h2>
+                    </div>
+                    <form id='edit-message-form' class="admin-form" onSubmit="return editMessage(event)">
+                        <div class='row'>
+                            <div class='col-10'>
+                                <input type='hidden' id='message_id' name='message_id'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_date'>Date</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY' required>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_title'>Title</label>
+                            </div>
+                            <div class='col-90'>
+                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-10'>
+                                <label for='message_content'>Message</label>
+                            </div>
+                            <div class='col-90'>
+                                <textarea id='edit-message-content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10">
+                                <label for="public">Make Public</label>
+                            </div>
+                            <div class="col-90">
+                                <input class="form-input" type="checkbox" id="public" name="public">
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <input type='submit' class="admin-button" value='Save'>
+                        </div>
+                    </form>
+                </div>
+                <div id="view-messages-container">
+                    <div class="previews-container">
+                        <div class="preview col-12 standard">
+                            <div class="db-header">
+                                <p>Announcements</p>
+                                <%if (is_admin) { %>
+                                    <p class="admin-button" onclick="showCreateMessageForm()">New Announcement</p>
+                                <% } %>
+                            </div>
+                            <div id="messages-container" class="preview-content">
+                                <img id="messages-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </body>
-    <script src="/static/js/general.js"></script>
+    </div>
+    <%- include ../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/home.js"></script>
 </html>

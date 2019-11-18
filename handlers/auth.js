@@ -1,10 +1,10 @@
 // Thanks Ethan for the OAuth example, very helpful:
 // https://github.com/EthanLuisMcDonough/ka-oauth-example
 
-const db = require("../db");
+const db = require(process.cwd() + "/util/db");
 const jwt = require("jsonwebtoken");
 const OAuthClient = require("oauth-1-client");
-const { createJWTToken, handleNext, jsonMessage } = require("../functions");
+const { createJWTToken, handleNext, jsonMessage } = require(process.cwd() + "/util/functions");
 const { KA_CONSUMER_KEY, KA_CONSUMER_SECRET, PORT } = process.env;
 const OAUTH_CALLBACK_PATH = `/api/auth/oauth_callback`;
 const KA = "www.khanacademy.org";
@@ -68,14 +68,20 @@ exports.oauthCallback = function(request, response, next) {
                                 }
                                 // If row, truthy, user exists, just log in.
                                 if (result.rows.length) {
-                                    createJWTToken(kaid, token, tokenSecret)
+                                  if (result.rows[0].account_locked) {
+                                    response.redirect("/login");
+                                  } else {
+                                      createJWTToken(kaid, token, tokenSecret)
                                         .then(jwtToken => {
                                             response.cookie("jwtToken", jwtToken, { expires: new Date(Date.now() + 31536000000) });
                                             response.redirect("/");
                                         })
                                         .catch(err => handleNext(next, 400, err.message));
+                                  }
                                 } else {
                                     // User doesn't exist, sign up.
+                                    // Inserting this data would normally be dangerous, but Node.PG auto-sanitizes.
+                                    // https://github.com/brianc/node-postgres/wiki/FAQ#8-does-node-postgres-handle-sql-injection
                                     db.query("INSERT INTO evaluator (logged_in, logged_in_tstz, dt_term_start, dt_term_end, email, username, nickname, evaluator_name, evaluator_kaid, avatar_url) VALUES (true, CURRENT_TIMESTAMP, null, null, $1, $2, $3, $4, $5, $6)", [email, username, nickname, nickname, kaid, avatarUrl], result => {
                                         if (result.error) {
                                             return handleNext(next, 400, "There was a problem creating your account, please try again");

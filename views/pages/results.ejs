@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Results | Challenge Council</title>
+    <%- include ../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/results.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+    <%- include ../partials/header %>
+
+    <div class="page-container">
+        <div class="side-bar">
+            <!-- Contests -->
+            <img id="sidebar-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+        </div>
+
+        <div class="content-container" id="contest-results">
+            <div class="content-header">
+                <h2 id="results-contest-name">
+                    <img id="title-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner small">
+                    <!-- Contest name -->
+                </h2>
+            </div>
+
+            <div class="preview col-12 standard">
+                <div class="db-header">
+                    <p>Selected Winners</p>
+                    <% if (is_admin) { %>
+                        <span class="add-winner-btn admin-button" onclick="addWinner();">Add Winner</span>
+                    <% } %>
+                </div>
+                <div class="preview-content">
+                    <img id="winners-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    <table id="winners-table">
+                        <thead>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Skill Level</th>
+                            <% if (is_admin) { %>
+                                <th style="width: 3%">Actions</th>
+                            <% } %>
+                        </thead>
+                        <tbody id="winners-table-body">
+                            <!-- winners -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="previews-container">
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Entries scored per judge</p>
+                    </div>
+                    <div class="preview-content">
+                        <img id="evalsPerEvaluator-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table id="evals-per-evaluator-table">
+                            <thead>
+                                <th>Judge Name</th>
+                                <th>Entries Scored</th>
+                            </thead>
+                            <tbody id="evalsPerEvaluator-table-body">
+                                <!-- evaluationsPerEvaluator -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="preview col-6 standard">
+                    <div class="db-header">
+                        <p>Entries scored per level</p>
+                    </div>
+                    <div class="preview-content">
+                        <img id="evalsPerLevel-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table id="evals-per-level-table">
+                            <thead>
+                                <th>Level</th>
+                                <th>Number of Entries</th>
+                            </thead>
+                            <tbody id="evalsPerLevel-table-body">
+                                <!-- evaluationsPerLevel -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="preview col-12 standard wide-box">
+                    <div class="db-header">
+                        <% if (logged_in) { %>
+                            <p>Entries by average score</p>
+                        <% } else { %>
+                            <p>All entries in this contest</p>
+                        <% } %>
+                    </div>
+                    <div class="preview-content">
+                        <img id="entriesByAvgScore-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table id="entries-by-avg-score-table">
+                            <thead>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <% if (logged_in) { %>
+                                <th>Evaluations</th>
+                                <th>Skill Level</th>
+                                <th>Avg Score</th>
+                                <% } %>
+                            </thead>
+                            <tbody id="entriesByAvgScore-table-body">
+                                <!-- entriesByAvgScore -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Page content -->
+
+    </div> <!-- Page container -->
+    <%- include ../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/results.js"></script>
+
+</html>

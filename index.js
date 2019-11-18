@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 5000;
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const db = require("./db");
+const db = require("./util/db");
 const errorHandler = require("./middleware/error");
 const log = require("./middleware/log");
 const isLoggedIn = require("./middleware/isLoggedIn");
@@ -16,6 +16,7 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use("/static", express.static(__dirname + "/public"));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // Log every request.
 app.use(log);
@@ -41,6 +42,7 @@ db.connect(
     () => {
         console.log(time, "Connected to Postgres");
         app.listen(PORT, () => {
+            console.log(time, `Started in ${process.env.APP_STATE === "dev" ? "dev" : "prod"} mode`)
             console.log(time, `Council app is listening on port ${PORT}, http://localhost:${PORT}/`);
         });
     }
