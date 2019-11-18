@@ -14,6 +14,22 @@
     <%- include ../partials/header %>
     <div class="page-container">
         <div class="content-container">
+            <% if (logged_in) { %>
+                <section id="task-section">
+                    <div id="view-tasks-container">
+                        <div class="previews-container">
+                            <div class="preview col-12 standard">
+                                <div class="db-header">
+                                    <p>My Tasks</p>
+                                </div>
+                                <div class="preview-content" id="tasks-container">
+                                    <!-- tasks -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <% } %>
             <section id="message-section">
                 <div id="create-message-container">
                     <div class="message-form-heading">
