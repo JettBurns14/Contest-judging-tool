@@ -64,11 +64,11 @@ request("get", "/api/internal/tasks/user", null, data => {
                         <p><strong>Due by: </strong>${c.due_date}</p>
                         
                             ${c.task_status === "Not Started" ? `
-                                <span class="task-action" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Started');"><i class="control-btn far fa-edit"></i>Mark as Started</span>
+                                <span class="admin-button tasks" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Started');"><i class="control-btn tasks far fa-edit"></i>Mark as Started</span>
                             ` : c.task_status === "Started" ? `
-                                <span class="task-action" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Completed');">Mark as Completed</span>
+                                <span class="admin-button tasks" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Completed');"><i class="control-btn tasks far fa-check-square"></i>Mark as Completed</span>
                             ` : ""}
-                        </p>
+
                     </div>
                 `;
             });
