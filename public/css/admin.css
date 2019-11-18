@@ -5,7 +5,8 @@
 }
 /* Different views on the page */
 #create-contest-container, #edit-contest-container,
-#create-user-container, #edit-user-container {
+#create-user-container, #edit-user-container,
+#create-task-container, #edit-task-container {
     display: none;
 }
 
