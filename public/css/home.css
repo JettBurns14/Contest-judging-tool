@@ -45,3 +45,10 @@
     border-bottom: 1px solid gray;
     padding-bottom: 10px;
 }
+.admin-button.tasks {
+    display: inline-flex;
+    align-items: center;
+}
+.control-btn.tasks {
+    margin-right: 7px;
+}
