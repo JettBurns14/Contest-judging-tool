@@ -5,11 +5,12 @@ const {
     successMsg
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
+const { displayDateFormat } = require(process.cwd() + "/util/variables");
 
 exports.get = (request, response, next) => {
     if (request.decodedToken && request.decodedToken.is_admin) {
         let evaluators, kaids;
-        return db.query("SELECT * FROM evaluator ORDER BY evaluator_id ASC;", [], res => {
+        return db.query("SELECT *, to_char(e.logged_in_tstz, $1) as logged_in_tstz, to_char(e.dt_term_start, $1) as dt_term_start, to_char(e.dt_term_end, $1) as dt_term_end FROM evaluator e ORDER BY evaluator_id ASC;", [displayDateFormat], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the evaluators");
             }
