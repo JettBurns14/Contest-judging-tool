@@ -72,7 +72,7 @@ request("get", "/api/internal/users", null, data => {
                                 ${c.evaluator_name}
                             </p>
                             <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', ${c.is_admin}, ${c.account_locked});"></i>
+                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', '${c.username}', '${c.nickname}', '${c.email}', '${c.dt_term_start}', '${c.dt_term_end}', ${c.is_admin}, ${c.account_locked});"></i>
                             </div>
                         </div>
                         <div class="preview-content">
