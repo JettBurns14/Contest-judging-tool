@@ -62,7 +62,7 @@ request("get", "/api/internal/tasks/user", null, data => {
                     <div class="task">
                         <h3>${c.task_title}</h3>
                         <p><strong>Due by: </strong>${c.due_date}</p>
-                        
+
                             ${c.task_status === "Not Started" ? `
                                 <span class="admin-button tasks" onclick="editTask(${c.task_id}, '${c.task_title}', '${c.due_date}', ${c.assigned_member}, 'Started');"><i class="control-btn tasks far fa-edit"></i>Mark as Started</span>
                             ` : c.task_status === "Started" ? `
@@ -82,15 +82,19 @@ request("get", "/api/internal/tasks/user", null, data => {
 let showCreateMessageForm = () => {
     let createMsg = document.querySelector("#create-message-container");
     let viewMsgs = document.querySelector("#view-messages-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
     viewMsgs.style.display = "none";
+    viewTasks.style.display = "none";
     createMsg.style.display = "block";
 }
 let showEditMessageForm = (...args) => {
     // Params are passed into displayed HTML.
     let editMsg = document.querySelector("#edit-message-container");
     let viewMsgs = document.querySelector("#view-messages-container");
+    let viewTasks = document.querySelector("#view-tasks-container");
     let editMsgForm = document.querySelector("#edit-message-form");
     viewMsgs.style.display = "none";
+    viewTasks.style.display = "none";
     editMsg.style.display = "block";
     // Just need to set values of inputs to provided params.
     for (let i = 0; i < editMsgForm.length - 1; i++) {
