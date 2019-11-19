@@ -85,6 +85,40 @@ request("get", "/api/internal/users", null, data => {
                                 <span class="bold">KAID:</span>
                                 ${c.evaluator_kaid}
                             </p>
+                            <p>
+                                <span class="bold">Username:</span>
+                                ${c.username}
+                            </p>
+                            <p>
+                                <span class="bold">Nickname:</span>
+                                ${c.nickname}
+                            </p>
+                            <p>
+                                <span class="bold">Email:</span>
+                                ${c.email}
+                            </p>
+                            <p>
+                                <span class="bold">Term start:</span>
+                                ${c.dt_term_start ?
+                                    c.dt_term_start :
+                                    `N/A`
+                                }
+                            </p>
+                            <p>
+                                <span class="bold">Term end:</span>
+                                ${c.dt_term_end ?
+                                    c.dt_term_end :
+                                    `N/A`
+                                }
+                            </p>
+                            <p>
+                                <span class="bold">Logged in:</span>
+                                ${c.logged_in}
+                            </p>
+                            <p>
+                                <span class="bold">Last login:</span>
+                                ${c.logged_in_tstz}
+                            </p>
                             ${c.account_locked ? `
                             <p>
                                 <span class="bold">Status:</span>
