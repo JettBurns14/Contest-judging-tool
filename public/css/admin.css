@@ -14,3 +14,7 @@
     display: block;
     margin: 0 auto;
 }
+
+.user.preview {
+	overflow-wrap: break-word;
+}

@@ -66,7 +66,7 @@ request("get", "/api/internal/users", null, data => {
             data.evaluators.forEach(c => {
                 usersSpinner.style.display = "none";
                 usersPreviewBox.innerHTML += `
-                    <div class="preview col-4 standard">
+                    <div class="user preview col-4 standard">
                         <div class="db-header">
                             <p>
                                 ${c.evaluator_name}
