@@ -7,11 +7,11 @@ assignees: ''
 
 ---
 
-**Describe your idea**
+## **Describe your idea**
 A clear and concise description of the idea.
 
-**How would your idea improve the project or user experience?**
+## **How would your idea improve the project or user experience?**
 Describe the benefits.
 
-**Have screenshots? Attach them!**
+## **Have screenshots? Attach them!**
 Attach any screenshots or other related files here.
