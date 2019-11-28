@@ -387,6 +387,12 @@ let showEditUserForm = (...args) => {
 let showCreateTaskForm = () => {
     let createTask = document.querySelector("#create-task-container");
     let viewTasks = document.querySelector("#view-tasks-container");
+
+    // Set default date
+    let today = new Date();
+    let date = (today.getMonth()+1) + '-' + today.getDate() + '-' + today.getFullYear();
+    document.querySelector("#add-task-form #due_date").value = date;
+
     viewTasks.style.display = "none";
     createTask.style.display = "block";
 }
