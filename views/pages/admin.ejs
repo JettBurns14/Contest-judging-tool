@@ -412,5 +412,13 @@
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/admin.js"></script>
-
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $('#edit_contest_start_date, #edit_contest_end_date, #contest_start_date, #contest_end_date, #due_date, #edit_due_date').datepicker({
+            dateFormat: "mm-dd-yy"
+        });
+    });
+</script>
 </html>
