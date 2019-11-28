@@ -38,34 +38,34 @@
                     <form id='create-message-form' class="admin-form" onSubmit="return addMessage(event)">
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_date'>Date</label>
+                                <label for='new_message_date'>Date</label>
                             </div>
                             <div class='col-90'>
-                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY'>
+                                <input type='text' id='new_message_date' class="form-input datepicker" name='message_date' placeholder='MM-DD-YYYY'>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_title'>Announcement Title</label>
+                                <label for='new_message_title'>Announcement Title</label>
                             </div>
                             <div class='col-90'>
-                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                                <input type='text' id='new_message_title' class="form-input" name='message_title'>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_content'>Message</label>
+                                <label for='new_message_content'>Message</label>
                             </div>
                             <div class='col-90'>
-                                <textarea id='message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                                <textarea id='new_message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-10">
-                                <label for="public">Public</label>
+                                <label for="new_public">Public</label>
                             </div>
                             <div class="col-90">
-                                <input class="form-input" type="checkbox" id="public" name="public">
+                                <input class="form-input" type="checkbox" id="new_public" name="public">
                             </div>
                         </div>
                         <div class='row'>
@@ -80,39 +80,39 @@
                     <form id='edit-message-form' class="admin-form" onSubmit="return editMessage(event)">
                         <div class='row'>
                             <div class='col-10'>
-                                <input type='hidden' id='message_id' name='message_id'>
+                                <input type='hidden' id='edit_message_id' name='message_id'>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_date'>Date</label>
+                                <label for='edit_message_date'>Date</label>
                             </div>
                             <div class='col-90'>
-                                <input type='text' id='message_date' class="form-input" name='message_date' placeholder='MM-DD-YYYY' required>
+                                <input type='text' id='edit_message_date' class="form-input datepicker" name='message_date' placeholder='MM-DD-YYYY' required>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_title'>Title</label>
+                                <label for='edit_message_title'>Title</label>
                             </div>
                             <div class='col-90'>
-                                <input type='text' id='message_title' class="form-input" name='message_title'>
+                                <input type='text' id='edit_message_title' class="form-input" name='message_title'>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-10'>
-                                <label for='message_content'>Message</label>
+                                <label for='edit_message_content'>Message</label>
                             </div>
                             <div class='col-90'>
-                                <textarea id='edit-message-content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                                <textarea id='edit_message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-10">
-                                <label for="public">Make Public</label>
+                                <label for="edit_public">Make Public</label>
                             </div>
                             <div class="col-90">
-                                <input class="form-input" type="checkbox" id="public" name="public">
+                                <input class="form-input" type="checkbox" id="edit_public" name="public">
                             </div>
                         </div>
                         <div class='row'>
@@ -142,4 +142,17 @@
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/home.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $('#create-message-form #new_message_date, #edit-message-form #edit_message_date').datepicker({
+                dateFormat: "mm-dd-yy"
+            });
+        });
+    </script>
+  </script>
 </html>

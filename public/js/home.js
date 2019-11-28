@@ -87,7 +87,7 @@ let showCreateMessageForm = () => {
     // Set default message creation Date
     let today = new Date();
     let date = (today.getMonth()+1) + '-' + today.getDate() + '-' + today.getFullYear();
-    document.querySelector("#create-message-form #message_date").value = date;
+    document.querySelector("#create-message-form #new_message_date").value = date;
 
     viewMsgs.style.display = "none";
     viewTasks.style.display = "none";
