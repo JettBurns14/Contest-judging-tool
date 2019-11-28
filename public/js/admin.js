@@ -66,13 +66,13 @@ request("get", "/api/internal/users", null, data => {
             data.evaluators.forEach(c => {
                 usersSpinner.style.display = "none";
                 usersPreviewBox.innerHTML += `
-                    <div class="preview col-4 standard">
+                    <div class="user preview col-4 standard">
                         <div class="db-header">
                             <p>
                                 ${c.evaluator_name}
                             </p>
                             <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', ${c.is_admin}, ${c.account_locked});"></i>
+                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', '${c.username}', '${c.nickname}', '${c.email}', '${c.dt_term_start}', '${c.dt_term_end}', ${c.is_admin}, ${c.account_locked});"></i>
                             </div>
                         </div>
                         <div class="preview-content">
@@ -84,6 +84,40 @@ request("get", "/api/internal/users", null, data => {
                             <p>
                                 <span class="bold">KAID:</span>
                                 ${c.evaluator_kaid}
+                            </p>
+                            <p>
+                                <span class="bold">Username:</span>
+                                ${c.username}
+                            </p>
+                            <p>
+                                <span class="bold">Nickname:</span>
+                                ${c.nickname}
+                            </p>
+                            <p>
+                                <span class="bold">Email:</span>
+                                ${c.email}
+                            </p>
+                            <p>
+                                <span class="bold">Term start:</span>
+                                ${c.dt_term_start ?
+                                    c.dt_term_start :
+                                    `N/A`
+                                }
+                            </p>
+                            <p>
+                                <span class="bold">Term end:</span>
+                                ${c.dt_term_end ?
+                                    c.dt_term_end :
+                                    `N/A`
+                                }
+                            </p>
+                            <p>
+                                <span class="bold">Logged in:</span>
+                                ${c.logged_in}
+                            </p>
+                            <p>
+                                <span class="bold">Last login:</span>
+                                ${c.logged_in_tstz}
                             </p>
                             ${c.account_locked ? `
                             <p>
