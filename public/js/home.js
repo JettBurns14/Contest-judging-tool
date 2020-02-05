@@ -83,6 +83,12 @@ let showCreateMessageForm = () => {
     let createMsg = document.querySelector("#create-message-container");
     let viewMsgs = document.querySelector("#view-messages-container");
     let viewTasks = document.querySelector("#view-tasks-container");
+
+    // Set default message creation Date
+    let today = new Date();
+    let date = (today.getMonth()+1) + '-' + today.getDate() + '-' + today.getFullYear();
+    document.querySelector("#create-message-form #new_message_date").value = date;
+
     viewMsgs.style.display = "none";
     viewTasks.style.display = "none";
     createMsg.style.display = "block";
