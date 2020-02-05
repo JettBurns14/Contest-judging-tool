@@ -50,7 +50,7 @@ exports.oauthCallback = function(request, response, next) {
             const { token, tokenSecret } = r;
             // Use access tokens to get user info.
             client.auth(token, tokenSecret)
-                .get("/api/v1/user", { casing: "camel" })
+                .get("/api/internal/user", { casing: "camel" })
                 .then(httpResponse => httpResponse.body)
                 .then(userInfo => {
                     // userInfo is object with user info.
