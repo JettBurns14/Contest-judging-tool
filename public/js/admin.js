@@ -283,7 +283,7 @@ let whitelistUser = (e) => {
 let deleteWhitelistedUser = (kaid) => {
     let confirm = window.confirm("Are you sure you want to remove this user from the whitelist?");
     if (confirm) {
-        request("delete", "/api/internal/users/whitelist", {
+        request("delete", "/api/internal/whitelist", {
             kaid
         }, (data) => {
             if (!data.error) {
