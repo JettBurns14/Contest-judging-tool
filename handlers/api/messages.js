@@ -6,6 +6,7 @@ const {
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
 const { displayDateFormat } = require(process.cwd() + "/util/variables");
+const nodemailer = require('nodemailer');
 
 exports.get = (request, response, next) => {
     if (request.decodedToken) {
@@ -39,7 +40,10 @@ exports.add = (request, response, next) => {
                 message_date,
                 message_title,
                 message_content,
-                public
+                public,
+                send_email,
+                email_address,
+                password
             } = request.body;
             let {
                 is_admin,
@@ -47,10 +51,32 @@ exports.add = (request, response, next) => {
             } = request.decodedToken;
 
             if (is_admin) {
+                var transporter = nodemailer.createTransport({
+                    service: email_address.split("@")[1].split(".")[0],
+                    auth: {
+                        user: email_address,
+                        pass: password
+                    }
+                });
+
+                var mailOptions = {
+                    from: email_address,
+                    to: 'kachallengecouncil@googlegroups.com',
+                    subject: message_title,
+                    html: message_content
+                };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        return handleNext(next, 400, error);
+                    }
+                });
+
                 return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content, public) VALUES ($1, $2, $3, $4, $5);", [evaluator_name, message_date, message_title, message_content, public], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this message");
                     }
+
                     successMsg(response);
                 });
             } else {

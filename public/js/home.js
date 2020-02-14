@@ -134,6 +134,8 @@ let addMessage = (e) => {
     for (key of e.target) {
         if (key.name === "public") {
             body[key.name] = key.checked;
+        } else if (key.name === "send_email") {
+            body[key.name] = key.checked;
         } else {
             body[key.name] = key.value;
         }
