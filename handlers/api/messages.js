@@ -51,31 +51,49 @@ exports.add = (request, response, next) => {
             } = request.decodedToken;
 
             if (is_admin) {
-                var transporter = nodemailer.createTransport({
-                    service: email_address.split("@")[1].split(".")[0],
-                    auth: {
-                        user: email_address,
-                        pass: password
-                    }
-                });
-
-                var mailOptions = {
-                    from: email_address,
-                    to: 'kachallengecouncil@googlegroups.com',
-                    subject: message_title,
-                    html: message_content
-                };
-
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                        return handleNext(next, 400, error);
-                    }
-                });
 
                 return db.query("INSERT INTO messages (message_author, message_date, message_title, message_content, public) VALUES ($1, $2, $3, $4, $5);", [evaluator_name, message_date, message_title, message_content, public], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem adding this message");
                     }
+
+                    return db.query("SELECT email FROM evaluator WHERE email LIKE '%@%' AND receive_emails = true;", [], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem sending emails");
+                        }
+
+                        let emails = res.rows;
+                        let emailList = '';
+                        for (var i = 0; i < emails.length; i++) {
+                            emailList += emails[i].email;
+
+                            if (i != emails.length - 1) {
+                                emailList += ", ";
+                            }
+                        }
+                        console.log(emailList);
+
+                        var transporter = nodemailer.createTransport({
+                            service: email_address.split("@")[1].split(".")[0],
+                            auth: {
+                                user: email_address,
+                                pass: password
+                            }
+                        });
+
+                        var mailOptions = {
+                            from: email_address,
+                            to: emailList,
+                            subject: "[KACP Challenge Council] " + message_title,
+                            html: message_content
+                        };
+
+                        transporter.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                                return handleNext(next, 400, error);
+                            }
+                        });
+                    });
 
                     successMsg(response);
                 });
