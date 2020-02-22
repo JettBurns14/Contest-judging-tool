@@ -58,7 +58,7 @@ exports.add = (request, response, next) => {
                     }
 
                     if (send_email) {
-                        return db.query("SELECT email FROM evaluator WHERE email LIKE '%@%' AND receive_emails = true;", [], res => {
+                        return db.query("SELECT email FROM evaluator WHERE email LIKE '%@%' AND receive_emails = true AND account_locked = false;", [], res => {
                             if (res.error) {
                                 return handleNext(next, 400, "There was a problem sending emails");
                             }
