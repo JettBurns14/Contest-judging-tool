@@ -57,44 +57,46 @@ exports.add = (request, response, next) => {
                         return handleNext(next, 400, "There was a problem adding this message");
                     }
 
-                    return db.query("SELECT email FROM evaluator WHERE email LIKE '%@%' AND receive_emails = true;", [], res => {
-                        if (res.error) {
-                            return handleNext(next, 400, "There was a problem sending emails");
-                        }
-
-                        let emails = res.rows;
-                        let emailList = '';
-                        for (var i = 0; i < emails.length; i++) {
-                            emailList += emails[i].email;
-
-                            if (i != emails.length - 1) {
-                                emailList += ", ";
+                    if (send_email) {
+                        return db.query("SELECT email FROM evaluator WHERE email LIKE '%@%' AND receive_emails = true;", [], res => {
+                            if (res.error) {
+                                return handleNext(next, 400, "There was a problem sending emails");
                             }
-                        }
-                        console.log(emailList);
 
-                        var transporter = nodemailer.createTransport({
-                            service: email_address.split("@")[1].split(".")[0],
-                            auth: {
-                                user: email_address,
-                                pass: password
+                            let emails = res.rows;
+                            let emailList = '';
+                            for (var i = 0; i < emails.length; i++) {
+                                emailList += emails[i].email;
+
+                                if (i != emails.length - 1) {
+                                    emailList += ", ";
+                                }
                             }
+
+                            var transporter = nodemailer.createTransport({
+                                service: email_address.split("@")[1].split(".")[0],
+                                auth: {
+                                    user: email_address,
+                                    pass: password
+                                }
+                            });
+
+                            var mailOptions = {
+                                from: email_address,
+                                to: emailList,
+                                subject: "[KACP Challenge Council] " + message_title,
+                                html: message_content
+                            };
+
+                            transporter.sendMail(mailOptions, function(error, info){
+                                if (error) {
+                                    return handleNext(next, 400, error);
+                                }
+                            });
+
+                            successMsg(response);
                         });
-
-                        var mailOptions = {
-                            from: email_address,
-                            to: emailList,
-                            subject: "[KACP Challenge Council] " + message_title,
-                            html: message_content
-                        };
-
-                        transporter.sendMail(mailOptions, function(error, info){
-                            if (error) {
-                                return handleNext(next, 400, error);
-                            }
-                        });
-                    });
-
+                    }
                     successMsg(response);
                 });
             } else {
