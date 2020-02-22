@@ -72,7 +72,7 @@ request("get", "/api/internal/users", null, data => {
                                 ${c.evaluator_name}
                             </p>
                             <div class="contest-options">
-                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', '${c.username}', '${c.nickname}', '${c.email}', '${c.dt_term_start}', '${c.dt_term_end}', ${c.is_admin}, ${c.account_locked});"></i>
+                                <i class="control-btn far fa-edit" onclick="showEditUserForm(${c.evaluator_id}, '${c.evaluator_name}', '${c.evaluator_kaid}', '${c.username}', '${c.nickname}', '${c.email}', '${c.dt_term_start}', '${c.dt_term_end}', ${c.is_admin}, ${c.account_locked}, ${c.receive_emails});"></i>
                             </div>
                         </div>
                         <div class="preview-content">
@@ -96,6 +96,10 @@ request("get", "/api/internal/users", null, data => {
                             <p>
                                 <span class="bold">Email:</span>
                                 ${c.email}
+                            </p>
+                            <p>
+                                <span class="bold">Receive emails:</span>
+                                ${c.receive_emails}
                             </p>
                             <p>
                                 <span class="bold">Term start:</span>
@@ -298,7 +302,7 @@ let editUser = (e) => {
     e.preventDefault();
     let body = {};
     for (key of e.target) {
-        if (key.name === "edit_user_is_admin" || key.name === "edit_user_account_locked") {
+        if (key.name === "edit_user_is_admin" || key.name === "edit_user_account_locked" || key.name === "edit_user_receive_emails") {
             body[key.name] = key.checked;
         } else {
             body[key.name] = key.value;
@@ -399,15 +403,16 @@ let showCreateUserForm = () => {
     createUser.style.display = "block";
 }
 let showEditUserForm = (...args) => {
-    // id, name, kaid, is_admin, account_locked
+    // id, name, kaid, username, nickname, email, start, end, is_admin, account_locked, receive_emails
     let editUser = document.querySelector("#edit-user-container");
     let viewUsers = document.querySelector("#view-users-container");
     let editUserForm = document.querySelector("#edit-user-form");
     viewUsers.style.display = "none";
     editUser.style.display = "block";
+    console.log(args);
     // Just need to set values of inputs to provided params.
     for (let i = 0; i < editUserForm.length - 1; i++) {
-        if (editUserForm[i].name === "edit_user_is_admin" || editUserForm[i].name === "edit_user_account_locked") {
+        if (editUserForm[i].name === "edit_user_is_admin" || editUserForm[i].name === "edit_user_account_locked" || editUserForm[i].name === "edit_user_receive_emails") {
             editUserForm[i].checked = args[i];
         } else {
             editUserForm[i].value = args[i];

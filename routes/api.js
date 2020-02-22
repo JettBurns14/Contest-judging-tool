@@ -151,6 +151,9 @@ const routeChecks = {
 		    check("public")
 		    .isBoolean()
 		    .withMessage("Public must be a boolean"),
+			check("send_email")
+		    .isBoolean()
+		    .withMessage("Send Email must be a boolean"),
 		],
 		edit: [
 		    check("message_id")
