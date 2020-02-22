@@ -98,6 +98,10 @@ request("get", "/api/internal/users", null, data => {
                                 ${c.email}
                             </p>
                             <p>
+                                <span class="bold">Receive emails:</span>
+                                ${c.receive_emails}
+                            </p>
+                            <p>
                                 <span class="bold">Term start:</span>
                                 ${c.dt_term_start ?
                                     c.dt_term_start :
