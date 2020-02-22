@@ -154,12 +154,6 @@ const routeChecks = {
 			check("send_email")
 		    .isBoolean()
 		    .withMessage("Send Email must be a boolean"),
-			check("email_address")
-		    .isEmail()
-		    .withMessage("Email must be a valid email"),
-			check("password")
-		    .isLength({ min: 1 })
-		    .withMessage("Password field must not be empty"),
 		],
 		edit: [
 		    check("message_id")
