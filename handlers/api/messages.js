@@ -83,7 +83,8 @@ exports.add = (request, response, next) => {
 
                             var mailOptions = {
                                 from: email_address,
-                                to: emailList,
+                                to: email_address,
+                                bcc: emailList,
                                 subject: "[KACP Challenge Council] " + message_title,
                                 html: message_content
                             };
