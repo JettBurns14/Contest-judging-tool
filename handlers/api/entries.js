@@ -36,6 +36,26 @@ exports.get = (request, response, next) => {
     });
 };
 
+exports.getFlagged = (request, response, next) => {
+    if (request.decodedToken) {
+        let {
+            is_admin
+        } = request.decodedToken;
+        if (is_admin) {
+            return db.query("SELECT * FROM entry WHERE flagged = true AND disqualified = false ORDER BY entry_id", [], res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem getting the flagged entries");
+                }
+                return response.json({
+                    flaggedEntries: res.rows
+                });
+            });
+        } else {
+            return handleNext(next, 403, "Insufficient access");
+        }
+    }
+};
+
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
         try {
