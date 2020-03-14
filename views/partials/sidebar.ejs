@@ -1,28 +1,12 @@
 <div class="side-bar">
-    <a class="nav-button selected" onclick="showpage(0)">
+    <a class="nav-button selected" href="/admin/dashboard">
         <i class="fas fa-th-large"></i>
         <p>Dashboard</p>
     </a>
-    <a class="nav-button" onclick="showpage(1)">
+    <a class="nav-button" href="/admin/contests">
         <i class="fas fa-trophy"></i>
         <p>Contests</p>
     </a>
-    <% if (logged_in) { %>
-        <a class="nav-button" onclick="showpage(2)">
-            <i class="fas fa-tasks"></i>
-            <p>Tasks</p>
-        </a>
-    <% } %>
-    <% if (is_admin) { %>
-	    <a class="nav-button" onclick="showpage(3)">
-	        <i class="fas fa-users"></i>
-	        <p>Users</p>
-	    </a>
-        <a class="nav-button" href="/admin/judging">
-	        <i class="fas fa-gavel"></i>
-	        <p>Judging</p>
-	    </a>
-    <% } %>
     <a class="nav-button" href="/entries/1">
         <i class="fas fa-list"></i>
         <p>Entries</p>
@@ -31,4 +15,18 @@
         <i class="fas fa-list-ol"></i>
         <p>Results</p>
     </a>
+    <% if (is_admin) { %>
+        <a class="nav-button" href="/admin/tasks">
+            <i class="fas fa-tasks"></i>
+            <p>Tasks</p>
+        </a>
+        <a class="nav-button" href="/admin/judging">
+	        <i class="fas fa-gavel"></i>
+	        <p>Judging</p>
+	    </a>
+	    <a class="nav-button" href="/admin/users">
+	        <i class="fas fa-users"></i>
+	        <p>Users</p>
+	    </a>
+    <% } %>
 </div>
