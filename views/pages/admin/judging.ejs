@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <%- include ../../partials/sidebar %>
+
+        <div class="content-container" id="judging-page">
+            <div class="content-header">
+                <h2>Judging Settings</h2>
+            </div>
+
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Flagged entries:</p>
+                    </div>
+                    <div id="flagged-entries" class="preview-content">
+                        <!-- reviewedCount -->
+                        <img class="loading-spinner" src="/static/images/new-loading-spinner.svg">
+                    </div>
+                </div>
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Judging groups:</p>
+                    </div>
+                    <div id="judging-groups" class="preview-content">
+                        <!-- totalEvaluationsCount -->
+                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
+                </div>
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Assigned groups:</p>
+                    </div>
+                    <div id="assigned-groups" class="preview-content">
+                        <!-- totalEvaluationsCount -->
+                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/judging.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</html>
