@@ -53,10 +53,17 @@ exports.judging = (request, response, next) => {
 
 exports.admin = (request, response, next) => {
     if (request.decodedToken) {
-        return response.render("pages/admin", {
-            logged_in: true,
-            is_admin: request.decodedToken.is_admin
-        });
+        if (request.params.page === "dashboard") {
+            return response.render("pages/admin/dashboard", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        } else {
+            return response.render("pages/admin/dashboard", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        }
     }
     response.render("pages/admin", {
         logged_in: false,
