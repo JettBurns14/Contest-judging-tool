@@ -27,6 +27,27 @@ request("get", "/api/internal/tasks", null, data => {
     }
 });
 
+request("get", "/api/internal/users", null, data => {
+    if (!data.error) {
+        if (data.logged_in) {
+            data.evaluators.forEach(c => {
+                taskAssignedMember.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
+                editTaskAssignedMember.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
+            });
+        }
+    } else {
+        alert(data.error.message);
+    }
+});
+
 // Handles form requests
 let addTask = (e) => {
     e.preventDefault();
