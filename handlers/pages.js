@@ -81,10 +81,7 @@ exports.admin = (request, response, next) => {
             });
         }
         else {
-            return response.render("pages/admin/dashboard", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
+            response.redirect("/admin/dashboard");
         }
         // Handle routes for public users
     } else {
