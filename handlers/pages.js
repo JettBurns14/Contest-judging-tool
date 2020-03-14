@@ -86,11 +86,20 @@ exports.admin = (request, response, next) => {
                 is_admin: request.decodedToken.is_admin
             });
         }
+        // Handle routes for public users
+    } else {
+        if (request.params.page === "contests") {
+            response.render("pages/admin/contests", {
+                logged_in: false,
+                is_admin: false
+            });
+        } else {
+            response.render("pages/admin/dashboard", {
+                logged_in: false,
+                is_admin: false
+            });
+        }
     }
-    response.render("pages/admin", {
-        logged_in: false,
-        is_admin: false
-    });
 }
 
 exports.results = (request, response, next) => {
