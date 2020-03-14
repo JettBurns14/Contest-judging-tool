@@ -84,16 +84,6 @@ request("get", "/api/internal/users", null, data => {
                         </div>
                     </div>
                 `;
-                taskAssignedMember.innerHTML += `
-                    ${!c.account_locked ? `
-                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
-                    ` : ""}
-                `;
-                editTaskAssignedMember.innerHTML += `
-                    ${!c.account_locked ? `
-                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
-                    ` : ""}
-                `;
             });
             kaidsSpinner.style.display = "none";
             data.kaids.forEach(c => {

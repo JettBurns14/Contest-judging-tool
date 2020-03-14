@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <%- include ../../partials/sidebar %>
+
+        <% if (is_admin) { %>
+        <div class="content-container" id="users-page">
+            <div id="view-users-container">
+                <div class="content-header">
+                    <h2>Users</h2>
+                    <% if (is_admin) { %>
+                        <span id="add-user-btn" class="admin-button" onclick="showCreateUserForm()">Add User</span>
+                    <% } %>
+                </div>
+
+                <div id="users-preview-box" class="previews-container">
+                    <!-- Evaluators -->
+                    <img id="users-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                </div>
+
+                <div class="previews-container">
+                    <div class="preview col-4 standard">
+                        <div class="db-header">
+                            <p>Whitelisted Kaids</p>
+                        </div>
+                        <div class="preview-content data">
+                            <table id="whitelisted-kaids">
+                                <!-- Kaids -->
+                                <img id="kaids-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner data">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="edit-user-container">
+                <div class="content-header">
+                    <h2>Edit User</h2>
+                </div>
+
+                <form id="edit-user-form" class="admin-form" onsubmit="return editUser(event)">
+                    <div class="row">
+                        <input type="hidden" id="edit_user_id" name="edit_user_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_name">User's Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_name" name="edit_user_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_kaid" name="edit_user_kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_username">User's username</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_username" name="edit_user_username">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_nickname">User's nickname</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_nickname" name="edit_user_nickname">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_email">User's email</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_email" name="edit_user_email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_start">Term start</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_start" name="edit_user_start">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_end">Term end</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_user_end" name="edit_user_end">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_user_is_admin">Make an admin</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="checkbox" id="edit_user_is_admin" name="edit_user_is_admin">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_account_locked">Lock account</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="checkbox" id="edit_account_locked" name="edit_user_account_locked">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_receive_emails">Receive emails</label>
+                        </div>
+                        <div class="col-10">
+                            <input type="checkbox" id="edit_receive_emails" name="edit_user_receive_emails">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-user-container">
+                <div class="content-header">
+                    <h2>Add User</h2>
+                </div>
+                <form id="add-user-form" class="admin-form" onsubmit="return whitelistUser(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="user_kaid">User's KAID</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="kaid" name="kaid" placeholder="kaid_xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/users.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $('#edit_contest_start_date, #edit_contest_end_date, #contest_start_date, #contest_end_date, #due_date, #edit_due_date, #edit_user_start, #edit_user_end').datepicker({
+            dateFormat: "mm-dd-yy"
+        });
+    });
+</script>
+</html>
