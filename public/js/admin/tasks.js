@@ -1,6 +1,7 @@
 let tasksTableBody = document.querySelector("#tasks-table-body");
 let taskAssignedMember = document.querySelector("#assigned_member");
 let editTaskAssignedMember = document.querySelector("#edit_assigned_member");
+let tab = document.querySelector("#sidebar-tasks");
 
 // Load page data
 request("get", "/api/internal/tasks", null, data => {
@@ -120,3 +121,6 @@ let showEditTaskForm = (...args) => {
         editTaskForm[i].value = args[i];
     }
 }
+
+// Update navbar highlighting
+tab.classList.add("selected");

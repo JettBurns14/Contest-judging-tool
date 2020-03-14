@@ -2,6 +2,7 @@ let usersSpinner = document.querySelector("#users-spinner");
 let usersPreviewBox = document.querySelector("#users-preview-box");
 let kaidsSpinner = document.querySelector("#kaids-spinner");
 let whitelistedKaidsTable = document.querySelector("#whitelisted-kaids");
+let tab = document.querySelector("#sidebar-users");
 
 // Loads page data
 request("get", "/api/internal/users", null, data => {
@@ -177,3 +178,6 @@ let showEditUserForm = (...args) => {
         }
     }
 };
+
+// Update navbar highlighting
+tab.classList.add("selected");

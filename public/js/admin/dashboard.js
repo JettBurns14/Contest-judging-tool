@@ -1,5 +1,6 @@
 let reviewedEntriesCount = document.querySelector("#reviewed-entries-count");
 let totalEvaluationsCount = document.querySelector("#total-evaluations-count");
+let tab = document.querySelector("#sidebar-dashboard");
 
 // Load page data
 request("get", "/api/internal/admin/stats", null, (data) => {
@@ -10,3 +11,6 @@ request("get", "/api/internal/admin/stats", null, (data) => {
         alert(data.error.message);
     }
 });
+
+// Update navbar highlighting
+tab.classList.add("selected");

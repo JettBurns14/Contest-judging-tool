@@ -1,5 +1,6 @@
 let contestPreviewBox = document.querySelector("#contest-preview-box");
 let contestsSpinner = document.querySelector("#contests-spinner");
+let tab = document.querySelector("#sidebar-contests");
 
 // Loads page data
 request("get", "/api/internal/contests", null, (data) => {
@@ -115,3 +116,6 @@ let showEditContestForm = (...args) => {
         }
     }
 };
+
+// Update navbar highlighting
+tab.classList.add("selected");
