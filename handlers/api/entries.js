@@ -267,12 +267,20 @@ exports.disqualify = (request, response, next) => {
                 entry_id
             } = request.body;
 
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
                 return db.query("UPDATE entry SET disqualified = true WHERE entry_id = $1", [entry_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem disqualifying this entry");
                     }
                     successMsg(response);
                 });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
         } catch (err) {
             return handleNext(next, 400, "There was a problem disqualifying this entry");
         }
@@ -287,12 +295,20 @@ exports.approve = (request, response, next) => {
                 entry_id
             } = request.body;
 
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
                 return db.query("UPDATE entry SET disqualified = false, flagged = false WHERE entry_id = $1", [entry_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem approving this entry");
                     }
                     successMsg(response);
                 });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
         } catch (err) {
             return handleNext(next, 400, "There was a problem approving this entry");
         }
