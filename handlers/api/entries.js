@@ -240,4 +240,44 @@ exports.flag = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.disqualify = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+                return db.query("UPDATE entry SET disqualified = true WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem disqualifying this entry");
+                    }
+                    successMsg(response);
+                });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem disqualifying this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.approve = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+                return db.query("UPDATE entry SET disqualified = false, flagged = false WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem approving this entry");
+                    }
+                    successMsg(response);
+                });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem approving this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 module.exports = exports;

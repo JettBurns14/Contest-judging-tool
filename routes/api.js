@@ -118,6 +118,16 @@ const routeChecks = {
 			check("entry_id")
 			.isInt()
 			.withMessage("Entry ID must be an integer")
+		],
+		disqualify: [
+			check("entry_id")
+			.isInt()
+			.withMessage("Entry ID must be an integer")
+		],
+		approve: [
+			check("entry_id")
+			.isInt()
+			.withMessage("Entry ID must be an integer")
 		]
 	},
 	judging: {
@@ -296,6 +306,8 @@ router.put("/internal/entries", routeChecks.entries.edit, wasValidated, entries.
 router.delete("/internal/entries", routeChecks.entries.delete, wasValidated, entries.delete);
 router.post("/internal/entries/import", routeChecks.entries.import, wasValidated, entries.import);
 router.put("/internal/entries/flag", routeChecks.entries.flag, wasValidated, entries.flag);
+router.put("/internal/entries/disqualify", routeChecks.entries.disqualify, wasValidated, entries.disqualify);
+router.put("/internal/entries/approve", routeChecks.entries.approve, wasValidated, entries.approve);
 
 // Results
 router.get("/internal/results", results.get);
