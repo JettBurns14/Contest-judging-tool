@@ -1,8 +1,3 @@
-/* CSS for admin view */
-
-.content-container {
-    display: none;
-}
 /* Different views on the page */
 #create-contest-container, #edit-contest-container,
 #create-user-container, #edit-user-container,
