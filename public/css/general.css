@@ -72,6 +72,11 @@ body {
     cursor: default;
 }
 
+.warning-button {
+    background-color: firebrick !important;
+    color: white;
+}
+
 /* Loading spinners all use this style */
 .loading-spinner {
     animation-name: spinner;

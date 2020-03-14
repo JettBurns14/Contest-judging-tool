@@ -154,3 +154,16 @@ let submitEvaluation = (e) => {
         }
     });
 }
+
+let flagEntry = (id) => {
+    if (confirm("Are you sure you want to flag this entry?")) {
+        let body = {entry_id: id};
+        request("put", "/api/internal/entries/flag", body, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
