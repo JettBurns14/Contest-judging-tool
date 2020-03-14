@@ -58,7 +58,29 @@ exports.admin = (request, response, next) => {
                 logged_in: true,
                 is_admin: request.decodedToken.is_admin
             });
-        } else {
+        } else if (request.params.page === "contests") {
+            return response.render("pages/admin/contests", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        } else if (request.params.page === "tasks" && request.decodedToken.is_admin) {
+            return response.render("pages/admin/tasks", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        } else if (request.params.page === "users" && request.decodedToken.is_admin) {
+            return response.render("pages/admin/users", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        }
+        else if (request.params.page === "judging" && request.decodedToken.is_admin) {
+            return response.render("pages/admin/judging", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin
+            });
+        }
+        else {
             return response.render("pages/admin/dashboard", {
                 logged_in: true,
                 is_admin: request.decodedToken.is_admin
