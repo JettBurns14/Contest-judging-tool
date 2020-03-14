@@ -220,4 +220,24 @@ exports.import = (request, response, next) => {
     handleNext(next, 401, "Unauthorized");
 }
 
+exports.flag = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+                return db.query("UPDATE entry SET flagged = true WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem flagging this entry");
+                    }
+                    successMsg(response);
+                });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem flagging this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 module.exports = exports;
