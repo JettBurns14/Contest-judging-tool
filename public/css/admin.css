@@ -13,3 +13,9 @@
 .user.preview {
 	overflow-wrap: break-word;
 }
+
+/* Styling for judging page */
+.flagged-entry-actions {
+    display: flex;
+    justify-content: space-around;
+}
