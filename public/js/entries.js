@@ -41,6 +41,8 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
             <tr id="${a.entry_id}">
                 <td>
                     ${a.entry_id}
+                    ${data.logged_in ? a.flagged ? "<i class='fas fa-flag red'></i>" : "" : ""}
+                    ${data.logged_in ? a.disqualified ? "<i class='fas fa-ban red'></i>" : "" : ""}
                 </td>
                 <td>
                     <a href='${a.entry_url}' target='_blank'>${a.entry_title}</a>
@@ -74,6 +76,7 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
                 <td>
                     ${a.entry_created}
                 </td>
+                ${data.logged_in ? `<td>${a.group_id ? a.group_id : "None"}</td>`: ""}
                 ${data.is_admin
                     ? `<td id="${a.entry_id}-actions">
                            <i class="control-btn far fa-edit" onclick="showEditEntryForm(${a.entry_id}, ${idx}, ${a.contest_id})"></i>
