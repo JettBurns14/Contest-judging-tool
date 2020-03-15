@@ -152,15 +152,19 @@ const addEntry = (contest_id) => {
 }
 
 const assignEntries = (contest_id) => {
-    request("put", "/api/internal/entries/assignToGroups", {
-        contest_id
-    }, (data) => {
-        if (!data.error) {
-            window.setTimeout(() => window.location.reload(), 1000);
-        } else {
-            alert(data.error.message);
-        }
-    });
+    let shouldAssign = confirm("Are you sure you want to assign all entries to groups? Any entries that are currently assigned may be reassigned. If you need to assign a few entries, edit them individually instead.");
+
+    if (shouldAssign) {
+        request("put", "/api/internal/entries/assignToGroups", {
+            contest_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
 }
 
 const getProgramData = (data) => {
