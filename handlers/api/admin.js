@@ -66,12 +66,12 @@ exports.getEvaluatorGroups = (request, response, next) => {
     if (request.decodedToken) {
         try {
             if (request.decodedToken.is_admin) {
-                return db.query("SELECT * FROM evaluator_group", [], res => {
+                return db.query("SELECT * FROM evaluator_group ORDER BY group_id", [], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem getting the evaluator groups");
                     }
                     let evaluatorGroups = res.rows;
-                    return db.query("SELECT evaluator_id, evaluator_name, group_id FROM evaluator WHERE account_locked = false", [], res => {
+                    return db.query("SELECT evaluator_id, evaluator_name, group_id FROM evaluator WHERE account_locked = false ORDER BY group_id", [], res => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem getting the evaluators");
                         }

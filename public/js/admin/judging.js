@@ -3,6 +3,8 @@ let flaggedEntriesTableBody = document.querySelector("#flagged-entries-table-bod
 let judgingGroupsTable = document.querySelector("#judging-groups-table");
 let judgingGroupsTableBody = document.querySelector("#judging-groups-table-body");
 let assignedGroupsTable = document.querySelector("#assigned-groups-table");
+let assignedGroupsTableBody = document.querySelector("#assigned-groups-table-body");
+let assignedGroupsList = document.querySelector("#group_id_input");
 let flaggedEntriesSpinner = document.querySelector("#flagged-entries-spinner");
 let judgingGroupsSpinner = document.querySelector("#judging-groups-spinner");
 let assignedGroupsSpinner = document.querySelector("#assigned-groups-spinner");
@@ -48,16 +50,41 @@ request("get", "/api/internal/admin/getEvaluatorGroups", null, data => {
             } else {
                 data.evaluatorGroups.forEach(g => {
                     judgingGroupsTableBody.innerHTML += `
-                    <tr id="${g.group_id}">
+                    <tr>
                         <td>${g.group_id}</td>
                         <td>${g.group_name}</td>
-                        <td id="${g.group_id}-actions" class="judging-group-actions">
-                            <i class="control-btn far fa-edit" onclick="" title="Edit"></i>
-                            <i class="control-btn red far fa-trash-alt" onclick="" title="Delete"></i>
+                        <td>${g.is_active ? "Active" : "Inactive"}</td>
+                        <td class="judging-group-actions">
+                            <i class="control-btn far fa-edit" onclick="showEditEvaluatorGroupForm(${g.group_id}, '${g.group_name}', ${g.is_active})" title="Edit"></i>
+                            <i class="control-btn red far fa-trash-alt" onclick="deleteEvaluatorGroup(${g.group_id})" title="Delete"></i>
                         </td>
                     </tr>`;
+
+                    if (g.is_active) {
+                        assignedGroupsList.innerHTML += `<option value="${g.group_id}">${g.group_id} - ${g.group_name}</option>`;
+                    }
                 });
             }
+
+            assignedGroupsSpinner.style.display = "none";
+            data.evaluators.forEach(e => {
+                let groupName = "";
+                data.evaluatorGroups.forEach(g => {
+                    if (e.group_id === g.group_id) {
+                        groupName = " - " + g.group_name;
+                    }
+                });
+
+                assignedGroupsTableBody.innerHTML += `
+                <tr>
+                    <td>${e.evaluator_id}</td>
+                    <td>${e.evaluator_name}</td>
+                    <td>${e.group_id}${groupName}</td>
+                    <td class="judging-group-actions">
+                    <i class="control-btn far fa-edit" onclick="showAssignEvaluatorGroupForm(${e.evaluator_id}, '${e.evaluator_name}', ${e.group_id})" title="Edit"></i>
+                    </td>
+                </tr>`;
+            });
         }
     } else {
         alert(data.error.message);
@@ -122,12 +149,19 @@ let addEvaluatorGroup = (e) => {
     });
 }
 
-let editEvaluatorGroup = () => {
-    request("put", "/api/internal/admin/editEvaluatorGroup", {
-        group_id,
-        group_name,
-        is_active
-    }, (data) => {
+let editEvaluatorGroup = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        if (key.name === "is_active") {
+            body[key.name] = key.checked;
+        } else {
+            body[key.name] = key.value;
+        }
+    }
+    delete body[""];
+
+    request("put", "/api/internal/admin/editEvaluatorGroup", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -136,10 +170,30 @@ let editEvaluatorGroup = () => {
     });
 }
 
-let deleteEvaluatorGroup = () => {
-    request("delete", "/api/internal/admin/deleteEvaluatorGroup", {
-        group_id
-    }, (data) => {
+let deleteEvaluatorGroup = (group_id) => {
+    let shouldDelete = confirm("Are you sure you want to delete this group? This action cannot be undone, and any evaluators or entries assigned to the group will be unassigned.");
+    if (shouldDelete) {
+        request("delete", "/api/internal/admin/deleteEvaluatorGroup", {
+            group_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
+let assignEvaluatorGroup = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    delete body[""];
+
+    request("put", "/api/internal/users/assignToEvaluatorGroup", body, (data) => {
         if (!data.error) {
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -154,6 +208,40 @@ let showAddEvaluatorGroupForm = () => {
     let judgingPage = document.querySelector("#judging-page");
     judgingPage.style.display = "none";
     addEvaluatorGroup.style.display = "block";
+}
+
+let showEditEvaluatorGroupForm = (...args) => {
+    // args: group_id, group_name, is_active
+
+    let editEvaluatorGroup = document.querySelector("#edit-group-page");
+    let judgingPage = document.querySelector("#judging-page");
+    let editEvaluatorGroupForm = document.querySelector("#edit-judging-group-form");
+    judgingPage.style.display = "none";
+    editEvaluatorGroup.style.display = "block";
+
+    // Set form values
+    for (let i = 0; i < editEvaluatorGroupForm.length - 1; i++) {
+        if (editEvaluatorGroupForm[i].name === "is_active") {
+            editEvaluatorGroupForm[i].checked = args[i];
+        } else {
+            editEvaluatorGroupForm[i].value = args[i];
+        }
+    }
+}
+
+let showAssignEvaluatorGroupForm = (...args) => {
+    // args: evaluator_id, evaluator_name, group_id
+
+    let assignEvaluatorGroup = document.querySelector("#assign-group-page");
+    let judgingPage = document.querySelector("#judging-page");
+    let assignEvaluatorGroupForm = document.querySelector("#assign-judging-group-form");
+    judgingPage.style.display = "none";
+    assignEvaluatorGroup.style.display = "block";
+
+    // Set form values
+    for (let i = 0; i < assignEvaluatorGroupForm.length - 1; i++) {
+        assignEvaluatorGroupForm[i].value = args[i];
+    }
 }
 
 // Update navbar highlighting
