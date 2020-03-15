@@ -27,10 +27,9 @@
             <div class="previews-container">
                 <div class="preview col-12 standard">
                     <div class="db-header">
-                        <p>Flagged entries:</p>
+                        <p>Flagged Entries</p>
                     </div>
                     <div id="flagged-entries-table" class="preview-content">
-                        <!-- reviewedCount -->
                         <img id="flagged-entries-spinner" class="loading-spinner" src="/static/images/new-loading-spinner.svg">
                         <table>
                             <thead>
@@ -48,11 +47,21 @@
                 </div>
                 <div class="preview col-12 standard">
                     <div class="db-header">
-                        <p>Judging groups:</p>
+                        <p>Judging Groups</p>
+                        <span class="admin-button" onclick="showAddEvaluatorGroupForm()">Create Group</span>
                     </div>
                     <div id="judging-groups-table" class="preview-content">
-                        <!-- totalEvaluationsCount -->
                         <img id="judging-groups-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <table>
+                            <thead>
+                                <th style="width: 10%">Group ID</th>
+                                <th style="width: 80%">Group Name</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="judging-groups-table-body">
+                                <!-- judging groups -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="preview col-12 standard">
@@ -65,6 +74,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="content-container" id="create-group-page" style="display: none">
+            <div class="content-header">
+                <h2>Create Judging Group</h2>
+            </div>
+            <form id="add-judging-group-form" class="admin-form" onsubmit="return addEvaluatorGroup(event)">
+                <div class="row">
+                    <div class="col-10">
+                        <label for="group_name">Group Name</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="group_name" name="group_name">
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
         </div>
     </div>
     <%- include ../../partials/footer %>

@@ -1,7 +1,8 @@
 /** Handler for admin STATS **/
 
 const {
-    handleNext
+    handleNext,
+    successMsg
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
 
