@@ -76,7 +76,7 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
                 <td>
                     ${a.entry_created}
                 </td>
-                ${data.logged_in ? `<td>${a.group_id ? a.group_id : "None"}</td>`: ""}
+                ${data.logged_in ? `<td>${a.assigned_group_id ? a.assigned_group_id : "None"}</td>`: ""}
                 ${data.is_admin
                     ? `<td id="${a.entry_id}-actions">
                            <i class="control-btn far fa-edit" onclick="showEditEntryForm(${a.entry_id}, ${idx}, ${a.contest_id})"></i>
@@ -149,6 +149,18 @@ const addEntry = (contest_id) => {
             getProgramData(data);
         });
     }
+}
+
+const assignEntries = (contest_id) => {
+    request("put", "/api/internal/entries/assignToGroups", {
+        contest_id
+    }, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
 }
 
 const getProgramData = (data) => {
