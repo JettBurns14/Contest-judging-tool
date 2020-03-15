@@ -29,27 +29,39 @@
                     <div class="db-header">
                         <p>Flagged entries:</p>
                     </div>
-                    <div id="flagged-entries" class="preview-content">
+                    <div id="flagged-entries-table" class="preview-content">
                         <!-- reviewedCount -->
-                        <img class="loading-spinner" src="/static/images/new-loading-spinner.svg">
+                        <img id="flagged-entries-spinner" class="loading-spinner" src="/static/images/new-loading-spinner.svg">
+                        <table>
+                            <thead>
+                                <th style="width: 5%">ID</th>
+                                <th style="width: 10%">Name</th>
+                                <th style="width: 10%">Author</th>
+                                <th style="width: 10%">Created</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="flagged-entries-table-body">
+                                <!-- flagged entries -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="preview col-12 standard">
                     <div class="db-header">
                         <p>Judging groups:</p>
                     </div>
-                    <div id="judging-groups" class="preview-content">
+                    <div id="judging-groups-table" class="preview-content">
                         <!-- totalEvaluationsCount -->
-                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <img id="judging-groups-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                     </div>
                 </div>
                 <div class="preview col-12 standard">
                     <div class="db-header">
                         <p>Assigned groups:</p>
                     </div>
-                    <div id="assigned-groups" class="preview-content">
+                    <div id="assigned-groups-table" class="preview-content">
                         <!-- totalEvaluationsCount -->
-                        <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        <img id="assigned-groups-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                     </div>
                 </div>
             </div>
