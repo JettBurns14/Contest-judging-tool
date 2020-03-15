@@ -168,7 +168,7 @@ let showEditUserForm = (...args) => {
     let editUserForm = document.querySelector("#edit-user-form");
     viewUsers.style.display = "none";
     editUser.style.display = "block";
-    console.log(args);
+    
     // Just need to set values of inputs to provided params.
     for (let i = 0; i < editUserForm.length - 1; i++) {
         if (editUserForm[i].name === "edit_user_is_admin" || editUserForm[i].name === "edit_user_account_locked" || editUserForm[i].name === "edit_user_receive_emails") {
