@@ -41,8 +41,8 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
             <tr id="${a.entry_id}">
                 <td>
                     ${a.entry_id}
-                    ${data.logged_in ? a.flagged ? "<i class='fas fa-flag red'></i>" : "" : ""}
-                    ${data.logged_in ? a.disqualified ? "<i class='fas fa-ban red'></i>" : "" : ""}
+                    ${data.logged_in ? a.flagged ? "<i class='fas fa-flag red' title='Flagged'></i>" : "" : ""}
+                    ${data.logged_in ? a.disqualified ? "<i class='fas fa-ban red' title='Disqualified'></i>" : "" : ""}
                 </td>
                 <td>
                     <a href='${a.entry_url}' target='_blank'>${a.entry_title}</a>
