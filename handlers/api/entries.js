@@ -47,6 +47,8 @@ exports.getFlagged = (request, response, next) => {
                     return handleNext(next, 400, "There was a problem getting the flagged entries");
                 }
                 return response.json({
+                    logged_in: true,
+                    is_admin: request.decodedToken.is_admin,
                     flaggedEntries: res.rows
                 });
             });
