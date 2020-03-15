@@ -61,4 +61,104 @@ exports.stats = (request, response, next) => {
     });
 };
 
+exports.getEvaluatorGroups = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            if (request.decodedToken.is_admin) {
+                return db.query("SELECT * FROM evaluator_group", [], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem getting the evaluator groups");
+                    }
+                    let evaluatorGroups = res.rows;
+                    return db.query("SELECT evaluator_id, evaluator_name, group_id FROM evaluator WHERE account_locked = false", [], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem getting the evaluators");
+                        }
+                        response.json({
+                            evaluatorGroups: evaluatorGroups,
+                            evaluators: res.rows;
+                        });
+                    });
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem getting the evaluator groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
+exports.addEvaluatorGroup = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                group_name
+            } = request.body;
+            if (request.decodedToken.is_admin) {
+                return db.query("INSERT INTO evaluator_group (group_name, is_active) VALUES ($1, true)", [group_name], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem creating the evaluator groups");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem creating the evaluator groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
+exports.editEvaluatorGroup = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                group_id,
+                group_name,
+                is_active
+            } = request.body;
+            if (request.decodedToken.is_admin) {
+                return db.query("UPDATE evaluator_group SET group_name = $1, is_active = $2 WHERE group_id = $3", [group_name, is_active, group_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem creating the evaluator groups");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem creating the evaluator groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
+exports.deleteEvaluatorGroup = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                group_id
+            } = request.body;
+            if (request.decodedToken.is_admin) {
+                return db.query("DELETE FROM evaluator_group WHERE group_id = $1", [group_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem deleting the evaluator groups");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem deleting the evaluator groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
 module.exports = exports;

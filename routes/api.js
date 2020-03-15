@@ -16,6 +16,29 @@ const winners = require(process.cwd() + "/handlers/api/winners");
 const tasks = require(process.cwd() + "/handlers/api/tasks");
 
 const routeChecks = {
+	admin: {
+		addEvaluatorGroup: [
+			check("group_name")
+			.isLength(nameChars)
+			.withMessage("Group name cannot be empty or longer than 200 characters")
+		],
+		editEvaluatorGroup: [
+			check("group_id")
+			.isInt()
+			.withMessage("Group ID must be an integer"),
+			check("group_name")
+			.isLength(nameChars)
+			.withMessage("Group name cannot be empty or longer than 200 characters"),
+			check("is_active")
+			.isBoolean()
+			.withMessage("is_active must be a boolean")
+		],
+		deleteEvaluatorGroup: [
+			check("group_id")
+			.isInt()
+			.withMessage("Group ID must be an integer")
+		]
+	},
 	contests: {
 		add: [
 		    check("contest_name")
@@ -220,6 +243,14 @@ const routeChecks = {
 		    check("edit_user_account_locked")
 		    .isBoolean()
 		    .withMessage("Account locked must be true or false")
+		],
+		assignToEvaluatorGroup: [
+			check("evaluator_id")
+			.isInt()
+		    .withMessage("User ID must be an integer"),
+			check("group_id")
+			.isInt()
+		    .withMessage("Group ID must be an integer")
 		]
 	},
 	winners: {
@@ -289,6 +320,7 @@ router.get("/internal/users", users.get);
 router.post("/internal/users/whitelist", routeChecks.users.whitelist, wasValidated, users.add);
 router.delete("/internal/users/whitelist", routeChecks.users.unwhitelist, wasValidated, users.delete);
 router.put("/internal/users", routeChecks.users.edit, wasValidated, users.edit);
+router.put("/internal/users/assignToEvaluatorGroup", routeChecks.users.assignToEvaluatorGroup, wasValidated, users.assignToEvaluatorGroup);
 
 // Messages
 router.get("/internal/messages", messages.get);
@@ -321,6 +353,10 @@ router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, c
 
 // Admin
 router.get("/internal/admin/stats", admin.stats);
+router.get("/internal/admin/getEvaluatorGroups", admin.getEvaluatorGroups);
+router.post("/internal/admin/addEvaluatorGroup", routeChecks.admin.addEvaluatorGroup, wasValidated, admin.addEvaluatorGroup);
+router.put("/internal/admin/editEvaluatorGroup", routeChecks.admin.editEvaluatorGroup, wasValidated, admin.editEvaluatorGroup);
+router.delete("/internal/admin/deleteEvaluatorGroup", routeChecks.admin.deleteEvaluatorGroup, wasValidated, admin.deleteEvaluatorGroup);
 
 // Tasks
 router.get("/internal/tasks", tasks.get);
