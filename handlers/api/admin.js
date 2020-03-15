@@ -76,7 +76,7 @@ exports.getEvaluatorGroups = (request, response, next) => {
                         }
                         response.json({
                             evaluatorGroups: evaluatorGroups,
-                            evaluators: res.rows;
+                            evaluators: res.rows
                         });
                     });
                 });
