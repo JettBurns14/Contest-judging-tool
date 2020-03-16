@@ -29,20 +29,49 @@
                     <div class="db-header">
                         <p>Your reviewed entries for current contest:</p>
                     </div>
-                    <div id="reviewed-entries-count" class="preview-content">
+                    <div id="your-reviewed-entries-count" class="preview-content">
                         <!-- reviewedCount -->
                         <img class="loading-spinner" src="/static/images/new-loading-spinner.svg">
                     </div>
                 </div>
                 <div class="preview col-6 standard">
                     <div class="db-header">
-                        <p>Total reviewed entries for current contest:</p>
+                        <p>Total reviewed entries for your group:</p>
                     </div>
-                    <div id="total-evaluations-count" class="preview-content">
+                    <div id="your-group-total-evaluations-count" class="preview-content">
                         <!-- totalEvaluationsCount -->
                         <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                     </div>
                 </div>
+                <% if (is_admin) { %>
+                    <div class="preview col-6 standard">
+                        <div class="db-header">
+                            <p>Total reviewed entries for current contest:</p>
+                        </div>
+                        <div id="total-reviewed-count" class="preview-content">
+                            <!-- totalEvaluationsCount -->
+                            <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        </div>
+                    </div>
+                    <div class="preview col-6 standard">
+                        <div class="db-header">
+                            <p>Total evaluations for current contest:</p>
+                        </div>
+                        <div id="total-evaluations-count" class="preview-content">
+                            <!-- totalEvaluationsCount -->
+                            <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        </div>
+                    </div>
+                    <div class="preview col-6 standard">
+                        <div class="db-header">
+                            <p>Entry stats for current contest:</p>
+                        </div>
+                        <div id="entry-stats" class="preview-content">
+                            <!-- totalEvaluationsCount -->
+                            <img src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                        </div>
+                    </div>
+                <% } %>
             </div>
         </div>
     </div>
