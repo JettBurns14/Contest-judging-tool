@@ -37,11 +37,8 @@
                     </div>
                     <form id='create-message-form' class="admin-form" onSubmit="return addMessage(event)">
                         <div class='row'>
-                            <div class='col-10'>
-                                <label for='new_message_date'>Date</label>
-                            </div>
                             <div class='col-90'>
-                                <input type='text' id='new_message_date' class="form-input datepicker" name='message_date' placeholder='MM-DD-YYYY'>
+                                <input type='text' id='new_message_date' class="form-input datepicker" name='message_date' hidden>
                             </div>
                         </div>
                         <div class='row'>
