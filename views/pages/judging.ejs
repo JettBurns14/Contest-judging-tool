@@ -64,7 +64,9 @@
 
             <input type="submit" class="admin-button" <%= !logged_in ? 'disabled' : '' %> value="Submit"></input>
 
-            <div class="admin-button warning-button" onclick="flagEntry(<%= entry.o_entry_id %>)">Flag</div>
+            <% if (logged_in) { %>
+                <div class="admin-button warning-button" onclick="flagEntry(<%= entry.o_entry_id %>)">Flag</div>
+            <% } %>
         </div>
     </form>
     <% } %>
