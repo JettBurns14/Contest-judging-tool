@@ -1,11 +1,4 @@
-// Show and hide the dropdown.
-/*let dropdown = document.querySelector(".dropdown");
-let dropdownBtn = document.querySelector(".dropdown-btn");
-
-dropdownBtn.addEventListener("click", function() {
-    dropdown.classList.toggle("open");
-});*/
-
+// Request handler
 let request = (method = "post", path, data, callback) => {
     fetch(path, (method === "get") ? null : {
         method,
@@ -18,3 +11,19 @@ let request = (method = "post", path, data, callback) => {
     .then(data => callback(data))
     .catch(err => alert(err)); // Will change later.
 };
+
+// Dropdown accordion handler
+var collapsables = document.getElementsByClassName("collapsable");
+
+for (var i = 0; i < collapsables.length; i++) {
+    collapsables[i].addEventListener("click", function() {
+        this.classList.toggle("expanded");
+        var panel = this.nextElementSibling;
+        panel.classList.toggle("closed");
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    });
+}

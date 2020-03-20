@@ -77,6 +77,37 @@ body {
     color: white;
 }
 
+/* Collapsable accordions */
+.collapsable {
+    cursor: pointer;
+}
+
+.collapsable:hover {
+    background-color: #ddd !important;
+}
+
+.collapsable:after {
+    content: '\02795';
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+}
+
+.collapsable-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.expanded:after {
+  content: "\2796";
+}
+
+.closed {
+    padding: 0px !important;
+}
+
 /* Loading spinners all use this style */
 .loading-spinner {
     animation-name: spinner;

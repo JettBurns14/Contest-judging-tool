@@ -26,18 +26,44 @@
                     <h2>Tasks</h2>
                     <span id="add-task-btn" class="admin-button" onclick="showCreateTaskForm();">Add Task</span>
                 </div>
-                <table>
-                    <thead>
-                        <th>Task</th>
-                        <th style="width: 10%">Due Date</th>
-                        <th style="width: 10%">Assigned Member</th>
-                        <th style="width: 10%">Status</th>
-                        <th style="width: 10%">Actions</th>
-                    </thead>
-                    <tbody id="tasks-table-body">
-                        <!-- tasks -->
-                    </tbody>
-                </table>
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Incomplete Tasks</p>
+                    </div>
+                    <div id="incomplete-tasks-table" class="preview-content">
+                        <table>
+                            <thead>
+                                <th>Task</th>
+                                <th style="width: 10%">Due Date</th>
+                                <th style="width: 10%">Assigned Member</th>
+                                <th style="width: 10%">Status</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="incomplete-tasks-table-body">
+                                <!-- incomplete tasks -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="preview col-12 standard">
+                    <div class="db-header collapsable">
+                        <p>Completed Tasks</p>
+                    </div>
+                    <div id="completed-tasks-table" class="collapsable-content closed preview-content">
+                        <table>
+                            <thead>
+                                <th>Task</th>
+                                <th style="width: 10%">Due Date</th>
+                                <th style="width: 10%">Assigned Member</th>
+                                <th style="width: 10%">Status</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="completed-tasks-table-body">
+                                <!-- completed tasks -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div id="create-task-container">
                 <div class="content-header">
