@@ -234,11 +234,22 @@ exports.deleteEvaluatorGroup = (request, response, next) => {
                 group_id
             } = request.body;
             if (request.decodedToken.is_admin) {
-                return db.query("DELETE FROM evaluator_group WHERE group_id = $1", [group_id], res => {
+                // Unassign all entries and users assigned to this group
+                return db.query("UPDATE entry SET assigned_group_id = null WHERE assigned_group_id = $1", [group_id], res => {
                     if (res.error) {
-                        return handleNext(next, 400, "There was a problem deleting the evaluator groups");
+                        return handleNext(next, 400, "There was a problem unassigning the entries in this group");
                     }
-                    successMsg(response);
+                    return db.query("UPDATE evaluator SET group_id = null WHERE group_id = $1", [group_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem unassigning the evaluators in this group");
+                        }
+                        return db.query("DELETE FROM evaluator_group WHERE group_id = $1", [group_id], res => {
+                            if (res.error) {
+                                return handleNext(next, 400, "There was a problem deleting this evaluator group");
+                            }
+                            successMsg(response);
+                        });
+                    });
                 });
             } else {
                 return handleNext(next, 403, "Insufficient access");
