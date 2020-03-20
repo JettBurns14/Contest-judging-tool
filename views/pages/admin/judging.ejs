@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <%- include ../../partials/sidebar %>
+
+        <div class="content-container" id="judging-page">
+            <div class="content-header">
+                <h2>Judging Settings</h2>
+            </div>
+
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Flagged Entries</p>
+                    </div>
+                    <div id="flagged-entries-table" class="preview-content">
+                        <table>
+                            <thead>
+                                <th style="width: 5%">ID</th>
+                                <th style="width: 10%">Name</th>
+                                <th style="width: 10%">Author</th>
+                                <th style="width: 10%">Created</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="flagged-entries-table-body">
+                                <!-- flagged entries -->
+                            </tbody>
+                        </table>
+                        <img id="flagged-entries-spinner" class="loading-spinner" src="/static/images/new-loading-spinner.svg">
+                    </div>
+                </div>
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Judging Groups</p>
+                        <span class="admin-button" onclick="showAddEvaluatorGroupForm()">Create Group</span>
+                    </div>
+                    <div id="judging-groups-table" class="preview-content">
+                        <table>
+                            <thead>
+                                <th style="width: 10%">Group ID</th>
+                                <th style="width: 70%">Group Name</th>
+                                <th style="width: 10%">Status</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="judging-groups-table-body">
+                                <!-- judging groups -->
+                            </tbody>
+                        </table>
+                        <img id="judging-groups-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
+                </div>
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Assigned Groups</p>
+                    </div>
+                    <div id="assigned-groups-table" class="preview-content">
+                        <table>
+                            <thead>
+                                <th style="width: 10%">Evaluator ID</th>
+                                <th style="width: 40%">Evaluator Name</th>
+                                <th style="width: 40%">Assigned Group</th>
+                                <th style="width: 10%">Actions</th>
+                            </thead>
+                            <tbody id="assigned-groups-table-body">
+                                <!-- assigned evaluator groups -->
+                            </tbody>
+                        </table>
+                        <img id="assigned-groups-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-container" id="create-group-page" style="display: none">
+            <div class="content-header">
+                <h2>Create Judging Group</h2>
+            </div>
+            <form id="add-judging-group-form" class="admin-form" onsubmit="return addEvaluatorGroup(event)">
+                <div class="row">
+                    <div class="col-10">
+                        <label for="group_name">Group Name</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="group_name" name="group_name">
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+        <div class="content-container" id="edit-group-page" style="display: none">
+            <div class="content-header">
+                <h2>Edit Judging Group</h2>
+            </div>
+            <form id="edit-judging-group-form" class="admin-form" onsubmit="return editEvaluatorGroup(event)">
+                <input class="form-input" type="hidden" id="group_id" name="group_id" value="">
+                <div class="row">
+                    <div class="col-10">
+                        <label for="group_name">Group Name</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="group_name" name="group_name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="is_active">Group is active?</label>
+                    </div>
+                    <div class="col-90">
+                        <input type="checkbox" id="is_active" name="is_active">
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+        <div class="content-container" id="assign-group-page" style="display: none">
+            <div class="content-header">
+                <h2>Assign Judging Group</h2>
+            </div>
+            <form id="assign-judging-group-form" class="admin-form" onsubmit="return assignEvaluatorGroup(event)">
+                <input class="form-input" type="hidden" id="evaluator_id" name="evaluator_id" value="">
+                <div class="row">
+                    <div class="col-10">
+                        <label for="evaluator_name">Evaluator Name</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="evaluator_name" name="evaluator_name" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="group_id">Assigned Group</label>
+                    </div>
+                    <div class="col-90">
+                        <select id="group_id_input" name="group_id">
+                            <!-- evaluator groups -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/judging.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</html>

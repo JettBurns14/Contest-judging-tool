@@ -60,7 +60,7 @@ exports.add = (request, response, next) => {
 }
 
 exports.edit = (request, response, next) => {
-    if (request.decodedToken  && request.decodedToken.is_admin) {
+    if (request.decodedToken) {
         let {
             edit_task_id,
             edit_task_title,
@@ -68,12 +68,23 @@ exports.edit = (request, response, next) => {
             edit_assigned_member,
             edit_task_status
         } = request.body;
-        
-        return db.query("UPDATE task SET task_title = $1, due_date = $2, assigned_member = $3, task_status = $4 WHERE task_id = $5", [edit_task_title, edit_due_date, edit_assigned_member, edit_task_status, edit_task_id], res => {
+
+        return db.query("SELECT assigned_member FROM task WHERE task_id = $1", [edit_task_id], res => {
             if (res.error) {
-                return handleNext(next, 400, "There was a problem editing this task");
+                return handleNext(next, 400, "There was a problem getting this task's owner");
             }
-            successMsg(response);
+            let evaluator_id = res.rows[0].assigned_member;
+
+            if (request.decodedToken.evauator_id = evaluator_id || request.decodedToken.is_admin) {
+                return db.query("UPDATE task SET task_title = $1, due_date = $2, assigned_member = $3, task_status = $4 WHERE task_id = $5", [edit_task_title, edit_due_date, edit_assigned_member, edit_task_status, edit_task_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem editing this task");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 401, "Unauthorized");
+            }
         });
     }
     return handleNext(next, 401, "Unauthorized");

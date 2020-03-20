@@ -41,6 +41,8 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
             <tr id="${a.entry_id}">
                 <td>
                     ${a.entry_id}
+                    ${data.logged_in ? a.flagged ? "<i class='fas fa-flag red' title='Flagged'></i>" : "" : ""}
+                    ${data.logged_in ? a.disqualified ? "<i class='fas fa-ban red' title='Disqualified'></i>" : "" : ""}
                 </td>
                 <td>
                     <a href='${a.entry_url}' target='_blank'>${a.entry_title}</a>
@@ -74,6 +76,7 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
                 <td>
                     ${a.entry_created}
                 </td>
+                ${data.logged_in ? `<td>${a.assigned_group_id ? a.assigned_group_id : "None"}</td>`: ""}
                 ${data.is_admin
                     ? `<td id="${a.entry_id}-actions">
                            <i class="control-btn far fa-edit" onclick="showEditEntryForm(${a.entry_id}, ${idx}, ${a.contest_id})"></i>
@@ -144,6 +147,22 @@ const addEntry = (contest_id) => {
     if (program_id) {
         request("get", `https://www.khanacademy.org/api/internal/scratchpads/${program_id}`, {}, (data) => {
             getProgramData(data);
+        });
+    }
+}
+
+const assignEntries = (contest_id) => {
+    let shouldAssign = confirm("Are you sure you want to assign all entries to groups? Any entries that are currently assigned may be reassigned. If you need to assign a few entries, edit them individually instead.");
+
+    if (shouldAssign) {
+        request("put", "/api/internal/entries/assignToGroups", {
+            contest_id
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
         });
     }
 }

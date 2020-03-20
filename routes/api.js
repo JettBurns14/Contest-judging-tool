@@ -16,6 +16,29 @@ const winners = require(process.cwd() + "/handlers/api/winners");
 const tasks = require(process.cwd() + "/handlers/api/tasks");
 
 const routeChecks = {
+	admin: {
+		addEvaluatorGroup: [
+			check("group_name")
+			.isLength(nameChars)
+			.withMessage("Group name cannot be empty or longer than 200 characters")
+		],
+		editEvaluatorGroup: [
+			check("group_id")
+			.isInt()
+			.withMessage("Group ID must be an integer"),
+			check("group_name")
+			.isLength(nameChars)
+			.withMessage("Group name cannot be empty or longer than 200 characters"),
+			check("is_active")
+			.isBoolean()
+			.withMessage("is_active must be a boolean")
+		],
+		deleteEvaluatorGroup: [
+			check("group_id")
+			.isInt()
+			.withMessage("Group ID must be an integer")
+		]
+	},
 	contests: {
 		add: [
 		    check("contest_name")
@@ -113,6 +136,26 @@ const routeChecks = {
 		    check("contest_id")
 		    .isInt()
 		    .withMessage("Contest ID must be an integer")
+		],
+		flag: [
+			check("entry_id")
+			.isInt()
+			.withMessage("Entry ID must be an integer")
+		],
+		disqualify: [
+			check("entry_id")
+			.isInt()
+			.withMessage("Entry ID must be an integer")
+		],
+		approve: [
+			check("entry_id")
+			.isInt()
+			.withMessage("Entry ID must be an integer")
+		],
+		assignToGroups: [
+			check("contest_id")
+			.isInt()
+			.withMessage("Contest ID must be an integer")
 		]
 	},
 	judging: {
@@ -205,6 +248,14 @@ const routeChecks = {
 		    check("edit_user_account_locked")
 		    .isBoolean()
 		    .withMessage("Account locked must be true or false")
+		],
+		assignToEvaluatorGroup: [
+			check("evaluator_id")
+			.isInt()
+		    .withMessage("User ID must be an integer"),
+			check("group_id")
+			.isInt()
+		    .withMessage("Group ID must be an integer")
 		]
 	},
 	winners: {
@@ -274,6 +325,7 @@ router.get("/internal/users", users.get);
 router.post("/internal/users/whitelist", routeChecks.users.whitelist, wasValidated, users.add);
 router.delete("/internal/users/whitelist", routeChecks.users.unwhitelist, wasValidated, users.delete);
 router.put("/internal/users", routeChecks.users.edit, wasValidated, users.edit);
+router.put("/internal/users/assignToEvaluatorGroup", routeChecks.users.assignToEvaluatorGroup, wasValidated, users.assignToEvaluatorGroup);
 
 // Messages
 router.get("/internal/messages", messages.get);
@@ -290,6 +342,11 @@ router.post("/internal/entries", routeChecks.entries.add, wasValidated, entries.
 router.put("/internal/entries", routeChecks.entries.edit, wasValidated, entries.edit);
 router.delete("/internal/entries", routeChecks.entries.delete, wasValidated, entries.delete);
 router.post("/internal/entries/import", routeChecks.entries.import, wasValidated, entries.import);
+router.put("/internal/entries/flag", routeChecks.entries.flag, wasValidated, entries.flag);
+router.put("/internal/entries/disqualify", routeChecks.entries.disqualify, wasValidated, entries.disqualify);
+router.put("/internal/entries/approve", routeChecks.entries.approve, wasValidated, entries.approve);
+router.get("/internal/entries/flagged", entries.getFlagged);
+router.put("/internal/entries/assignToGroups", routeChecks.entries.assignToGroups, wasValidated, entries.assignToGroups);
 
 // Results
 router.get("/internal/results", results.get);
@@ -302,6 +359,10 @@ router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, c
 
 // Admin
 router.get("/internal/admin/stats", admin.stats);
+router.get("/internal/admin/getEvaluatorGroups", admin.getEvaluatorGroups);
+router.post("/internal/admin/addEvaluatorGroup", routeChecks.admin.addEvaluatorGroup, wasValidated, admin.addEvaluatorGroup);
+router.put("/internal/admin/editEvaluatorGroup", routeChecks.admin.editEvaluatorGroup, wasValidated, admin.editEvaluatorGroup);
+router.delete("/internal/admin/deleteEvaluatorGroup", routeChecks.admin.deleteEvaluatorGroup, wasValidated, admin.deleteEvaluatorGroup);
 
 // Tasks
 router.get("/internal/tasks", tasks.get);

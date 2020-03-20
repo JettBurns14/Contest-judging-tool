@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <%- include ../../partials/sidebar %>
+
+        <% if (is_admin) { %>
+        <div class="content-container" id="tasks-page">
+            <div id="view-tasks-container">
+                <div class="content-header">
+                    <h2>Tasks</h2>
+                    <span id="add-task-btn" class="admin-button" onclick="showCreateTaskForm();">Add Task</span>
+                </div>
+                <table>
+                    <thead>
+                        <th>Task</th>
+                        <th style="width: 10%">Due Date</th>
+                        <th style="width: 10%">Assigned Member</th>
+                        <th style="width: 10%">Status</th>
+                        <th style="width: 10%">Actions</th>
+                    </thead>
+                    <tbody id="tasks-table-body">
+                        <!-- tasks -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="create-task-container">
+                <div class="content-header">
+                    <h2>Add Task</h2>
+                </div>
+                <form id="add-task-form" class="admin-form" onSubmit="return addTask(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="task_title" name="task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="due_date" name="due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="assigned_member" name="assigned_member">
+                                <!-- evaluators -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="task_status" name="task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="edit-task-container">
+                <div class="content-header">
+                    <h2>Edit Task</h2>
+                </div>
+
+                <form id="edit-task-form" class="admin-form" onsubmit="return editTask(event)">
+                    <div class="row">
+                        <input type="hidden" id="edit_task_id" name="edit_task_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_title">Task</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_task_title" name="edit_task_title">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_due_date">Due Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_due_date" name="edit_due_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_assigned_member">Assigned Member</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_assigned_member" name="edit_assigned_member">
+                                <!-- evaluators -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_task_status">Status</label>
+                        </div>
+                        <div class="col-90">
+                            <select id="edit_task_status" name="edit_task_status">
+                                <option value="Not Started">Not Started</option>
+                                <option value="Started">Started</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/tasks.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $('#edit_contest_start_date, #edit_contest_end_date, #contest_start_date, #contest_end_date, #due_date, #edit_due_date, #edit_user_start, #edit_user_end').datepicker({
+            dateFormat: "mm-dd-yy"
+        });
+    });
+</script>
+</html>

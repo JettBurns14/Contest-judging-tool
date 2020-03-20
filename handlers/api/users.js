@@ -104,6 +104,34 @@ exports.edit = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
+exports.assignToEvaluatorGroup = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                evaluator_id,
+                group_id
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE evaluator SET group_id = $1 WHERE evaluator_id = $2", [group_id, evaluator_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem assigning this user to an evaluator group");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem assigning this user to an evaluator group");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
 // Remove whitelisted user.
 exports.delete = (request, response, next) => {
     if (request.decodedToken) {

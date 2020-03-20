@@ -30,6 +30,7 @@
                 <div>
                     <span id="import-entries-btn" class="admin-button" onclick="updateEntries(<%= contest_id %>)">Import Entries</span>
                     <span id="add-entry-btn" class="admin-button" onclick="addEntry(<%= contest_id %>)">Add Single Entry</span>
+                    <span id="assign-entries-btn" class="admin-button" onclick="assignEntries(<%= contest_id %>)">Assign To Groups</span>
                 </div>
                 <% } %>
             </div>
@@ -42,13 +43,16 @@
                         <img id="entries-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
                         <table id="entries-table">
                             <thead>
-                                <th style="width: 3%">ID</th>
-                                <th style="width: 10%">Title</th>
-                                <th style="width: 10%">Author</th>
+                                <th style="width: 8%">ID</th>
+                                <th style="width: 20%">Title</th>
+                                <th style="width: 20%">Author</th>
                                 <% if (logged_in) { %>
-                                <th style="width: 10%">Skill Level</th>
+                                <th style="width: 5%">Skill Level</th>
                                 <% } %>
                                 <th style="width: 15%">Created</th>
+                                <% if (logged_in) { %>
+                                <th style="width: 5%">Group</th>
+                                <% } %>
                                 <% if (is_admin) { %>
                                 <th style="width: 3%">Actions</th>
                                 <% } %>

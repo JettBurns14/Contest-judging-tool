@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+</head>
+
+<body>
+
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <%- include ../../partials/sidebar %>
+
+        <div class="content-container" id="contests-page">
+            <div id="view-contests-container">
+                <div class="content-header">
+                    <h2>Contests</h2>
+                    <% if (is_admin) { %>
+                        <span id="add-contest-btn" class="admin-button" onclick="showCreateContestForm()">Add Contest</span>
+                    <% } %>
+                </div>
+
+                <div id="contest-preview-box" class="previews-container">
+                    <!-- Contests -->
+                    <img id="contests-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                </div>
+            </div>
+            <div id="edit-contest-container">
+                <div class="content-header">
+                    <h2>Edit Contest</h2>
+                </div>
+
+                <form id="edit-contest-form" class="admin-form" onsubmit="return editContest(event)">
+                    <div class='row'>
+                        <div class='col-90'>
+                            <input type='hidden' id='edit_contest_id' name='edit_contest_id'>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_name">Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_name" name="edit_contest_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_url">URL</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_url" name="edit_contest_url">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_author">Author</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_author" name="edit_contest_author">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_start_date" name="edit_contest_start_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="edit_contest_end_date" name="edit_contest_end_date">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="edit_contest_current">Current</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="edit_contest_current" name="edit_contest_current">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+            <div id="create-contest-container">
+                <div class="content-header">
+                    <h2>Add Contest</h2>
+                </div>
+
+                <form id="add-contest-form" class="admin-form" onSubmit="return addContest(event)">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_name">Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_name" name="contest_name" value="Contest: ">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_url">URL</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_url" name="contest_url" placeholder="URL">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_author">Author</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_author" name="contest_author" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_start_date">Start Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_start_date" name="contest_start_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_end_date">End Date</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="contest_end_date" name="contest_end_date" placeholder="MM-DD-YYYY">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="contest_current">Current</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="checkbox" id="contest_current" name="contest_current">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input class="admin-button" type="submit" value="Save">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/contests.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $('#edit_contest_start_date, #edit_contest_end_date, #contest_start_date, #contest_end_date, #due_date, #edit_due_date, #edit_user_start, #edit_user_end').datepicker({
+            dateFormat: "mm-dd-yy"
+        });
+    });
+</script>
+</html>

@@ -44,8 +44,12 @@ body {
 }
 #form-options {
     display: flex;
-    justify-content: space-between;
 }
+
+#form-options .admin-button {
+    margin-left: 20px;
+}
+
 #skill-selector {
     /* -webkit-appearance: none; */
     border: 1px solid #ddd;

@@ -36,6 +36,28 @@ exports.get = (request, response, next) => {
     });
 };
 
+exports.getFlagged = (request, response, next) => {
+    if (request.decodedToken) {
+        let {
+            is_admin
+        } = request.decodedToken;
+        if (is_admin) {
+            return db.query("SELECT * FROM entry WHERE flagged = true AND disqualified = false ORDER BY entry_id", [], res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem getting the flagged entries");
+                }
+                return response.json({
+                    logged_in: true,
+                    is_admin: request.decodedToken.is_admin,
+                    flaggedEntries: res.rows
+                });
+            });
+        } else {
+            return handleNext(next, 403, "Insufficient access");
+        }
+    }
+};
+
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
         try {
@@ -218,6 +240,141 @@ exports.import = (request, response, next) => {
         });
     }
     handleNext(next, 401, "Unauthorized");
+}
+
+exports.flag = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+                return db.query("UPDATE entry SET flagged = true WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem flagging this entry");
+                    }
+                    successMsg(response);
+                });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem flagging this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.disqualify = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE entry SET disqualified = true WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem disqualifying this entry");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem disqualifying this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.approve = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                entry_id
+            } = request.body;
+
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE entry SET disqualified = false, flagged = false WHERE entry_id = $1", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem approving this entry");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem approving this entry");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.assignToGroups = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                contest_id
+            } = request.body;
+
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("SELECT group_id FROM evaluator_group WHERE is_active = true ORDER BY group_id", [], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem assigning the entries to groups");
+                    }
+                    let groups = res.rows;
+
+                    return db.query("SELECT entry_id FROM entry WHERE contest_id = $1 ORDER BY entry_id", [contest_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem selecting the entries for this contest");
+                        }
+                        let entries = res.rows;
+
+                        let entriesPerGroup = Math.floor(entries.length / groups.length);
+
+                        // Assign entriesPerGroup entries to each group
+                        for (var group = 0; group < groups.length; group++) {
+                            for (var entry = 0 + entriesPerGroup * group; entry < entriesPerGroup * (group + 1); entry++) {
+                                db.query("UPDATE entry SET assigned_group_id = $1 WHERE entry_id = $2", [groups[group].group_id, entries[entry].entry_id], res => {
+                                    if (res.error) {
+                                        return handleNext(next, 400, "There was a problem setting this entry's group");
+                                    }
+                                });
+                            }
+                        }
+
+                        // Assign any remaining entries to the last group
+                        for (var entry = entriesPerGroup * groups.length; entry < entries.length; entry++) {
+                            db.query("UPDATE entry SET assigned_group_id = $1 WHERE entry_id = $2", [groups[groups.length - 1].group_id, entries[entry].entry_id], res => {
+                                if (res.error) {
+                                    return handleNext(next, 400, "There was a problem setting this entry's group");
+                                }
+                            });
+                        }
+
+                        successMsg(response);
+                    });
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem assigning the entries to groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
 }
 
 module.exports = exports;
