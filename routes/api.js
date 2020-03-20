@@ -353,6 +353,7 @@ router.get("/internal/results", results.get);
 
 // Contests
 router.get("/internal/contests/", contests.get);
+router.get("/internal/contests/getCurrentContest", contests.getCurrentContest);
 router.post("/internal/contests", routeChecks.contests.add, wasValidated, contests.add);
 router.put("/internal/contests", routeChecks.contests.edit, wasValidated, contests.edit);
 router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, contests.delete);
