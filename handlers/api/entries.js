@@ -13,7 +13,7 @@ exports.get = (request, response, next) => {
     let contest_id = request.query.contestId;
     // Send back all entry info
     if (request.decodedToken) {
-        return db.query("SELECT *, to_char(entry_created, $1) as entry_created FROM entry WHERE contest_id = $2 AND disqualified = false AND flagged = false ORDER BY entry_id", [displayFancyDateFormat, contest_id], res => {
+        return db.query("SELECT *, to_char(entry_created, $1) as entry_created FROM entry WHERE contest_id = $2 ORDER BY entry_id", [displayFancyDateFormat, contest_id], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the entries");
             }
