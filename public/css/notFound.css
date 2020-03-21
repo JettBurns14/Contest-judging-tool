@@ -1,0 +1,50 @@
+#not-found-message {
+    color: white;
+    font-size: 24px;
+    text-shadow: 0 2px 30px rgba(0, 0, 50, 0.3);
+    position: absolute;
+    width: 25%;
+    top: 26%;
+    left: 3%;
+}
+
+#not-found-message h1 {
+    font-size: 40px;
+}
+
+#not-found-message a {
+    color: white;
+    text-decoration: none;
+}
+
+#not-found-message a:hover {
+    text-decoration: underline;
+}
+
+#not-found-message p {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+
+#homepage-link {
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 10px 60px;
+}
+
+#homepage-link:hover {
+    border: 3px solid white;
+    text-decoration: none !important;
+}
+
+body {
+    background-color: rgb(10, 42, 102);
+    background-image: none;
+    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+}
+
+.nav {
+    border-bottom: 1px solid white;
+    background-color: rgb(10, 42, 102);
+}

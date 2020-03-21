@@ -28,9 +28,10 @@ app.use("/api/auth/", authRoutes);
 
 // Handler for any undefined routes.
 app.use((req, res, next) => {
-    let err = new Error("Not Found");
-    err.status = 404;
-    next(err);
+    res.render("pages/notFound", {
+        logged_in: req.decodedToken,
+        is_admin: req.decodedToken.is_admin
+    });
 });
 
 // Handler for standardizing error format.
