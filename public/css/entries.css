@@ -3,7 +3,7 @@
     display: none;
 }
 /* Hides the entries table until the entries are loaded in */
-#entries-table {
+#entries-table, #edit-entry-page {
 	display: none;
 }
 /* Actions buttons */

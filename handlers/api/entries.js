@@ -97,15 +97,20 @@ exports.edit = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let {
-                entry_id,
-                edited_level
+                edit_entry_id,
+                edit_entry_title,
+                edit_entry_author,
+                edit_entry_level,
+                edit_entry_group,
+                edit_flagged,
+                edit_disqualified
             } = request.body;
             let {
                 is_admin
             } = request.decodedToken;
 
             if (is_admin) {
-                return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [edited_level, entry_id], res => {
+                return db.query("UPDATE entry SET entry_title = $1, entry_author = $2, entry_level = $3, assigned_group_id = $4, flagged = $5, disqualified = $6 WHERE entry_id = $7", [edit_entry_title, edit_entry_author, edit_entry_level, edit_entry_group, edit_flagged, edit_disqualified, edit_entry_id], res => {
                     if (res.error) {
                         return handleNext(next, 400, "There was a problem editing this entry");
                     }

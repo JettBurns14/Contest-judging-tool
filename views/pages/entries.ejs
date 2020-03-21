@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
 </head>
 
 <body>
@@ -64,6 +65,76 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="content-container" id="edit-entry-page">
+            <div class="content-header">
+                <h2>Edit Entry</h2>
+            </div>
+
+            <form id="edit-entry-form" class="admin-form" onsubmit="return editEntry(event)">
+                <div class="row">
+                    <input type="hidden" id="edit_entry_id" name="edit_entry_id">
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_entry_title">Title</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="edit_entry_title" name="edit_entry_title">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_entry_author">Author</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="text" id="edit_entry_author" name="edit_entry_author">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_entry_level">Skill Level</label>
+                    </div>
+                    <div class="col-90">
+                        <select name="edit_entry_level">
+                            <option value="tbd">TBD</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_entry_group">Assigned Group</label>
+                    </div>
+                    <div class="col-90">
+                        <select name="edit_entry_group" id="assigned-group-dropdown">
+                            <option value="null">None</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_flagged">Flagged</label>
+                    </div>
+                    <div class="col-10">
+                        <input type="checkbox" id="edit_flagged" name="edit_flagged">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_disqualified">Disqualified</label>
+                    </div>
+                    <div class="col-10">
+                        <input type="checkbox" id="edit_disqualified" name="edit_disqualified">
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
         </div>
     </div> <!-- Page content -->
 

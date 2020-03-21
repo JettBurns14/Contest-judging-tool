@@ -117,12 +117,24 @@ const routeChecks = {
 		    .withMessage("Entry height must be an integer")
 		],
 		edit: [
-		    check("entry_id")
+		    check("edit_entry_id")
 		    .isInt()
 		    .withMessage("Entry ID must be an integer"),
-		    check("edited_level")
+			check("edit_entry_title")
+		    .isLength(nameChars)
+		    .withMessage("Entry title cannot be empty or longer than 200 characters"),
+			check("edit_entry_author")
+		    .isLength(nameChars)
+		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
+		    check("edit_entry_level")
 		    .isIn(["Advanced", "Intermediate", "Beginner", "tbd"])
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'tbd'"),
+			check("edit_flagged")
+		    .isBoolean()
+		    .withMessage("Flagged must be a boolean"),
+			check("edit_disqualified")
+		    .isBoolean()
+		    .withMessage("Disqualified must be a boolean"),
 		],
 		delete: [
 		    check("entry_id")
