@@ -154,7 +154,6 @@ exports.delete = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 }
 
-// WIP, could be used to load all entries into DB once contest deadline is past.
 exports.import = (request, response, next) => {
     if (request.decodedToken) {
         let contest_id = request.body.contest_id;
@@ -167,7 +166,7 @@ exports.import = (request, response, next) => {
 
             return Request(`https://www.khanacademy.org/api/internal/scratchpads/Scratchpad:${program_id}/top-forks?sort=2&page=0&limit=1000`, (err, res, body) => {
                 if (err) {
-                    return handleNext(next, 400, "There was a problem with the request");
+                    return handleNext(next, 400, "There was a problem retrieving the contest spin-offs");
                 }
 
                 let data = JSON.parse(body);
@@ -178,6 +177,8 @@ exports.import = (request, response, next) => {
                             if (res.error) {
                                 return handleNext(next, 400, "There was a problem getting the entry count for this contest");
                             }
+
+                            // We only need to import some of the spin-offs, since the older ones were already imported
                             if (res.rows[0].count > 0) {
                                 return db.query("SELECT MAX(entry_created) FROM entry WHERE contest_id = $1", [contest_id], res => {
                                     if (res.error) {
@@ -185,11 +186,13 @@ exports.import = (request, response, next) => {
                                     }
                                     let query = "INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES"; // Query to be ran later
                                     let entryFound = false;
+                                    let entryCount = 0;
 
-                                    for (var i = 0; i < data.scratchpads.length; ++i) {
+                                    for (var i = 0; i < data.scratchpads.length; i++) {
                                         // moment docs: http://momentjs.com/docs/#/query/
+                                        // Check to make sure this spin-off was created after the newest existing entry
                                         if (Moment(res.rows[0].max).isBefore(data.scratchpads[i].created)) {
-
+                                            entryCount++;
                                             let program = data.scratchpads[i];
 
                                             if (!entryFound) {
@@ -209,8 +212,9 @@ exports.import = (request, response, next) => {
                                             }
                                         }
                                     }
-                                    successMsg(response);
+                                    return handleNext(next, 200, entryCount + " entries added");
                                 });
+                            // Import all of the spin-offs
                             } else {
                                 let query = "INSERT INTO entry (contest_id, entry_url, entry_kaid, entry_title, entry_author, entry_level, entry_votes, entry_created, entry_height) VALUES"; // Query to be ran later
                                 for (var i = 0; i < data.scratchpads.length; i++) {
@@ -226,7 +230,7 @@ exports.import = (request, response, next) => {
                                     if (res.error) {
                                         return handleNext(next, 400, "There was a problem inserting this entry");
                                     }
-                                    successMsg(response);
+                                    return handleNext(next, 200, data.scratchpads.length + " entries added");
                                 });
                             }
                         });
