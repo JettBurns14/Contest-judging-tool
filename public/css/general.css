@@ -109,6 +109,30 @@ body {
     padding: 0px !important;
 }
 
+/* Text editor */
+.text-editor {
+    width: 47%;
+    background-color: white;
+    border: 1px solid lightgrey;
+    border-radius: 4px;
+}
+
+.ql-snow {
+    border: none !important;
+}
+
+.ql-toolbar {
+    border-bottom: 1px solid lightgrey !important;
+}
+
+.ql-align-center {
+    text-align: center;
+}
+
+.ql-align-right {
+    text-align: right;
+}
+
 /* Loading spinners all use this style */
 .loading-spinner {
     animation-name: spinner;

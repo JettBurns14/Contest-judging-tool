@@ -27,3 +27,27 @@ for (var i = 0; i < collapsables.length; i++) {
         }
     });
 }
+
+// Text editor settings
+var quillOptions = {
+    modules: {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, false] }],
+      ['bold', 'italic', 'underline', 'link', { 'list': 'bullet' }, 'image', 'code-block'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+    ]
+    },
+    handlers: {
+        'link': function(value) {
+          if (value) {
+            var href = prompt('Enter the URL');
+            this.quill.format('link', href);
+          } else {
+            this.quill.format('link', false);
+          }
+        }
+    },
+    theme: 'snow'
+};

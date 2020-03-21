@@ -8,6 +8,10 @@
     <link rel="stylesheet" type="text/css" href="/static/css/home.css">
     <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
     <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+
+    <!-- Main Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body>
@@ -53,8 +57,9 @@
                             <div class='col-10'>
                                 <label for='new_message_content'>Message</label>
                             </div>
-                            <div class='col-90'>
-                                <textarea id='new_message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            <div  class="text-editor">
+                                <div id="new-announcement-editor">
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -124,8 +129,9 @@
                             <div class='col-10'>
                                 <label for='edit_message_content'>Message</label>
                             </div>
-                            <div class='col-90'>
-                                <textarea id='edit_message_content' class="form-input tall-message-input" name='message_content' maxlength='5000'></textarea>
+                            <div  class="text-editor">
+                                <div id="edit-announcement-editor">
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -165,14 +171,13 @@
 <script src="/static/js/home.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        $(function() {
-            $('#create-message-form #new_message_date, #edit-message-form #edit_message_date').datepicker({
-                dateFormat: "mm-dd-yy"
-            });
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $('#create-message-form #new_message_date, #edit-message-form #edit_message_date').datepicker({
+            dateFormat: "mm-dd-yy"
         });
-    </script>
-  </script>
+    });
+</script>
 </html>
