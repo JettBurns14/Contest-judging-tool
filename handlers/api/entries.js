@@ -212,7 +212,7 @@ exports.import = (request, response, next) => {
                                             }
                                         }
                                     }
-                                    return handleNext(next, 200, entryCount + " entries added");
+                                    successMsg(response, entryCount + " entries added");
                                 });
                             // Import all of the spin-offs
                             } else {
@@ -230,7 +230,7 @@ exports.import = (request, response, next) => {
                                     if (res.error) {
                                         return handleNext(next, 400, "There was a problem inserting this entry");
                                     }
-                                    return handleNext(next, 200, data.scratchpads.length + " entries added");
+                                    successMsg(response, data.scratchpads.length + " entries added");
                                 });
                             }
                         });

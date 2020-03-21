@@ -134,6 +134,7 @@ const updateEntries = (contest_id) => {
         contest_id
     }, (data) => {
         if (!data.error) {
+            alert(data.message);
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
             alert(data.error.message);
