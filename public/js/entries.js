@@ -19,7 +19,7 @@ request("get", "/api/internal/contests", null, (data) => {
         entryContestName.textContent = `Entries for ${data.contests.filter(c => c.contest_id == currentContestId)[0].contest_name}`;
         data.contests.forEach((c, idx) => {
             sidebar.innerHTML += `
-                <a class="nav-button" href="/entries/${c.contest_id}">
+                <a class="nav-button" href="/entries/${c.contest_id}" id="contest-tab-${c.contest_id}">
                     <i class="fas fa-trophy"></i>
                     <p>
                         ${c.contest_name}
@@ -27,8 +27,8 @@ request("get", "/api/internal/contests", null, (data) => {
                 </a>
             `;
         });
-        let navButtons = document.querySelectorAll(".nav-button");
-        navButtons[navButtons.length - currentContestId].classList.add("selected");
+        let navButton = document.querySelector(`#contest-tab-${currentContestId}`);
+        navButton.classList.add("selected");
     } else {
         alert(data.error.message);
     }
