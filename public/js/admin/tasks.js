@@ -1,4 +1,5 @@
-let tasksTableBody = document.querySelector("#tasks-table-body");
+let incompleteTasksTableBody = document.querySelector("#incomplete-tasks-table-body");
+let completedTasksTableBody = document.querySelector("#completed-tasks-table-body");
 let taskAssignedMember = document.querySelector("#assigned_member");
 let editTaskAssignedMember = document.querySelector("#edit_assigned_member");
 let tab = document.querySelector("#sidebar-tasks");
@@ -8,19 +9,36 @@ request("get", "/api/internal/tasks", null, data => {
     if (!data.error) {
         if (data.logged_in) {
             data.tasks.forEach(t => {
-                tasksTableBody.innerHTML += `
-                <tr id="${t.task_id}">
-                    <td>${t.task_title}</td>
-                    <td>${t.due_date}</td>
-                    <td>${t.evaluator_name}</td>
-                    <td>${t.task_status}</td>
-                    ${data.is_admin ? `
-                        <td id="${t.task_id}-actions">
-                            <i class="control-btn far fa-edit" onclick="showEditTaskForm(${t.task_id}, '${t.task_title}', '${t.due_date}', '${t.assigned_member}', '${t.task_status}');"></i>
-                            <i class="control-btn red far fa-trash-alt" onclick="deleteTask(${t.task_id});"></i>
-                        </td>
-                    ` : ""}
-                </tr>`;
+                if (t.task_status === "Completed") {
+                    completedTasksTableBody.innerHTML += `
+                    <tr id="${t.task_id}">
+                        <td>${t.task_title}</td>
+                        <td>${t.due_date}</td>
+                        <td>${t.evaluator_name}</td>
+                        <td>${t.task_status}</td>
+                        ${data.is_admin ? `
+                            <td id="${t.task_id}-actions">
+                                <i class="control-btn far fa-edit" onclick="showEditTaskForm(${t.task_id}, '${t.task_title}', '${t.due_date}', '${t.assigned_member}', '${t.task_status}');"></i>
+                                <i class="control-btn red far fa-trash-alt" onclick="deleteTask(${t.task_id});"></i>
+                            </td>
+                        ` : ""}
+                    </tr>`;
+                }
+                else {
+                    incompleteTasksTableBody.innerHTML += `
+                    <tr id="${t.task_id}">
+                        <td>${t.task_title}</td>
+                        <td>${t.due_date}</td>
+                        <td>${t.evaluator_name}</td>
+                        <td>${t.task_status}</td>
+                        ${data.is_admin ? `
+                            <td id="${t.task_id}-actions">
+                                <i class="control-btn far fa-edit" onclick="showEditTaskForm(${t.task_id}, '${t.task_title}', '${t.due_date}', '${t.assigned_member}', '${t.task_status}');"></i>
+                                <i class="control-btn red far fa-trash-alt" onclick="deleteTask(${t.task_id});"></i>
+                            </td>
+                        ` : ""}
+                    </tr>`;
+                }
             });
         }
     } else {

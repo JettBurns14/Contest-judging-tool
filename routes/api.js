@@ -117,12 +117,24 @@ const routeChecks = {
 		    .withMessage("Entry height must be an integer")
 		],
 		edit: [
-		    check("entry_id")
+		    check("edit_entry_id")
 		    .isInt()
 		    .withMessage("Entry ID must be an integer"),
-		    check("edited_level")
+			check("edit_entry_title")
+		    .isLength(nameChars)
+		    .withMessage("Entry title cannot be empty or longer than 200 characters"),
+			check("edit_entry_author")
+		    .isLength(nameChars)
+		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
+		    check("edit_entry_level")
 		    .isIn(["Advanced", "Intermediate", "Beginner", "tbd"])
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'tbd'"),
+			check("edit_flagged")
+		    .isBoolean()
+		    .withMessage("Flagged must be a boolean"),
+			check("edit_disqualified")
+		    .isBoolean()
+		    .withMessage("Disqualified must be a boolean"),
 		],
 		delete: [
 		    check("entry_id")
@@ -353,6 +365,7 @@ router.get("/internal/results", results.get);
 
 // Contests
 router.get("/internal/contests/", contests.get);
+router.get("/internal/contests/getCurrentContest", contests.getCurrentContest);
 router.post("/internal/contests", routeChecks.contests.add, wasValidated, contests.add);
 router.put("/internal/contests", routeChecks.contests.edit, wasValidated, contests.edit);
 router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, contests.delete);

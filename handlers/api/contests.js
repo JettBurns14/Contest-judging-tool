@@ -19,6 +19,21 @@ exports.get = (request, response, next) => {
     });
 };
 
+exports.getCurrentContest = (request, response, next) => {
+    if (request.decodedToken) {
+        return db.query("SELECT * FROM contest ORDER BY contest_id DESC LIMIT 1", [], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the current contest");
+            }
+            response.json({
+                is_admin: request.decodedToken.is_admin,
+                currentContest: res.rows[0]
+            });
+        });
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
         try {

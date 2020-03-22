@@ -51,51 +51,64 @@ exports.judging = (request, response, next) => {
     });
 }
 
-exports.admin = (request, response, next) => {
+exports.adminDashboard = (request, response, next) => {
     if (request.decodedToken) {
-        if (request.params.page === "dashboard") {
-            return response.render("pages/admin/dashboard", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
-        } else if (request.params.page === "contests") {
-            return response.render("pages/admin/contests", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
-        } else if (request.params.page === "tasks" && request.decodedToken.is_admin) {
-            return response.render("pages/admin/tasks", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
-        } else if (request.params.page === "users" && request.decodedToken.is_admin) {
-            return response.render("pages/admin/users", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
-        }
-        else if (request.params.page === "judging" && request.decodedToken.is_admin) {
-            return response.render("pages/admin/judging", {
-                logged_in: true,
-                is_admin: request.decodedToken.is_admin
-            });
-        }
-        else {
-            response.redirect("/admin/dashboard");
-        }
-        // Handle routes for public users
+        return response.render("pages/admin/dashboard", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
     } else {
-        if (request.params.page === "contests") {
-            response.render("pages/admin/contests", {
-                logged_in: false,
-                is_admin: false
-            });
-        } else {
-            response.render("pages/admin/dashboard", {
-                logged_in: false,
-                is_admin: false
-            });
-        }
+        return response.render("pages/admin/dashboard", {
+            logged_in: false,
+            is_admin: false
+        });
+    }
+}
+
+exports.adminContests = (request, response, next) => {
+    if (request.decodedToken) {
+        return response.render("pages/admin/contests", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    } else {
+        return response.render("pages/admin/contests", {
+            logged_in: false,
+            is_admin: false
+        });
+    }
+}
+
+exports.adminTasks = (request, response, next) => {
+    if (request.decodedToken.is_admin) {
+        return response.render("pages/admin/tasks", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    } else {
+        response.redirect("/admin/dashboard");
+    }
+}
+
+exports.adminUsers = (request, response, next) => {
+    if (request.decodedToken.is_admin) {
+        return response.render("pages/admin/users", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    } else {
+        response.redirect("/admin/dashboard");
+    }
+}
+
+exports.adminJudging = (request, response, next) => {
+    if (request.decodedToken.is_admin) {
+        return response.render("pages/admin/judging", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    } else {
+        response.redirect("/admin/dashboard");
     }
 }
 

@@ -110,6 +110,9 @@ let showEditMessageForm = (...args) => {
             editMsgForm[i].value = args[i];
         }
     }
+
+    // Fill text editors
+    document.querySelector("#edit-announcement-editor").firstChild.innerHTML = args[3];
 }
 
 let editTask = (edit_task_id, edit_task_title, edit_due_date, edit_assigned_member, edit_task_status) => {
@@ -140,6 +143,7 @@ let addMessage = (e) => {
             body[key.name] = key.value;
         }
     }
+    body["message_content"] = document.querySelector("#new-announcement-editor").firstChild.innerHTML;
     delete body[""];
     request("post", "/api/internal/messages", body, (data) => {
         if (!data.error) {
@@ -161,6 +165,7 @@ let editMessage = (e) => {
             body[key.name] = key.value;
         }
     }
+    body["message_content"] = document.querySelector("#edit-announcement-editor").firstChild.innerHTML;
     delete body[""];
     request("put", "/api/internal/messages", body, (data) => {
         if (!data.error) {
@@ -186,3 +191,7 @@ let deleteMessage = (message_id) => {
         });
     }
 }
+
+// Create text editors
+var newAnnouncementEditor = new Quill("#new-announcement-editor", quillOptions);
+var editAnnouncementEditor = new Quill("#edit-announcement-editor", quillOptions);

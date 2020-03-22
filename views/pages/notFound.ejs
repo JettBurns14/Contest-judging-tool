@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Page not found</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/static/css/header.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/notFound.css">
+        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    </head>
+    <body>
+        <%- include ../partials/header %>
+        <div id="four-oh-four">
+            <div>
+                <img alt="" aria-hidden="true" src="/static/images/404/little_stars.svg" style="position: absolute; left: 105px; top: 81px;">
+                <img alt="" aria-hidden="true" src="/static/images/404/large_stars.svg" style="position: absolute; left: 648px; top: 161px;">
+                <img alt="" aria-hidden="true" src="/static/images/404/question_marks.svg" style="position: absolute; left: 855px; top: 106px;">
+                <img alt="" aria-hidden="true" src="/static/images/404/mountain.svg" style="position: absolute; left: -100px; top: 563px;">
+                <img alt="" aria-hidden="true" src="/static/images/404/planet.svg" style="position: absolute; left: 474px; top: 349px;">
+                <img alt="" aria-hidden="true" src="/static/images/404/dog.svg" style="position: absolute; left: 911px; top: 195px;">
+            </div>
+            <div id="not-found-message">
+                <h1>Oops!</h1>
+                <p>Sorry, the page you were trying to load doesn't exist.</p>
+                <a href="/" id="homepage-link">Go to Bema homepage</a>
+                <p>If this problem continues, <a href="https://khanacademy.zendesk.com/hc/en-us/community/topics/360000022111">let us know</a>.</p>
+            </div>
+        </div>
+    </body>
+</html>

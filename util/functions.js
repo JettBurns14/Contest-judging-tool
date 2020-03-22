@@ -63,9 +63,9 @@ exports.handleNext = (next, status, message) => {
     });
 }
 
-exports.successMsg = (res) => {
+exports.successMsg = (res, message = 'Success! Refreshing now...') => {
     return res.json({
-        message: "Success! Refreshing now..."
+        message: message
     });
 }
 

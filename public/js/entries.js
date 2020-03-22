@@ -11,6 +11,7 @@ let entriesSpinner = document.querySelector("#entries-spinner");
 let entryContestName = document.querySelector("#entry-contest-name");
 let sidebar = document.querySelector(".side-bar");
 let sidebarSpinner = document.querySelector("#sidebar-spinner");
+let groupDropdown = document.querySelector("#assigned-group-dropdown");
 
 request("get", "/api/internal/contests", null, (data) => {
     if (!data.error) {
@@ -18,7 +19,7 @@ request("get", "/api/internal/contests", null, (data) => {
         entryContestName.textContent = `Entries for ${data.contests.filter(c => c.contest_id == currentContestId)[0].contest_name}`;
         data.contests.forEach((c, idx) => {
             sidebar.innerHTML += `
-                <a class="nav-button" href="/entries/${c.contest_id}">
+                <a class="nav-button" href="/entries/${c.contest_id}" id="contest-tab-${c.contest_id}">
                     <i class="fas fa-trophy"></i>
                     <p>
                         ${c.contest_name}
@@ -26,8 +27,8 @@ request("get", "/api/internal/contests", null, (data) => {
                 </a>
             `;
         });
-        let navButtons = document.querySelectorAll(".nav-button");
-        navButtons[navButtons.length - currentContestId].classList.add("selected");
+        let navButton = document.querySelector(`#contest-tab-${currentContestId}`);
+        navButton.classList.add("selected");
     } else {
         alert(data.error.message);
     }
@@ -56,20 +57,6 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
                         <div class="view-entry-level">
                             ${a.entry_level}
                         </div>
-                        <div class="edit-entry-level">
-                            <form class="edit-entry-level-form" onSubmit="return editEntry(event)">
-                                <input type="hidden" name="entry_id">
-                                <select name="edited_level">
-                                    <option value="tbd">TBD</option>
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                </select>
-                                <button class="check-icon">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                            </form>
-                        </div>
                     </td>`
                     : ""
                 }
@@ -79,7 +66,7 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
                 ${data.logged_in ? `<td>${a.assigned_group_id ? a.assigned_group_id : "None"}</td>`: ""}
                 ${data.is_admin
                     ? `<td id="${a.entry_id}-actions">
-                           <i class="control-btn far fa-edit" onclick="showEditEntryForm(${a.entry_id}, ${idx}, ${a.contest_id})"></i>
+                           <i class="control-btn far fa-edit" onclick="showEditEntryForm(${a.entry_id}, '${a.entry_title.replace("'", "").replace('"', '').replace('"', '')}', '${a.entry_author.replace("'", "").replace('"', '').replace('"', '')}', '${a.entry_level}', ${a.assigned_group_id}, ${a.flagged}, ${a.disqualified})"></i>
                            <i class="control-btn red far fa-trash-alt" onclick="deleteEntry(${a.entry_id}, ${a.contest_id})"></i>
                        </td>`
                     : ""
@@ -92,14 +79,30 @@ request("get", `/api/internal/entries?contestId=${currentContestId}`, null, (dat
     }
 });
 
+request("get", "/api/internal/admin/getEvaluatorGroups", null, (data) => {
+    if (!data.error) {
+        if (data.is_admin) {
+            data.evaluatorGroups.forEach(g => {
+                if (g.is_active) {
+                    groupDropdown.innerHTML += `<option value="${g.group_id}">${g.group_id} - ${g.group_name}</option>`;
+                }
+            });
+        }
+    } else {
+        alert(data.error.message);
+    }
+});
+
 ///// These send form post requests /////
 let editEntry = (e) => {
     e.preventDefault();
 
     let body = {};
     for (key of e.target) {
-        if (key.name === "edit_contest_current") {
+        if (key.name === "edit_flagged" || key.name === "edit_disqualified") {
             body[key.name] = key.checked;
+        } else if (key.name === "edit_entry_group") {
+            body[key.name] = null;
         } else {
             body[key.name] = key.value;
         }
@@ -134,6 +137,7 @@ const updateEntries = (contest_id) => {
         contest_id
     }, (data) => {
         if (!data.error) {
+            alert(data.message);
             window.setTimeout(() => window.location.reload(), 1000);
         } else {
             alert(data.error.message);
@@ -198,11 +202,20 @@ const getProgramData = (data) => {
 }
 
 ///// HTML modifier functions (like displaying forms) /////
-let showEditEntryForm = (id, elementIndex, contest_id) => {
-    let viewEntryLevel = document.querySelectorAll(".view-entry-level")[elementIndex];
-    let editEntryLevel = document.querySelectorAll(".edit-entry-level")[elementIndex];
-    let editEntryLevelForm = document.querySelectorAll(".edit-entry-level-form")[elementIndex];
-    viewEntryLevel.style.display = "none";
-    editEntryLevel.style.display = "block";
-    editEntryLevelForm[0].value = id;
-}
+let showEditEntryForm = (...args) => {
+    // id, title, author, skill level, group, flagged, disqualified
+    let editEntryPage = document.querySelector("#edit-entry-page");
+    let viewEntryPage = document.querySelector("#entry-list");
+    let editEntryForm = document.querySelector("#edit-entry-form");
+    viewEntryPage.style.display = "none";
+    editEntryPage.style.display = "block";
+
+    // Just need to set values of inputs to provided params.
+    for (let i = 0; i < editEntryForm.length - 1; i++) {
+        if (editEntryForm[i].name === "edit_flagged" || editEntryForm[i].name === "edit_disqualified") {
+            editEntryForm[i].checked = args[i];
+        } else {
+            editEntryForm[i].value = args[i];
+        }
+    }
+};
