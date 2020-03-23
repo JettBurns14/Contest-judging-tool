@@ -123,7 +123,7 @@ exports.adminEvaluations = (request, response, next) => {
             return response.render("pages/admin/evaluations", {
                 logged_in: true,
                 is_admin: request.decodedToken.is_admin,
-                current_conteest_id: request.params.contestId,
+                current_contest_id: request.params.contestId,
                 current_evaluator_id: request.params.evaluator_id
             });
         } else {
