@@ -73,7 +73,7 @@
                         <label for="edit_creativity">Creativity</label>
                     </div>
                     <div class="col-90">
-                        <input class="form-input" type="text" id="edit_creativity" name="edit_creativity">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_creativity" name="edit_creativity">
                     </div>
                 </div>
                 <div class="row">
@@ -81,15 +81,15 @@
                         <label for="edit_complexity">Complexity</label>
                     </div>
                     <div class="col-90">
-                        <input class="form-input" type="text" id="edit_complexity" name="edit_complexity">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_complexity" name="edit_complexity">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10">
-                        <label for="edit_quality">Quality</label>
+                        <label for="edit_execution">Quality</label>
                     </div>
                     <div class="col-90">
-                        <input class="form-input" type="text" id="edit_quality" name="edit_quality">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_execution" name="edit_execution">
                     </div>
                 </div>
                 <div class="row">
@@ -97,16 +97,15 @@
                         <label for="edit_interpretation">Interpretation</label>
                     </div>
                     <div class="col-90">
-                        <input class="form-input" type="text" id="edit_interpretation" name="edit_interpretation">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_interpretation" name="edit_interpretation">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-10">
-                        <label for="edit_skill_level">Skill Level</label>
+                        <label for="edit_evaluation_level">Skill Level</label>
                     </div>
                     <div class="col-90">
-                        <select name="edit_skill_level">
-                            <option value="tbd">TBD</option>
+                        <select name="edit_evaluation_level">
                             <option value="Beginner">Beginner</option>
                             <option value="Intermediate">Intermediate</option>
                             <option value="Advanced">Advanced</option>
