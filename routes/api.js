@@ -14,6 +14,7 @@ const messages = require(process.cwd() + "/handlers/api/messages");
 const users = require(process.cwd() + "/handlers/api/users");
 const winners = require(process.cwd() + "/handlers/api/winners");
 const tasks = require(process.cwd() + "/handlers/api/tasks");
+const evaluations = require(process.cwd() + "/handlers/api/evaluations");
 
 const routeChecks = {
 	admin: {
@@ -366,6 +367,7 @@ router.get("/internal/results", results.get);
 // Contests
 router.get("/internal/contests/", contests.get);
 router.get("/internal/contests/getCurrentContest", contests.getCurrentContest);
+router.get("/internal/contests/getContestsEvaluatedByUser", contests.getContestsEvaluatedByUser);
 router.post("/internal/contests", routeChecks.contests.add, wasValidated, contests.add);
 router.put("/internal/contests", routeChecks.contests.edit, wasValidated, contests.edit);
 router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, contests.delete);
@@ -383,5 +385,8 @@ router.get("/internal/tasks/user", tasks.getForUser);
 router.post("/internal/tasks", routeChecks.tasks.add, wasValidated, tasks.add);
 router.put("/internal/tasks", routeChecks.tasks.edit, wasValidated, tasks.edit);
 router.delete("/internal/tasks", routeChecks.tasks.delete, wasValidated, tasks.delete);
+
+// Evaluations
+router.get("/internal/evaluations", evaluations.get);
 
 module.exports = router;
