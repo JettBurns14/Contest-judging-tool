@@ -34,6 +34,26 @@ exports.getCurrentContest = (request, response, next) => {
     return handleNext(next, 401, "Unauthorized");
 };
 
+exports.getContestsEvaluatedByUser = (request, response, next) => {
+    let userId = request.query.userId;
+
+    if (userId) {
+        if (request.decodedToken.evaluator_id === userId || request.decodedToken.is_admin) {
+            return db.query("SELECT c.contest_id, c.contest_name FROM contest c INNER JOIN entry en ON en.contest_id = c.contest_id INNER JOIN evaluation ev ON ev.entry_id = en.entry_id WHERE ev.evaluator_id = $1 GROUP BY c.contest_id ORDER BY c.contest_id DESC;", [userId], res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem getting the contests this user evaluated");
+                }
+                response.json({
+                    is_admin: request.decodedToken.is_admin,
+                    contests: res.rows
+                });
+            });
+        }
+        return handleNext(next, 401, "Unauthorized");
+    }
+    return handleNext(next, 400, "Invalid Input: userId is required");
+};
+
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
         try {
