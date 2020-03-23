@@ -117,6 +117,24 @@ exports.adminJudging = (request, response, next) => {
     }
 }
 
+exports.adminEvaluations = (request, response, next) => {
+    if (request.decodedToken) {
+        if (request.decodedToken.evaluator_id === request.params.userId || request.decodedToken.is_admin) {
+            return response.render("pages/admin/evaluations", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin,
+                current_conteest_id: request.params.contestId,
+                current_evaluator_id: request.params.evaluator_id
+            });
+        } else {
+            response.redirect("/admin/evaluations/" + request.decodedToken.evaluator_id);
+        }
+    }
+    else {
+        response.redirect("/admin/dashboard");
+    }
+}
+
 exports.results = (request, response, next) => {
     if (request.decodedToken) {
         return response.render("pages/results", {
