@@ -13,7 +13,6 @@ exports.get = (request, response, next) => {
     let userId = request.query.userId;
     let contestId = request.query.contestId;
 
-    // Send back all entry info
     if (request.decodedToken) {
         if (userId && contestId) {
             if (userId === request.decodedToken.evaluator_id || request.decodedToken.is_admin) {
@@ -31,6 +30,47 @@ exports.get = (request, response, next) => {
             return handleNext(next, 403, "Insufficient access");
         }
         return handleNext(next, 400, "Invalid Inputs: userId and contestId expected");
+    }
+    return handleNext(next, 403, "Insufficient access");
+};
+
+exports.put = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                edit_evaluation_id,
+                edit_creativity,
+                edit_complexity,
+                edit_execution,
+                edit_interpretation,
+                edit_evaluation_level
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            // Get the user to whom this evaluation belongs to
+            return db.query("SELECT evaluator_id FROM evaluation WHERE evaluation_id = $1", [edit_evaluation_id], res => {
+                if (res.error) {
+                    return handleNext(next, 400, "There was a problem getting this evaluation's owner");
+                }
+
+                let owner = res.rows[0].evaluator_id;
+
+                if (owner === request.decodedToken.evaluator_id || is_admin) {
+                    return db.query("UPDATE evaluation SET creativity = $1, complexity = $2, execution = $3, interpretation = $4, evaluation_level = $5 WHERE evaluation_id = $6", [edit_creativity, edit_complexity, edit_execution, edit_interpretation, edit_evaluation_level, edit_evaluation_id], res => {
+                        if (res.error) {
+                            return handleNext(next, 400, "There was a problem editing this evaluation");
+                        }
+                        successMsg(response);
+                    });
+                } else {
+                    return handleNext(next, 403, "Insufficient access");
+                }
+            });
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem editing this evaluation");
+        }
     }
     return handleNext(next, 403, "Insufficient access");
 };
