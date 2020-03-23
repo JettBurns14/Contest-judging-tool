@@ -3,7 +3,7 @@ const router = express.Router();
 const hasBody = require(process.cwd() + "/middleware/hasBody");
 const { check } = require('express-validator/check');
 const wasValidated = require(process.cwd() + "/middleware/wasValidated");
-const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars, scores } = require(process.cwd() + "/util/variables");
+const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars, scores, skillLevels, taskStatuses } = require(process.cwd() + "/util/variables");
 
 const admin = require(process.cwd() + "/handlers/api/admin");
 const contests = require(process.cwd() + "/handlers/api/contests");
@@ -108,7 +108,7 @@ const routeChecks = {
 		    .isLength(nameChars)
 		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
 		    check("entry_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner", "TBD"])
+		    .isIn(skillLevels)
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'TBD'"),
 		    check("entry_votes")
 		    .isInt()
@@ -128,7 +128,7 @@ const routeChecks = {
 		    .isLength(nameChars)
 		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
 		    check("edit_entry_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner", "tbd"])
+		    .isIn(skillLevels)
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'tbd'"),
 			check("edit_flagged")
 		    .isBoolean()
@@ -189,7 +189,7 @@ const routeChecks = {
 		    .isInt(scoreChars)
 		    .withMessage("interpretation score must be >= 0 and <= 10"),
 		    check("skill_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner"])
+		    .isIn(skillLevels)
 		    .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
 		]
 	},
@@ -292,7 +292,7 @@ const routeChecks = {
 		    .matches(datePattern)
 		    .withMessage(`Due date must be a valid date ${dateFormat}`),
 		    check("task_status")
-		    .isIn(["Not Started", "Started", "Completed"])
+		    .isIn(taskStatuses)
 		    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
 		    check("assigned_member")
 		    .isInt()
@@ -309,7 +309,7 @@ const routeChecks = {
 		    .matches(datePattern)
 		    .withMessage(`Due date must be a valid date ${dateFormat}`),
 		    check("edit_task_status")
-		    .isIn(["Not Started", "Started", "Completed"])
+		    .isIn(taskStatuses)
 		    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
 		    check("edit_assigned_member")
 		    .isInt()
@@ -339,7 +339,7 @@ const routeChecks = {
 		    .isIn(scores)
 		    .withMessage("interpretation score must be >= 0 and <= 5"),
 			check("edit_evaluation_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner"])
+		    .isIn(skillLevels)
 		    .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
 		]
 	}
