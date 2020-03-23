@@ -8,7 +8,25 @@ const db = require(process.cwd() + "/util/db");
 const { displayDateFormat } = require(process.cwd() + "/util/variables");
 
 exports.get = (request, response, next) => {
-    if (request.decodedToken && request.decodedToken.is_admin) {
+    let userId = request.query.userId;
+
+    // Get a specific user's information
+    if (userId && (userId === request.decodedToken.evaluator_id || request.decodedToken.is_admin)) {
+        return db.query("SELECT * FROM evaluator WHERE evaluator_id = $1", [userId], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the user's information");
+            }
+            evaluator = res.rows[0];
+
+            return response.json({
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin,
+                evaluator: evaluator
+            });
+        });
+    }
+    // Get all user information
+    else if (request.decodedToken && request.decodedToken.is_admin) {
         let evaluators, kaids;
         return db.query("SELECT *, to_char(e.logged_in_tstz, $1) as logged_in_tstz, to_char(e.dt_term_start, $1) as dt_term_start, to_char(e.dt_term_end, $1) as dt_term_end FROM evaluator e ORDER BY evaluator_id ASC;", [displayDateFormat], res => {
             if (res.error) {
@@ -30,7 +48,7 @@ exports.get = (request, response, next) => {
         });
     }
     response.json({
-        is_admin: false,
+        is_admin: false
     });
 };
 
