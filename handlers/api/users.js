@@ -52,6 +52,15 @@ exports.get = (request, response, next) => {
     });
 };
 
+exports.getId = (request, response, next) => {
+    if (request.decodedToken) {
+        return response.json({
+            evaluator_id: request.decodedToken.evaluator_id
+        });
+    }
+    return handleNext(next, 401, "Unauthorized");
+};
+
 // Add user to whitelist.
 exports.add = (request, response, next) => {
     if (request.decodedToken) {
