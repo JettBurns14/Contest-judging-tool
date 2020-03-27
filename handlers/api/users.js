@@ -8,7 +8,7 @@ const db = require(process.cwd() + "/util/db");
 const { displayDateFormat } = require(process.cwd() + "/util/variables");
 
 exports.get = (request, response, next) => {
-    let userId = request.query.userId;
+    let userId = parseInt(request.query.userId);
 
     // Get a specific user's information
     if (userId && (userId === request.decodedToken.evaluator_id || request.decodedToken.is_admin)) {

@@ -10,7 +10,7 @@ const Moment = require("moment");
 const { displayFancyDateFormat } = require(process.cwd() + "/util/variables");
 
 exports.get = (request, response, next) => {
-    let userId = request.query.userId;
+    let userId = parseInt(request.query.userId);
     let contestId = request.query.contestId;
 
     if (request.decodedToken) {

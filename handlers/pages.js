@@ -119,15 +119,16 @@ exports.adminJudging = (request, response, next) => {
 
 exports.adminEvaluations = (request, response, next) => {
     if (request.decodedToken) {
-        if (request.decodedToken.evaluator_id === request.params.userId || request.decodedToken.is_admin) {
+        let userId = parseInt(request.params.userId);
+        if (request.decodedToken.evaluator_id === userId || request.decodedToken.is_admin) {
             return response.render("pages/admin/evaluations", {
                 logged_in: true,
                 is_admin: request.decodedToken.is_admin,
-                current_contest_id: request.params.contestId,
-                current_evaluator_id: request.params.evaluator_id
+                current_contest_id: parseInt(request.params.contestId),
+                current_evaluator_id: userId
             });
         } else {
-            response.redirect("/admin/evaluations/" + request.decodedToken.evaluator_id);
+            response.redirect("/admin/dashboard");
         }
     }
     else {
