@@ -28,7 +28,12 @@
                     <!-- contest name -->
                 </h2>
                 <% if (is_admin) { %>
-                    <!-- TODO: USER SELECTION -->
+                    <form id="select-user-form" onsubmit="return changeUser(event)">
+                        <select id="user-selection-dropdown" name="evaluator_id">
+                            <option value='4'>Evan Lewis</option>
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
                 <% } %>
             </div>
             <div class="previews-container">
@@ -124,5 +129,40 @@
 </body>
 <script src="/static/js/general.js"></script>
 <script src="/static/js/admin/evaluations.js"></script>
+<% if (is_admin) { %>
+    <script>
+    let userDropdown = document.getElementById("user-selection-dropdown");
+    request("get", "/api/internal/users", null, data => {
+        if (!data.error) {
+            data.evaluators.forEach(c => {
+                userDropdown.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
+            });
+        } else {
+            alert(data.error.message);
+        }
+    });
 
+    let changeUser = (e) => {
+        e.preventDefault();
+
+        let body = {};
+        for (key of e.target) {
+            body[key.name] = key.value;
+        }
+        delete body[""];
+
+        request("get", "/api/internal/contests/getContestsEvaluatedByUser?userId=" + body.evaluator_id, null, (data) => {
+            if (!data.error) {
+                window.location.replace("/admin/evaluations/" + body.evaluator_id + "/" + data.contests[0].contest_id);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+    </script>
+<% } %>
 </html>

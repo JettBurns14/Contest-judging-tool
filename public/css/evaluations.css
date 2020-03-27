@@ -1,0 +1,16 @@
+#user-selection-dropdown {
+    height: 33px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#select-user-form button {
+    font-size: 14px;
+	background-color: rgb(100, 160, 100);
+	color: white;
+	text-align: center;
+	padding: 8px 10px;
+	border-radius: 3px;
+    cursor: pointer;
+    border: none;
+}

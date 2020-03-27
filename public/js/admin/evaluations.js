@@ -46,8 +46,6 @@ request("get", "/api/internal/users?userId=" + current_evaluator_id, null, (data
     }
 });
 
-// TODO: Get all user info for admins
-
 request("get", `/api/internal/evaluations?contestId=${current_contest_id}&userId=${current_evaluator_id}`, null, (data) => {
     if (!data.error) {
         evaluationsTable.style.display = "block";
