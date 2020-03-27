@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Evaluations | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/evaluations.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/sidebar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tables.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+</head>
+
+<body>
+    <%- include ../../partials/header %>
+
+    <div class="page-container">
+        <div class="side-bar">
+            <!-- Contests -->
+            <img id="sidebar-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+        </div>
+
+        <div class="content-container" id="evaluation-list">
+            <div class="content-header">
+                <h2 id="evaluations-contest-name">
+                    <img id="title-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner small">
+                    <!-- contest name -->
+                </h2>
+                <% if (is_admin) { %>
+                    <form id="select-user-form" onsubmit="return changeUser(event)">
+                        <select id="user-selection-dropdown" name="evaluator_id">
+
+                        </select>
+                        <button type="submit">Go</button>
+                    </form>
+                <% } %>
+            </div>
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header" id="page-title">
+                        <!-- Ccontest: NAME Evaluations For USER -->
+                    </div>
+                    <div class="preview-content">
+                        <table id="evaluations-table" style="display: none">
+                            <thead id="evaluations-table-head">
+                                <th style="width: 8%">ID</th>
+                                <th style="width: 20%">Entry</th>
+                                <th style="width: 3%">Creativity</th>
+                                <th style="width: 3%">Complexity</th>
+                                <th style="width: 3%">Quality</th>
+                                <th style="width: 3%">Interpretation</th>
+                                <th style="width: 3%">Total</th>
+                                <th style="width: 5%">Skill Level</th>
+                                <% if (is_admin) { %><th style="width: 3%">Actions</th><% } %>
+                            </thead>
+                            <tbody id="evaluations-table-body">
+                                <!-- Evaluations -->
+                            </tbody>
+                        </table>
+                        <img id="evaluations-spinner" src="/static/images/new-loading-spinner.svg" class="loading-spinner">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-container" id="edit-evaluation-page" style="display: none">
+            <div class="content-header">
+                <h2>Edit Evaluation</h2>
+            </div>
+
+            <form id="edit-evaluation-form" class="admin-form" onsubmit="return editEvaluation(event)">
+                <div class="row">
+                    <input type="hidden" id="edit_evaluation_id" name="edit_evaluation_id">
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_creativity">Creativity</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_creativity" name="edit_creativity">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_complexity">Complexity</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_complexity" name="edit_complexity">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_execution">Quality</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_execution" name="edit_execution">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_interpretation">Interpretation</label>
+                    </div>
+                    <div class="col-90">
+                        <input class="form-input" type="number" min="0" max="5" step="0.5" required id="edit_interpretation" name="edit_interpretation">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <label for="edit_evaluation_level">Skill Level</label>
+                    </div>
+                    <div class="col-90">
+                        <select name="edit_evaluation_level">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <input class="admin-button" type="submit" value="Save">
+                </div>
+            </form>
+        </div>
+    </div> <!-- Page content -->
+
+    </div> <!-- Page container -->
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/admin/evaluations.js"></script>
+<% if (is_admin) { %>
+    <script>
+    let userDropdown = document.getElementById("user-selection-dropdown");
+    request("get", "/api/internal/users", null, data => {
+        if (!data.error) {
+            data.evaluators.forEach(c => {
+                userDropdown.innerHTML += `
+                    ${!c.account_locked ? `
+                        <option value="${c.evaluator_id}">${c.evaluator_name}</option>
+                    ` : ""}
+                `;
+            });
+        } else {
+            alert(data.error.message);
+        }
+    });
+
+    let changeUser = (e) => {
+        e.preventDefault();
+
+        let body = {};
+        for (key of e.target) {
+            body[key.name] = key.value;
+        }
+        delete body[""];
+
+        request("get", "/api/internal/contests/getContestsEvaluatedByUser?userId=" + body.evaluator_id, null, (data) => {
+            if (!data.error) {
+                window.location.replace("/admin/evaluations/" + body.evaluator_id + "/" + data.contests[0].contest_id);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+    </script>
+<% } %>
+</html>

@@ -12,4 +12,5 @@ router.get("/admin/contests", handlers.adminContests);
 router.get("/admin/tasks", handlers.adminTasks);
 router.get("/admin/users", handlers.adminUsers);
 router.get("/admin/judging", handlers.adminJudging);
+router.get("/admin/evaluations/:userId/:contestId", handlers.adminEvaluations);
 module.exports = router;

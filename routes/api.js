@@ -3,7 +3,7 @@ const router = express.Router();
 const hasBody = require(process.cwd() + "/middleware/hasBody");
 const { check } = require('express-validator/check');
 const wasValidated = require(process.cwd() + "/middleware/wasValidated");
-const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars } = require(process.cwd() + "/util/variables");
+const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars, scores, skillLevels, taskStatuses } = require(process.cwd() + "/util/variables");
 
 const admin = require(process.cwd() + "/handlers/api/admin");
 const contests = require(process.cwd() + "/handlers/api/contests");
@@ -14,6 +14,7 @@ const messages = require(process.cwd() + "/handlers/api/messages");
 const users = require(process.cwd() + "/handlers/api/users");
 const winners = require(process.cwd() + "/handlers/api/winners");
 const tasks = require(process.cwd() + "/handlers/api/tasks");
+const evaluations = require(process.cwd() + "/handlers/api/evaluations");
 
 const routeChecks = {
 	admin: {
@@ -107,7 +108,7 @@ const routeChecks = {
 		    .isLength(nameChars)
 		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
 		    check("entry_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner", "TBD"])
+		    .isIn(skillLevels)
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'TBD'"),
 		    check("entry_votes")
 		    .isInt()
@@ -127,7 +128,7 @@ const routeChecks = {
 		    .isLength(nameChars)
 		    .withMessage("Entry author cannot be empty or longer than 200 characters"),
 		    check("edit_entry_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner", "tbd"])
+		    .isIn(skillLevels)
 		    .withMessage("Entry level must be 'Advanced', 'Intermediate', 'Beginner', or 'tbd'"),
 			check("edit_flagged")
 		    .isBoolean()
@@ -188,7 +189,7 @@ const routeChecks = {
 		    .isInt(scoreChars)
 		    .withMessage("interpretation score must be >= 0 and <= 10"),
 		    check("skill_level")
-		    .isIn(["Advanced", "Intermediate", "Beginner"])
+		    .isIn(skillLevels)
 		    .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
 		]
 	},
@@ -291,7 +292,7 @@ const routeChecks = {
 		    .matches(datePattern)
 		    .withMessage(`Due date must be a valid date ${dateFormat}`),
 		    check("task_status")
-		    .isIn(["Not Started", "Started", "Completed"])
+		    .isIn(taskStatuses)
 		    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
 		    check("assigned_member")
 		    .isInt()
@@ -308,7 +309,7 @@ const routeChecks = {
 		    .matches(datePattern)
 		    .withMessage(`Due date must be a valid date ${dateFormat}`),
 		    check("edit_task_status")
-		    .isIn(["Not Started", "Started", "Completed"])
+		    .isIn(taskStatuses)
 		    .withMessage("Task status must be 'Not Started', 'Started', 'Completed'"),
 		    check("edit_assigned_member")
 		    .isInt()
@@ -318,6 +319,33 @@ const routeChecks = {
 		    check("task_id")
 		    .isInt()
 		    .withMessage("Task id must be an integer"),
+		]
+	},
+	evaluations: {
+		edit: [
+			check("edit_evaluation_id")
+			.isInt()
+			.withMessage("Evaluation ID must be an integer"),
+			check("edit_creativity")
+		    .isIn(scores)
+		    .withMessage("creativity score must be >= 0 and <= 5"),
+			check("edit_complexity")
+		    .isIn(scores)
+		    .withMessage("complexity score must be >= 0 and <= 5"),
+			check("edit_execution")
+		    .isIn(scores)
+		    .withMessage("execution score must be >= 0 and <= 5"),
+			check("edit_interpretation")
+		    .isIn(scores)
+		    .withMessage("interpretation score must be >= 0 and <= 5"),
+			check("edit_evaluation_level")
+		    .isIn(skillLevels)
+		    .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
+		],
+		delete: [
+			check("evaluation_id")
+			.isInt()
+			.withMessage("Evaluation ID must be an integer")
 		]
 	}
 };
@@ -334,6 +362,7 @@ router.delete("/internal/winners", routeChecks.winners.delete, wasValidated, win
 
 // Users
 router.get("/internal/users", users.get);
+router.get("/internal/users/id", users.getId);
 router.post("/internal/users/whitelist", routeChecks.users.whitelist, wasValidated, users.add);
 router.delete("/internal/users/whitelist", routeChecks.users.unwhitelist, wasValidated, users.delete);
 router.put("/internal/users", routeChecks.users.edit, wasValidated, users.edit);
@@ -366,6 +395,7 @@ router.get("/internal/results", results.get);
 // Contests
 router.get("/internal/contests/", contests.get);
 router.get("/internal/contests/getCurrentContest", contests.getCurrentContest);
+router.get("/internal/contests/getContestsEvaluatedByUser", contests.getContestsEvaluatedByUser);
 router.post("/internal/contests", routeChecks.contests.add, wasValidated, contests.add);
 router.put("/internal/contests", routeChecks.contests.edit, wasValidated, contests.edit);
 router.delete("/internal/contests", routeChecks.contests.delete, wasValidated, contests.delete);
@@ -383,5 +413,10 @@ router.get("/internal/tasks/user", tasks.getForUser);
 router.post("/internal/tasks", routeChecks.tasks.add, wasValidated, tasks.add);
 router.put("/internal/tasks", routeChecks.tasks.edit, wasValidated, tasks.edit);
 router.delete("/internal/tasks", routeChecks.tasks.delete, wasValidated, tasks.delete);
+
+// Evaluations
+router.get("/internal/evaluations", evaluations.get);
+router.put("/internal/evaluations", routeChecks.evaluations.edit, wasValidated, evaluations.put);
+router.delete("/internal/evaluations", routeChecks.evaluations.delete, wasValidated, evaluations.delete);
 
 module.exports = router;

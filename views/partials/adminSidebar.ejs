@@ -11,8 +11,14 @@
         <i class="fas fa-list"></i>
         <p>Entries</p>
     </a>
+    <% if (logged_in) { %>
+        <a class="nav-button" id="sidebar-evaluations" href="/admin/evaluations/<%= evaluator_id %>">
+            <i class="fas fa-list-alt"></i>
+            <p>Evaluations</p>
+        </a>
+    <% } %>
     <a class="nav-button" id="sidebar-results" href="">
-        <i class="fas fa-list-ol"></i>
+        <i class="fas fa-award"></i>
         <p>Results</p>
     </a>
     <% if (is_admin) { %>

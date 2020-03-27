@@ -55,7 +55,8 @@ exports.adminDashboard = (request, response, next) => {
     if (request.decodedToken) {
         return response.render("pages/admin/dashboard", {
             logged_in: true,
-            is_admin: request.decodedToken.is_admin
+            is_admin: request.decodedToken.is_admin,
+            evaluator_id: request.decodedToken.evaluator_id
         });
     } else {
         return response.render("pages/admin/dashboard", {
@@ -69,7 +70,8 @@ exports.adminContests = (request, response, next) => {
     if (request.decodedToken) {
         return response.render("pages/admin/contests", {
             logged_in: true,
-            is_admin: request.decodedToken.is_admin
+            is_admin: request.decodedToken.is_admin,
+            evaluator_id: request.decodedToken.evaluator_id
         });
     } else {
         return response.render("pages/admin/contests", {
@@ -83,7 +85,8 @@ exports.adminTasks = (request, response, next) => {
     if (request.decodedToken.is_admin) {
         return response.render("pages/admin/tasks", {
             logged_in: true,
-            is_admin: request.decodedToken.is_admin
+            is_admin: request.decodedToken.is_admin,
+            evaluator_id: request.decodedToken.evaluator_id
         });
     } else {
         response.redirect("/admin/dashboard");
@@ -94,7 +97,8 @@ exports.adminUsers = (request, response, next) => {
     if (request.decodedToken.is_admin) {
         return response.render("pages/admin/users", {
             logged_in: true,
-            is_admin: request.decodedToken.is_admin
+            is_admin: request.decodedToken.is_admin,
+            evaluator_id: request.decodedToken.evaluator_id
         });
     } else {
         response.redirect("/admin/dashboard");
@@ -105,9 +109,29 @@ exports.adminJudging = (request, response, next) => {
     if (request.decodedToken.is_admin) {
         return response.render("pages/admin/judging", {
             logged_in: true,
-            is_admin: request.decodedToken.is_admin
+            is_admin: request.decodedToken.is_admin,
+            evaluator_id: request.decodedToken.evaluator_id
         });
     } else {
+        response.redirect("/admin/dashboard");
+    }
+}
+
+exports.adminEvaluations = (request, response, next) => {
+    if (request.decodedToken) {
+        let userId = parseInt(request.params.userId);
+        if (request.decodedToken.evaluator_id === userId || request.decodedToken.is_admin) {
+            return response.render("pages/admin/evaluations", {
+                logged_in: true,
+                is_admin: request.decodedToken.is_admin,
+                current_contest_id: parseInt(request.params.contestId),
+                current_evaluator_id: userId
+            });
+        } else {
+            response.redirect("/admin/dashboard");
+        }
+    }
+    else {
         response.redirect("/admin/dashboard");
     }
 }
