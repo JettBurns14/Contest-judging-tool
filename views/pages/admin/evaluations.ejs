@@ -30,7 +30,7 @@
                 <% if (is_admin) { %>
                     <form id="select-user-form" onsubmit="return changeUser(event)">
                         <select id="user-selection-dropdown" name="evaluator_id">
-                            
+
                         </select>
                         <button type="submit">Go</button>
                     </form>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="preview-content">
                         <table id="evaluations-table" style="display: none">
-                            <thead>
+                            <thead id="evaluations-table-head">
                                 <th style="width: 8%">ID</th>
                                 <th style="width: 20%">Entry</th>
                                 <th style="width: 3%">Creativity</th>
@@ -52,7 +52,7 @@
                                 <th style="width: 3%">Interpretation</th>
                                 <th style="width: 3%">Total</th>
                                 <th style="width: 5%">Skill Level</th>
-                                <th style="width: 3%">Actions</th>
+                                <% if (is_admin) { %><th style="width: 3%">Actions</th><% } %>
                             </thead>
                             <tbody id="evaluations-table-body">
                                 <!-- Evaluations -->

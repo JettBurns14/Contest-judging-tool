@@ -1,18 +1,33 @@
 let hasHashInUrl = document.location.href.indexOf("#") != -1;
 let current_contest_id = (
     hasHashInUrl ?
-    document.location.href.split("#")[0].split("/")[6] :
-    document.location.href.split("/")[6]
+    parseInt(document.location.href.split("#")[0].split("/")[6]) :
+    parseInt(document.location.href.split("/")[6])
 );
 let current_evaluator_id = document.location.href.split("/")[5];
 
 let evaluationsTable = document.querySelector("#evaluations-table");
+let evaluationsTableHead = document.querySelector("#evaluations-table-head");
 let evaluationsTableBody = document.querySelector("#evaluations-table-body");
 let evaluationsSpinner = document.querySelector("#evaluations-spinner");
 let evaluationsContestName = document.querySelector("#evaluations-contest-name");
 let titleSpinner = document.querySelector("#title-spinner");
 let sidebar = document.querySelector(".side-bar");
 let sidebarSpinner = document.querySelector("#sidebar-spinner");
+let editable_contest;
+
+// Get the current contest
+request("get", `/api/internal/contests/getCurrentContest`, null, (data) => {
+    if (!data.error) {
+        editable_contest = data.currentContest.contest_id;
+
+        if (editable_contest === current_contest_id) {
+            evaluationsTableHead.innerHTML = evaluationsTableHead.innerHTML.split("</tr>")[0] + '<th style="width: 3%">Actions</th>' + evaluationsTableHead.innerHTML.split("</tr>")[1];
+        }
+    } else {
+        alert(data.error.message);
+    }
+});
 
 // Load page data
 request("get", "/api/internal/contests/getContestsEvaluatedByUser?userId=" + current_evaluator_id, null, (data) => {
@@ -48,6 +63,7 @@ request("get", "/api/internal/users?userId=" + current_evaluator_id, null, (data
 
 request("get", `/api/internal/evaluations?contestId=${current_contest_id}&userId=${current_evaluator_id}`, null, (data) => {
     if (!data.error) {
+
         evaluationsTable.style.display = "block";
         data.evaluations.forEach((e, idx) => {
             evaluationsTableBody.innerHTML += `
@@ -76,10 +92,8 @@ request("get", `/api/internal/evaluations?contestId=${current_contest_id}&userId
                 <td>
                     ${e.evaluation_level}
                 </td>
-                <td id="${e.evaluation_id}-actions">
-                    <i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i>
-                    ${data.is_admin ? `<i class="control-btn red far fa-trash-alt" onclick="deleteEvaluation(${e.evaluation_id})"></i>` : ""}
-                </td>
+                    ${editable_contest === current_contest_id ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i></td>` : ""}
+                    ${data.is_admin ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i><i class="control-btn red far fa-trash-alt" onclick="deleteEvaluation(${e.evaluation_id})"></i></td>` : ""}
             </tr>`;
         });
         evaluationsSpinner.style.display = "none";
