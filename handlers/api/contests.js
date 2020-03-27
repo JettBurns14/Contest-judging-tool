@@ -39,7 +39,7 @@ exports.getContestsEvaluatedByUser = (request, response, next) => {
 
     if (userId) {
         if (request.decodedToken.evaluator_id === userId || request.decodedToken.is_admin) {
-            return db.query("SELECT c.contest_id, c.contest_name FROM contest c INNER JOIN entry en ON en.contest_id = c.contest_id INNER JOIN evaluation ev ON ev.entry_id = en.entry_id WHERE ev.evaluator_id = $1 GROUP BY c.contest_id ORDER BY c.contest_id DESC;", [userId], res => {
+            return db.query("SELECT c.contest_id, c.contest_name FROM contest c INNER JOIN entry en ON en.contest_id = c.contest_id INNER JOIN evaluation ev ON ev.entry_id = en.entry_id WHERE ev.evaluator_id = $1 AND ev.evaluation_complete = true GROUP BY c.contest_id ORDER BY c.contest_id DESC;", [userId], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting the contests this user evaluated");
                 }
