@@ -35,7 +35,7 @@ exports.getCurrentContest = (request, response, next) => {
 };
 
 exports.getContestsEvaluatedByUser = (request, response, next) => {
-    let userId = request.query.userId;
+    let userId = parseInt(request.query.userId);
 
     if (userId) {
         if (request.decodedToken.evaluator_id === userId || request.decodedToken.is_admin) {
