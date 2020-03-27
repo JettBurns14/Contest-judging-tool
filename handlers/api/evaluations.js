@@ -75,4 +75,31 @@ exports.put = (request, response, next) => {
     return handleNext(next, 403, "Insufficient access");
 };
 
+exports.delete = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                evaluation_id
+            } = request.body;
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("DELETE FROM evaluation WHERE evaluation_id = $1", [evaluation_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem deleting this evaluation");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem deleting this evaluation");
+        }
+    }
+    return handleNext(next, 403, "Insufficient access");
+};
+
 module.exports = exports;

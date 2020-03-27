@@ -341,6 +341,11 @@ const routeChecks = {
 			check("edit_evaluation_level")
 		    .isIn(skillLevels)
 		    .withMessage("skill_level must be 'Advanced', 'Intermediate', or 'Beginner'")
+		],
+		delete: [
+			check("evaluation_id")
+			.isInt()
+			.withMessage("Evaluation ID must be an integer")
 		]
 	}
 };
@@ -411,5 +416,6 @@ router.delete("/internal/tasks", routeChecks.tasks.delete, wasValidated, tasks.d
 // Evaluations
 router.get("/internal/evaluations", evaluations.get);
 router.put("/internal/evaluations", routeChecks.evaluations.edit, wasValidated, evaluations.put);
+router.delete("/internal/evaluations", routeChecks.evaluations.delete, wasValidated, evaluations.delete);
 
 module.exports = router;
