@@ -95,8 +95,8 @@ request("get", `/api/internal/evaluations?contestId=${current_contest_id}&userId
                 <td>
                     ${e.evaluation_level}
                 </td>
-                    ${editable_contest === current_contest_id ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i></td>` : ""}
-                    ${data.is_admin ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i><i class="control-btn red far fa-trash-alt" onclick="deleteEvaluation(${e.evaluation_id})"></i></td>` : ""}
+                    ${editable_contest === current_contest_id ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.entry_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i></td>` : ""}
+                    ${data.is_admin ? `<td id="${e.evaluation_id}-actions"><i class="control-btn far fa-edit" onclick="showEditEvaluationForm(${e.evaluation_id}, ${e.entry_id}, ${e.creativity}, ${e.complexity}, ${e.execution}, ${e.interpretation}, '${e.evaluation_level}')"></i><i class="control-btn red far fa-trash-alt" onclick="deleteEvaluation(${e.evaluation_id})"></i></td>` : ""}
             </tr>`;
         });
         evaluationsSpinner.style.display = "none";

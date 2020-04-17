@@ -26,16 +26,12 @@ exports.submit = (request, response, next) => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem evaluating this entry");
                 }
-                if (is_admin) {
-                    return db.query("UPDATE entry SET entry_level = $1 WHERE entry_id = $2;", [skill_level, entry_id], res => {
-                        if (res.error) {
-                            return handleNext(next, 400, "There was a problem setting the skill level of this entry");
-                        }
-                        successMsg(response);
-                    });
-                } else {
+                return db.query("SELECT update_entry_level($1)", [entry_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem updating the entry's skill level");
+                    }
                     successMsg(response);
-                }
+                });
             });
         } catch (err) {
             return handleNext(next, 400, "There was a problem evaluating this entry");

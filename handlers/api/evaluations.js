@@ -39,6 +39,7 @@ exports.put = (request, response, next) => {
         try {
             let {
                 edit_evaluation_id,
+                edit_entry_id,
                 edit_creativity,
                 edit_complexity,
                 edit_execution,
@@ -71,7 +72,14 @@ exports.put = (request, response, next) => {
                                 if (res.error) {
                                     return handleNext(next, 400, "There was a problem editing this evaluation");
                                 }
-                                successMsg(response);
+                                return db.query("SELECT update_entry_level($1)", [edit_entry_id], res => {
+                                    if (res.error) {
+                                        return handleNext(next, 400, "There was a problem updating the entry's skill level");
+                                    }
+
+
+                                    successMsg(response);
+                                });
                             });
                         } else {
                             return handleNext(next, 403, "Insufficient access");
