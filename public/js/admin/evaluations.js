@@ -72,6 +72,9 @@ request("get", `/api/internal/evaluations?contestId=${current_contest_id}&userId
                     ${e.evaluation_id}
                 </td>
                 <td>
+                    ${e.entry_id}
+                </td>
+                <td>
                     <a href='${e.entry_url}' target='_blank'>${e.entry_title}</a>
                 </td>
                 <td>
