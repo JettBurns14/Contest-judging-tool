@@ -2,10 +2,8 @@
     color: white;
     font-size: 24px;
     text-shadow: 0 2px 30px rgba(0, 0, 50, 0.3);
-    position: absolute;
-    width: 25%;
-    top: 26%;
-    left: 3%;
+    margin-left: 25px;
+    margin-top: 10%;
 }
 
 #not-found-message h1 {
@@ -29,7 +27,7 @@
 #homepage-link {
     border: 1px solid white;
     border-radius: 4px;
-    padding: 10px 60px;
+    padding: 10px 40px;
 }
 
 #homepage-link:hover {
