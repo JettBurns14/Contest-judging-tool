@@ -331,7 +331,8 @@ exports.assignToGroups = (request, response, next) => {
     if (request.decodedToken) {
         try {
             let {
-                contest_id
+                contest_id,
+                assignAll
             } = request.body;
 
             let {
@@ -344,8 +345,14 @@ exports.assignToGroups = (request, response, next) => {
                         return handleNext(next, 400, "There was a problem assigning the entries to groups");
                     }
                     let groups = res.rows;
+                    let query;
 
-                    return db.query("SELECT entry_id FROM entry WHERE contest_id = $1 ORDER BY entry_id", [contest_id], res => {
+                    if (assignAll) {
+                        query = "SELECT entry_id FROM entry WHERE contest_id = $1 ORDER BY entry_id";
+                    } else {
+                        query = "SELECT entry_id FROM entry WHERE contest_id = $1 AND assigned_group_id IS NULL ORDER BY entry_id";
+                    }
+                    return db.query(query, [contest_id], res => {
                         if (res.error) {
                             return handleNext(next, 400, "There was a problem selecting the entries for this contest");
                         }
@@ -381,6 +388,36 @@ exports.assignToGroups = (request, response, next) => {
             }
         } catch (err) {
             return handleNext(next, 400, "There was a problem assigning the entries to groups");
+        }
+    }
+    return handleNext(next, 401, "Unauthorized");
+}
+
+exports.transferEntryGroups = (request, response, next) => {
+    if (request.decodedToken) {
+        try {
+            let {
+                contest_id,
+                current_entry_group,
+                new_entry_group
+            } = request.body;
+
+            let {
+                is_admin
+            } = request.decodedToken;
+
+            if (is_admin) {
+                return db.query("UPDATE entry SET assigned_group_id = $1 WHERE assigned_group_id = $2 AND contest_id = $3", [new_entry_group, current_entry_group, contest_id], res => {
+                    if (res.error) {
+                        return handleNext(next, 400, "There was a problem transfering the entry groups");
+                    }
+                    successMsg(response);
+                });
+            } else {
+                return handleNext(next, 403, "Insufficient access");
+            }
+        } catch (err) {
+            return handleNext(next, 400, "There was a problem transfering the entry groups");
         }
     }
     return handleNext(next, 401, "Unauthorized");

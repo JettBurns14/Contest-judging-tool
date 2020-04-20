@@ -1,9 +1,5 @@
-/* Hide the small edit entry forms */
-.edit-entry-level {
-    display: none;
-}
-/* Hides the entries table until the entries are loaded in */
-#entries-table, #edit-entry-page {
+/* Hide unloaded content and unused forms */
+#entries-table, #edit-entry-page, #update-entry-groups-page {
 	display: none;
 }
 /* Actions buttons */
@@ -20,4 +16,8 @@ button.check-icon {
 button.check-icon i {
     font-size: 14px;
     width: 20px;
+}
+
+#update-entry-groups-page .admin-button {
+    margin-right: 15px;
 }

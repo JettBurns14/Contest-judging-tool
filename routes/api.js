@@ -169,6 +169,17 @@ const routeChecks = {
 			check("contest_id")
 			.isInt()
 			.withMessage("Contest ID must be an integer")
+		],
+		transferEntryGroups: [
+			check("contest_id")
+			.isInt()
+			.withMessage("Contest ID must be an integer"),
+			check("current_entry_group")
+			.isInt()
+			.withMessage("Current group ID must be an integer"),
+			check("new_entry_group")
+			.isInt()
+			.withMessage("New group ID must be an integer")
 		]
 	},
 	judging: {
@@ -388,6 +399,7 @@ router.put("/internal/entries/disqualify", routeChecks.entries.disqualify, wasVa
 router.put("/internal/entries/approve", routeChecks.entries.approve, wasValidated, entries.approve);
 router.get("/internal/entries/flagged", entries.getFlagged);
 router.put("/internal/entries/assignToGroups", routeChecks.entries.assignToGroups, wasValidated, entries.assignToGroups);
+router.put("/internal/entries/transferEntryGroups", routeChecks.entries.transferEntryGroups, wasValidated, entries.transferEntryGroups);
 
 // Results
 router.get("/internal/results", results.get);

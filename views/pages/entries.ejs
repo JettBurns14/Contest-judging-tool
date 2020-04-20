@@ -31,7 +31,7 @@
                 <div>
                     <span id="import-entries-btn" class="admin-button" onclick="updateEntries(<%= contest_id %>)">Import Entries</span>
                     <span id="add-entry-btn" class="admin-button" onclick="addEntry(<%= contest_id %>)">Add Single Entry</span>
-                    <span id="assign-entries-btn" class="admin-button" onclick="assignEntries(<%= contest_id %>)">Assign To Groups</span>
+                    <span id="transfer-entries-btn" class="admin-button" onclick="showUpdateGroupsForm()">Update Groups</span>
                 </div>
                 <% } %>
             </div>
@@ -67,6 +67,7 @@
             </div>
         </div>
 
+        <% if (is_admin) { %>
         <div class="content-container" id="edit-entry-page">
             <div class="content-header">
                 <h2>Edit Entry</h2>
@@ -136,6 +137,61 @@
                 </div>
             </form>
         </div>
+
+        <div class="content-container" id="update-entry-groups-page">
+            <div class="content-header">
+                <h2>Update Entry Groups</h2>
+            </div>
+
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Create new group assignments</p>
+                    </div>
+                    <div class="preview-content">
+                        <span id="assign-entries-btn" class="admin-button" onclick="assignEntries(<%= contest_id %>)">Assign All Entries To Groups</span>
+                        <span id="assign-new-entries-btn" class="admin-button" onclick="assignNewEntries(<%= contest_id %>)">Assign New Entries To Groups</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="previews-container">
+                <div class="preview col-12 standard">
+                    <div class="db-header">
+                        <p>Manage existing group assignments</p>
+                    </div>
+                    <div class="preview-content">
+                        <form id="transfer-entries-form" class="admin-form" onsubmit="return transferEntries(event)">
+                            <input type="hidden" name="contest_id" value="<%= contest_id %>"></input>
+                            <div class="row">
+                                <div class="col-10">
+                                    <label for="current_entry_group">Current Group</label>
+                                </div>
+                                <div class="col-90">
+                                    <select name="current_entry_group" id="current-group-dropdown">
+                                        <option value="null">None</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10">
+                                    <label for="new_entry_group">New Group</label>
+                                </div>
+                                <div class="col-90">
+                                    <select name="new_entry_group" id="new-group-dropdown">
+                                        <option value="null">None</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input class="admin-button" type="submit" value="Transfer Entry Groups">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
     </div> <!-- Page content -->
 
     </div> <!-- Page container -->

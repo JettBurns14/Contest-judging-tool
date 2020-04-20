@@ -12,6 +12,8 @@ let entryContestName = document.querySelector("#entry-contest-name");
 let sidebar = document.querySelector(".side-bar");
 let sidebarSpinner = document.querySelector("#sidebar-spinner");
 let groupDropdown = document.querySelector("#assigned-group-dropdown");
+let currentGroupDropdown = document.querySelector("#current-group-dropdown");
+let newGroupDropdown = document.querySelector("#new-group-dropdown");
 
 request("get", "/api/internal/contests", null, (data) => {
     if (!data.error) {
@@ -85,6 +87,8 @@ request("get", "/api/internal/admin/getEvaluatorGroups", null, (data) => {
             data.evaluatorGroups.forEach(g => {
                 if (g.is_active) {
                     groupDropdown.innerHTML += `<option value="${g.group_id}">${g.group_id} - ${g.group_name}</option>`;
+                    currentGroupDropdown.innerHTML += `<option value="${g.group_id}">${g.group_id} - ${g.group_name}</option>`;
+                    newGroupDropdown.innerHTML += `<option value="${g.group_id}">${g.group_id} - ${g.group_name}</option>`;
                 }
             });
         }
@@ -160,7 +164,8 @@ const assignEntries = (contest_id) => {
 
     if (shouldAssign) {
         request("put", "/api/internal/entries/assignToGroups", {
-            contest_id
+            contest_id,
+            assignAll: true
         }, (data) => {
             if (!data.error) {
                 window.setTimeout(() => window.location.reload(), 1000);
@@ -169,6 +174,43 @@ const assignEntries = (contest_id) => {
             }
         });
     }
+}
+
+const assignNewEntries = (contest_id) => {
+    let assignAll = false;
+
+    let shouldAssign = confirm("Are you sure you want to assign new entries to groups? Any entries that are currently unassigned will be assigned a group. If you need to assign a few entries, edit them individually instead.");
+
+    if (shouldAssign) {
+        request("put", "/api/internal/entries/assignToGroups", {
+            contest_id,
+            assignAll
+        }, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
+}
+
+const transferEntries = (e) => {
+    e.preventDefault();
+
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    delete body[""];
+
+    request("put", "/api/internal/entries/transferEntryGroups", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
 }
 
 const getProgramData = (data) => {
@@ -219,3 +261,10 @@ let showEditEntryForm = (...args) => {
         }
     }
 };
+
+let showUpdateGroupsForm = () => {
+    let updateGroupspage = document.querySelector("#update-entry-groups-page");
+    let viewEntryPage = document.querySelector("#entry-list");
+    viewEntryPage.style.display = "none";
+    updateGroupspage.style.display = "block";
+}
