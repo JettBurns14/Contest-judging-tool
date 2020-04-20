@@ -44,7 +44,8 @@
                     <div class="preview-content">
                         <table id="evaluations-table" style="display: none">
                             <thead id="evaluations-table-head">
-                                <th style="width: 8%">ID</th>
+                                <th style="width: 8%">Eval ID</th>
+                                <th style="width: 8%">Entry ID</th>
                                 <th style="width: 20%">Entry</th>
                                 <th style="width: 3%">Creativity</th>
                                 <th style="width: 3%">Complexity</th>
@@ -72,6 +73,9 @@
             <form id="edit-evaluation-form" class="admin-form" onsubmit="return editEvaluation(event)">
                 <div class="row">
                     <input type="hidden" id="edit_evaluation_id" name="edit_evaluation_id">
+                </div>
+                <div class="row">
+                    <input type="hidden" id="edit_entry_id" name="edit_entry_id">
                 </div>
                 <div class="row">
                     <div class="col-10">
