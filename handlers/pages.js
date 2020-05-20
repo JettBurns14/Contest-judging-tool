@@ -154,12 +154,41 @@ exports.entries = (request, response, next) => {
         return response.render("pages/entries", {
             logged_in: true,
             contest_id: request.params.contestId,
-            is_admin: request.decodedToken.is_admin,
+            is_admin: request.decodedToken.is_admin
         });
     }
     response.render("pages/entries", {
         is_admin: false,
         logged_in: false
+    });
+}
+
+exports.kbHome = (request, response, next) => {
+    if (request.decodedToken) {
+        return response.render("pages/knowledge-base/home", {
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    }
+    response.render("pages/knowledge-base/home", {
+        is_admin: false,
+        logged_in: false
+    });
+}
+
+exports.kbArticle = (request, response, next) => {
+    let articleId = parseInt(request.params.articleId);
+    if (request.decodedToken) {
+        return response.render("pages/knowledge-base/article", {
+            article_id: articleId,
+            logged_in: true,
+            is_admin: request.decodedToken.is_admin
+        });
+    }
+    response.render("pages/knowledge-base/article", {
+        article_id: articleId,
+        logged_in: true,
+        is_admin: request.decodedToken.is_admin
     });
 }
 
