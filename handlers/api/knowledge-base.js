@@ -121,4 +121,27 @@ exports.addSection = (request, response, next) => {
     }
 };
 
+exports.addArticle = (request, response, next) => {
+    let {
+        article_name,
+        article_content,
+        article_visibility,
+        article_section
+    } = request.body;
+    let {
+        is_admin
+    } = request.decodedToken;
+
+    if (is_admin) {
+        return db.query("INSERT INTO kb_article (section_id, article_name, article_content, article_author, article_last_updated, article_visibility) VALUES ($1, $2, $3, $4, $5, $6)", [article_section, article_name, article_content, request.decodedToken.evaluator_id, new Date(), article_visibility], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem creating this article");
+            }
+            successMsg(response);
+        });
+    } else {
+        return handleNext(next, 403, "Insufficient access");
+    }
+};
+
 module.exports = exports;

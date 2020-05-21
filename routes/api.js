@@ -384,6 +384,17 @@ const routeChecks = {
 			check("section_visibility")
 			.isIn(visibilities)
 			.withMessage("Incorrect visibility")
+		],
+		addArticle: [
+			check("article_name")
+			.isLength(contentChars)
+			.withMessage("article_name must be between 0 and 5000 characters"),
+			check("article_visibility")
+			.isIn(visibilities)
+			.withMessage("Incorrect visibility"),
+			check("article_section")
+			.isInt()
+			.withMessage("article_section must be an integer")
 		]
 	}
 };
@@ -463,5 +474,6 @@ router.get("/internal/kb/getSection", kb.getSection);
 router.get("/internal/kb/sections", kb.getAllSections);
 router.put("/internal/kb/sections", routeChecks.kb.editSection, wasValidated, kb.editSection);
 router.post("/internal/kb/sections", routeChecks.kb.addSection, wasValidated, kb.addSection);
+router.post("/internal/kb/articles", routeChecks.kb.addArticle, wasValidated, kb.addArticle);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 let sectionsContainer = document.getElementById("sections-container");
+let createArticleSectionDropdown = document.getElementById("create-article-section-dropdown");
 
 /***** Loads page data *****/
 request("get", "/api/internal/kb/sections", null, (data) => {
@@ -34,6 +35,10 @@ request("get", "/api/internal/kb/sections", null, (data) => {
                         <a href="#">An article title will go here</a>
                     </div>
                 </div>
+            `;
+
+            createArticleSectionDropdown.innerHTML += `
+                <option value="${s.section_id}">${s.section_name}</option>
             `;
         });
     } else {
@@ -75,6 +80,23 @@ let editSection = (e) => {
     });
 }
 
+let createArticle = (e) => {
+    e.preventDefault();
+    let body = {};
+    for (key of e.target) {
+        body[key.name] = key.value;
+    }
+    body["article_content"] = document.querySelector("#new-article-editor").firstChild.innerHTML;
+    delete body[""];
+    request("post", "/api/internal/kb/articles", body, (data) => {
+        if (!data.error) {
+            window.setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
+
 // Displays forms
 let showCreateSectionForm = () => {
     let createSection = document.querySelector("#create-section-container");
@@ -98,3 +120,13 @@ let showEditSectionForm = (id) => {
         editSectionForm[3].value = data.section_visibility;
     });
 }
+
+let showCreateArticleForm = () => {
+    let createArticle = document.querySelector("#create-article-container");
+    let viewSections = document.querySelector("#view-sections-container");
+    viewSections.style.display = "none";
+    createArticle.style.display = "block";
+}
+
+/***** Create text editors *****/
+let newArticleEditor = new Quill("#new-article-editor", quillOptions);
