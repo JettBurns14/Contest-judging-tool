@@ -3,7 +3,7 @@ const router = express.Router();
 const hasBody = require(process.cwd() + "/middleware/hasBody");
 const { check } = require('express-validator/check');
 const wasValidated = require(process.cwd() + "/middleware/wasValidated");
-const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars, scores, skillLevels, taskStatuses } = require(process.cwd() + "/util/variables");
+const { nameChars, datePattern, kaidPattern, dateFormat, scoreChars, messageChars, contentChars, scores, skillLevels, taskStatuses, visibilities } = require(process.cwd() + "/util/variables");
 
 const admin = require(process.cwd() + "/handlers/api/admin");
 const contests = require(process.cwd() + "/handlers/api/contests");
@@ -15,6 +15,7 @@ const users = require(process.cwd() + "/handlers/api/users");
 const winners = require(process.cwd() + "/handlers/api/winners");
 const tasks = require(process.cwd() + "/handlers/api/tasks");
 const evaluations = require(process.cwd() + "/handlers/api/evaluations");
+const kb = require(process.cwd() + "/handlers/api/knowledge-base");
 
 const routeChecks = {
 	admin: {
@@ -358,6 +359,19 @@ const routeChecks = {
 			.isInt()
 			.withMessage("Evaluation ID must be an integer")
 		]
+	},
+	kb: {
+		addSection: [
+			check("section_name")
+			.isLength(contentChars)
+			.withMessage("section_name must be between 0 and 5000 characters"),
+			check("section_description")
+			.isLength(contentChars)
+			.withMessage("section_description must be between 0 and 5000 characters"),
+			check("section_visibility")
+			.isIn(visibilities)
+			.withMessage("Incorrect visibility")
+		]
 	}
 };
 
@@ -430,5 +444,8 @@ router.delete("/internal/tasks", routeChecks.tasks.delete, wasValidated, tasks.d
 router.get("/internal/evaluations", evaluations.get);
 router.put("/internal/evaluations", routeChecks.evaluations.edit, wasValidated, evaluations.put);
 router.delete("/internal/evaluations", routeChecks.evaluations.delete, wasValidated, evaluations.delete);
+
+// Knowledge Base
+router.post("/internal/kb/sections", kb.addSection);
 
 module.exports = router;
