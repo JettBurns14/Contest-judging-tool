@@ -371,6 +371,19 @@ const routeChecks = {
 			check("section_visibility")
 			.isIn(visibilities)
 			.withMessage("Incorrect visibility")
+		],
+		editSection: [
+			check("section_id")
+			.isInt(),
+			check("section_name")
+			.isLength(contentChars)
+			.withMessage("section_name must be between 0 and 5000 characters"),
+			check("section_description")
+			.isLength(contentChars)
+			.withMessage("section_description must be between 0 and 5000 characters"),
+			check("section_visibility")
+			.isIn(visibilities)
+			.withMessage("Incorrect visibility")
 		]
 	}
 };
@@ -446,6 +459,9 @@ router.put("/internal/evaluations", routeChecks.evaluations.edit, wasValidated, 
 router.delete("/internal/evaluations", routeChecks.evaluations.delete, wasValidated, evaluations.delete);
 
 // Knowledge Base
-router.post("/internal/kb/sections", kb.addSection);
+router.get("/internal/kb/getSection", kb.getSection);
+router.get("/internal/kb/sections", kb.getAllSections);
+router.put("/internal/kb/sections", routeChecks.kb.editSection, wasValidated, kb.editSection);
+router.post("/internal/kb/sections", routeChecks.kb.addSection, wasValidated, kb.addSection);
 
 module.exports = router;
