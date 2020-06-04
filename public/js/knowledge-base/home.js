@@ -45,7 +45,7 @@ let fillSection = (id) => {
                 sectionContainer.innerHTML += `
                     <div class="article-preview preview col-6">
                         <i class="far fa-file"></i>
-                        <a href="#">${a.article_name}</a>
+                        <a href="/kb/article/${a.article_id}">${a.article_name}</a>
                     </div>
                 `;
             });

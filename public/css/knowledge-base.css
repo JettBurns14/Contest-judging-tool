@@ -1,0 +1,35 @@
+#main-header {
+    margin: 0px;
+}
+
+.article-section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.article-preview {
+    font-size: 22px;
+    border-bottom: 1px solid black;
+    border-radius: 0px !important;
+    padding: 8px;
+}
+
+.article-preview a {
+    color: black;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.article-preview a:hover {
+    text-decoration: underline;
+}
+
+.admin-controls {
+    float: right;
+}
+
+/* Hide forms by default */
+#create-section-container, #edit-section-container, #create-article-container {
+    display: none;
+}
