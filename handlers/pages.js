@@ -187,8 +187,8 @@ exports.kbArticle = (request, response, next) => {
     }
     response.render("pages/knowledge-base/article", {
         article_id: articleId,
-        logged_in: true,
-        is_admin: request.decodedToken.is_admin
+        logged_in: false,
+        is_admin: false
     });
 }
 
