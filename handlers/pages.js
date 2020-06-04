@@ -189,13 +189,14 @@ exports.kbArticle = (request, response, next) => {
             response.redirect("/kb");
         }
 
-        return db.query("SELECT article_visibility FROM kb_article WHERE article_id = $1", [articleId], res => {
+        return db.query("SELECT article_visibility, is_published FROM kb_article WHERE article_id = $1", [articleId], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the article");
             }
 
             if ((!request.decodedToken && res.rows[0].article_visibility !== "Public") ||
-                (!request.decodedToken.is_admin && res.rows[0].article_visibility === "Admins Only")) {
+                (!request.decodedToken.is_admin && res.rows[0].article_visibility === "Admins Only") ||
+                (!request.decodedToken.is_admin && !res.rows[0].is_published)) {
                 response.redirect("/kb");
             }
 
