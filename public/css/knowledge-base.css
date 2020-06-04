@@ -2,6 +2,11 @@
     margin: 0px;
 }
 
+.admin-controls {
+    float: right;
+}
+
+/***** KB Home styling *****/
 .article-section {
     display: flex;
     justify-content: space-between;
@@ -25,11 +30,16 @@
     text-decoration: underline;
 }
 
-.admin-controls {
-    float: right;
+/***** Article page styling *****/
+#article-container .preview {
+    margin: auto;
+}
+
+.article-meta {
+    border-top: 1px solid black;
 }
 
 /* Hide forms by default */
-#create-section-container, #edit-section-container, #create-article-container {
+#create-section-container, #edit-section-container, #create-article-container, #edit-article-container {
     display: none;
 }

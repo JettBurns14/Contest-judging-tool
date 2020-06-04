@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Knowledge Base | Challenge Council</title>
+    <%- include ../../partials/styles %>
+    <link rel="stylesheet" type="text/css" href="/static/css/knowledge-base.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/previews.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forms.css">
+
+    <!-- Main Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+
+<body>
+    <%- include ../../partials/header %>
+    <div class="page-container">
+        <div class="content-container">
+            <div id="view-article-container">
+                <div class="content-header">
+                </div>
+                <div class="previews-container" id="article-container">
+                    <img src="/static/images/new-loading-spinner.svg" class="loading-spinner" id="article-spinner">
+                </div>
+            </div>
+
+            <div id="edit-article-container">
+                <div class="content-header">
+                    <h2>Edit Article</h2>
+                </div>
+                <form id="edit-article-form" class="admin-form" onsubmit="return editArticle(event)">
+                    <input class="form-input" type="hidden" id="article_id" name="article_id">
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="article_name">Article Name</label>
+                        </div>
+                        <div class="col-90">
+                            <input class="form-input" type="text" id="article_name" name="article_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="article_content">Content</label>
+                        </div>
+                        <div  class="text-editor">
+                            <div id="edit-article-editor">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="article_visibility">Visibility</label>
+                        </div>
+                        <div class="col-90">
+                            <select name="article_visibility">
+                                <option value="Public">Public</option>
+                                <option value="Evaluators Only">Evaluators Only</option>
+                                <option value="Admins Only">Admins Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="article_section">Section</label>
+                        </div>
+                        <div class="col-90">
+                            <select name="article_section" id="edit-article-section-dropdown">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <label for="is_published">Published</label>
+                        </div>
+                        <div class="col-90">
+                            <input type="checkbox" name="is_published">
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <input type='submit' class="admin-button" value='Save'>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include ../../partials/footer %>
+</body>
+<script src="/static/js/general.js"></script>
+<script src="/static/js/knowledge-base/article.js"></script>
+</html>
