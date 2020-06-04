@@ -414,6 +414,11 @@ const routeChecks = {
 			check("is_published")
 			.isBoolean()
 			.withMessage("is_published must be a boolean")
+		],
+		deleteArticle: [
+			check("article_id")
+			.isInt()
+			.withMessage("article_id must be an integer")
 		]
 	}
 };
@@ -497,5 +502,6 @@ router.delete("/internal/kb/sections", routeChecks.kb.deleteSection, wasValidate
 router.get("/internal/kb/articles", kb.getArticles);
 router.post("/internal/kb/articles", routeChecks.kb.addArticle, wasValidated, kb.addArticle);
 router.put("/internal/kb/articles", routeChecks.kb.editArticle, wasValidated, kb.editArticle);
+router.delete("/internal/kb/articles", routeChecks.kb.deleteArticle, wasValidated, kb.deleteArticle);
 
 module.exports = router;

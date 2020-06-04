@@ -233,11 +233,31 @@ exports.editArticle = (request, response, next) => {
     let {
         is_admin
     } = request.decodedToken;
-    
+
     if (is_admin) {
         return db.query("UPDATE kb_article SET section_id = $1, article_name = $2, article_content = $3, article_author = $4, article_last_updated = $5, article_visibility = $6, is_published = $7 WHERE article_id = $8", [article_section, article_name, article_content, request.decodedToken.evaluator_id, new Date(), article_visibility, is_published, article_id], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem editing this article");
+            }
+            redirect("/kb");
+        });
+    } else {
+        return handleNext(next, 403, "Insufficient access");
+    }
+};
+
+exports.deleteArticle = (request, response, next) => {
+    let {
+        article_id
+    } = request.body;
+    let {
+        is_admin
+    } = request.decodedToken;
+
+    if (is_admin) {
+        return db.query("DELETE FROM kb_article WHERE article_id = $1", [article_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem deleting this article");
             }
             successMsg(response);
         });
