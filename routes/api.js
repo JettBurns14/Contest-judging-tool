@@ -400,6 +400,20 @@ const routeChecks = {
 			check("article_section")
 			.isInt()
 			.withMessage("article_section must be an integer")
+		],
+		editArticle: [
+			check("article_name")
+			.isLength(contentChars)
+			.withMessage("article_name must be between 0 and 5000 characters"),
+			check("article_visibility")
+			.isIn(visibilities)
+			.withMessage("Incorrect visibility"),
+			check("article_section")
+			.isInt()
+			.withMessage("article_section must be an integer"),
+			check("is_published")
+			.isBoolean()
+			.withMessage("is_published must be a boolean")
 		]
 	}
 };
@@ -482,5 +496,6 @@ router.post("/internal/kb/sections", routeChecks.kb.addSection, wasValidated, kb
 router.delete("/internal/kb/sections", routeChecks.kb.deleteSection, wasValidated, kb.deleteSection);
 router.get("/internal/kb/articles", kb.getArticles);
 router.post("/internal/kb/articles", routeChecks.kb.addArticle, wasValidated, kb.addArticle);
+router.put("/internal/kb/articles", routeChecks.kb.editArticle, wasValidated, kb.editArticle);
 
 module.exports = router;
