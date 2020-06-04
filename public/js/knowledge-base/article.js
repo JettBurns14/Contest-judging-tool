@@ -15,10 +15,10 @@ request("get", "/api/internal/kb/articles?articleId=" + article_id, null, (data)
                 <div class="preview col-8 standard">
                     <div class="db-header">
                         <p>${a.article_name}</p>
-                            <span class="admin-controls">
+                            ${data.is_admin ? `<span class="admin-controls">
                                 <i class="control-btn far fa-edit" onclick="showEditArticleForm(${a.article_id})"></i>
                                 <i class="control-btn red far fa-trash-alt" onclick="deleteArticle(${a.article_id})"></i>
-                            </span>
+                            </span>` : ``}
                     </div>
                     <div class="preview-content">
                         ${a.article_content}

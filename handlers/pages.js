@@ -178,6 +178,7 @@ exports.kbHome = (request, response, next) => {
 
 exports.kbArticle = (request, response, next) => {
     let articleId = parseInt(request.params.articleId);
+    let is_admin = request.decodedToken ? request.decodedToken.is_admin : false;
 
     // Check that the article exists and the user can view it
     return db.query("SELECT COUNT(*) FROM kb_article WHERE article_id = $1", [articleId], res => {
@@ -195,8 +196,8 @@ exports.kbArticle = (request, response, next) => {
             }
 
             if ((!request.decodedToken && res.rows[0].article_visibility !== "Public") ||
-                (!request.decodedToken.is_admin && res.rows[0].article_visibility === "Admins Only") ||
-                (!request.decodedToken.is_admin && !res.rows[0].is_published)) {
+                (!is_admin && res.rows[0].article_visibility === "Admins Only") ||
+                (!is_admin && !res.rows[0].is_published)) {
                 response.redirect("/kb");
             }
 

@@ -55,6 +55,7 @@ exports.getAllSections = (request, response, next) => {
 
 exports.getSection = (request, response, next) => {
     let section_id = parseInt(request.query.sectionId);
+    let is_admin = request.decodedToken ? request.decodedToken.is_admin : false;
 
     if (section_id > 0) {
         return db.query("SELECT * FROM kb_section WHERE section_id = $1", [section_id], res => {
@@ -62,12 +63,12 @@ exports.getSection = (request, response, next) => {
                 return handleNext(next, 400, "There was a problem getting the requested section");
             }
 
-            if ((res.rows[0].section_visibility === "Admin Only" && !request.decodedToken.is_admin) ||
+            if ((res.rows[0].section_visibility === "Admin Only" && !is_admin) ||
                 (res.rows[0].section_visibility === "Evaluators Only") && !request.decodedToken) {
                 return handleNext(next, 403, "Insufficient access");
             }
             response.json({
-                is_admin: request.decodedToken.is_admin,
+                is_admin: is_admin,
                 logged_in: request.decodedToken ? true : false,
                 section: res.rows[0]
             });
@@ -146,10 +147,7 @@ exports.deleteSection = (request, response, next) => {
 exports.getArticles = (request, response, next) => {
     let article_id = parseInt(request.query.articleId);
     let section_id = parseInt(request.query.sectionId);
-
-    let {
-        is_admin,
-    } = request.decodedToken;
+    let is_admin = request.decodedToken ? request.decodedToken.is_admin : false;
 
     // Get all articles within a section
     if (section_id > 0) {
@@ -169,7 +167,7 @@ exports.getArticles = (request, response, next) => {
             }
 
             response.json({
-                is_admin: request.decodedToken.is_admin,
+                is_admin: is_admin,
                 logged_in: request.decodedToken ? true : false,
                 articles: res.rows
             });
@@ -182,13 +180,13 @@ exports.getArticles = (request, response, next) => {
             }
 
             // Check visibility permissions
-            if ((res.rows[0].article_visibility === "Admin Only" && !request.decodedToken.is_admin) ||
+            if ((res.rows[0].article_visibility === "Admin Only" && !is_admin) ||
                 (res.rows[0].article_visibility === "Evaluators Only") && !request.decodedToken) {
                 return handleNext(next, 403, "Insufficient access");
             }
 
             response.json({
-                is_admin: request.decodedToken.is_admin,
+                is_admin: is_admin,
                 logged_in: request.decodedToken ? true : false,
                 article: res.rows[0]
             });

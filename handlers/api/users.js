@@ -13,7 +13,7 @@ exports.get = (request, response, next) => {
     // Get a specific user's information
     if (userId) {
         // If getting one's own information, or user is an admin, return all user properties
-        if (userId === request.decodedToken.evaluator_id || request.decodedToken.is_admin) {
+        if (request.decodedToken && (userId === request.decodedToken.evaluator_id || request.decodedToken.is_admin)) {
             return db.query("SELECT * FROM evaluator WHERE evaluator_id = $1", [userId], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting the user's information");
@@ -35,8 +35,8 @@ exports.get = (request, response, next) => {
                 evaluator = res.rows[0];
 
                 return response.json({
-                    logged_in: true,
-                    is_admin: request.decodedToken.is_admin,
+                    logged_in: request.decodedToken ? true : false,
+                    is_admin: request.decodedToken ? request.decodedToken.is_admin : false,
                     evaluator: evaluator
                 });
             });
