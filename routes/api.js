@@ -480,6 +480,7 @@ router.get("/internal/kb/sections", kb.getAllSections);
 router.put("/internal/kb/sections", routeChecks.kb.editSection, wasValidated, kb.editSection);
 router.post("/internal/kb/sections", routeChecks.kb.addSection, wasValidated, kb.addSection);
 router.delete("/internal/kb/sections", routeChecks.kb.deleteSection, wasValidated, kb.deleteSection);
+router.get("/internal/kb/articles", kb.getArticles);
 router.post("/internal/kb/articles", routeChecks.kb.addArticle, wasValidated, kb.addArticle);
 
 module.exports = router;

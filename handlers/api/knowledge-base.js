@@ -26,7 +26,7 @@ exports.getAllSections = (request, response, next) => {
             });
         } else {
             // User is a standard user, so only return sections with "Evaluators Only" visibility
-            return db.query("SELECT * FROM kb_section WHERE section_visibility = 'Evaluators Only' ORDER BY section_id", [], res => {
+            return db.query("SELECT * FROM kb_section WHERE section_visibility = 'Evaluators Only' OR section_visibility = 'Public' ORDER BY section_id", [], res => {
                 if (res.error) {
                     return handleNext(next, 400, "There was a problem getting the sections");
                 }
@@ -121,6 +121,7 @@ exports.editSection = (request, response, next) => {
     }
 };
 
+
 exports.deleteSection = (request, response, next) => {
     let {
         section_id
@@ -138,6 +139,61 @@ exports.deleteSection = (request, response, next) => {
         });
     } else {
         return handleNext(next, 403, "Insufficient access");
+    }
+};
+
+exports.getArticles = (request, response, next) => {
+    let article_id = parseInt(request.query.articleId);
+    let section_id = parseInt(request.query.sectionId);
+
+    let {
+        is_admin,
+    } = request.decodedToken;
+
+    // Get all articles within a section
+    if (section_id > 0) {
+        let query = "SELECT * FROM kb_article WHERE section_id = $1 AND article_visibility = 'Public'";
+        if (is_admin) {
+            // If user is admin, return all articles in the section_name
+            query = "SELECT * FROM kb_article WHERE section_id = $1";
+        }
+        else if (request.decodedToken && !is_admin) {
+            // If user is evaluator, but not an admin, return all articles that are public or restricted to evaluators
+            query = "SELECT * FROM kb_article WHERE (article_visibility = 'Public' OR article_visibility = 'Evaluators Only') AND section_id = $1";
+        }
+
+        return db.query(query, [section_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the requested articles");
+            }
+
+            response.json({
+                is_admin: request.decodedToken.is_admin,
+                logged_in: request.decodedToken ? true : false,
+                articles: res.rows
+            });
+        });
+    // Get a single article
+    } else if (article_id > 0) {
+        return db.query("SELECT * FROM kb_article WHERE article_id = $1", [article_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the requested article");
+            }
+
+            // Check visibility permissions
+            if ((res.rows[0].article_visibility === "Admin Only" && !request.decodedToken.is_admin) ||
+                (res.rows[0].article_visibility === "Evaluators Only") && !request.decodedToken) {
+                return handleNext(next, 403, "Insufficient access");
+            }
+
+            response.json({
+                is_admin: request.decodedToken.is_admin,
+                logged_in: request.decodedToken ? true : false,
+                article: res.rows[0]
+            });
+        });
+    } else {
+        return handleNext(next, 400, "Bad Request");
     }
 };
 

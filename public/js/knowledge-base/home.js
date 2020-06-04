@@ -5,6 +5,12 @@ let createArticleSectionDropdown = document.getElementById("create-article-secti
 request("get", "/api/internal/kb/sections", null, (data) => {
     if (!data.error) {
         data.sections.forEach((s, idx) => {
+            // Fill forms with sections
+            createArticleSectionDropdown.innerHTML += `
+                <option value="${s.section_id}">${s.section_name}</option>
+            `;
+
+            // Fill page with sections
             sectionsContainer.innerHTML += `
             <div class="preview col-12 standard">
                 <div class="db-header">
@@ -17,34 +23,37 @@ request("get", "/api/internal/kb/sections", null, (data) => {
                         : ""
                     }
                 </div>
-                <div class="preview-content article-section">
-                    <div class="article-preview preview col-6">
-                        <i class="far fa-file"></i>
-                        <a href="#">An article title will go here</a>
-                    </div>
-                    <div class="article-preview preview col-6">
-                        <i class="far fa-file"></i>
-                        <a href="#">An article title will go here</a>
-                    </div>
-                    <div class="article-preview preview col-6">
-                        <i class="far fa-file"></i>
-                        <a href="#">An article title will go here</a>
-                    </div>
-                    <div class="article-preview preview col-6">
-                        <i class="far fa-file"></i>
-                        <a href="#">An article title will go here</a>
-                    </div>
+                <div class="preview-content article-section" id="section-${s.section_id}">
                 </div>
-            `;
+            </div>`
+        });
 
-            createArticleSectionDropdown.innerHTML += `
-                <option value="${s.section_id}">${s.section_name}</option>
-            `;
+        data.sections.forEach((s, idx) => {
+            fillSection(s.section_id);
         });
     } else {
         alert(data.error.message);
     }
 });
+
+// Fills a given section with articles
+let fillSection = (id) => {
+    let sectionContainer = document.getElementById("section-" + id);
+    request("get", "/api/internal/kb/articles?sectionId=" + id, null, (data) => {
+        if (!data.error) {
+            data.articles.forEach((a, idx) => {
+                sectionContainer.innerHTML += `
+                    <div class="article-preview preview col-6">
+                        <i class="far fa-file"></i>
+                        <a href="#">${a.article_name}</a>
+                    </div>
+                `;
+            });
+        } else {
+            alert(data.error.message);
+        }
+    });
+}
 
 
 /***** These send form post requests *****/
