@@ -5,6 +5,7 @@ const {
     successMsg
 } = require(process.cwd() + "/util/functions");
 const db = require(process.cwd() + "/util/db");
+const { displayDateFormat } = require(process.cwd() + "/util/variables");
 
 exports.getAllSections = (request, response, next) => {
     if (request.decodedToken) {
@@ -152,14 +153,14 @@ exports.getArticles = (request, response, next) => {
 
     // Get all articles within a section
     if (section_id > 0) {
-        let query = "SELECT * FROM kb_article WHERE section_id = $1 AND article_visibility = 'Public'";
+        let query = "SELECT * FROM kb_article WHERE section_id = $1 AND article_visibility = 'Public' AND is_published = true";
         if (is_admin) {
             // If user is admin, return all articles in the section_name
             query = "SELECT * FROM kb_article WHERE section_id = $1";
         }
         else if (request.decodedToken && !is_admin) {
             // If user is evaluator, but not an admin, return all articles that are public or restricted to evaluators
-            query = "SELECT * FROM kb_article WHERE (article_visibility = 'Public' OR article_visibility = 'Evaluators Only') AND section_id = $1";
+            query = "SELECT * FROM kb_article WHERE (article_visibility = 'Public' OR article_visibility = 'Evaluators Only') AND section_id = $1 AND is_published = true";
         }
 
         return db.query(query, [section_id], res => {
@@ -175,7 +176,7 @@ exports.getArticles = (request, response, next) => {
         });
     // Get a single article
     } else if (article_id > 0) {
-        return db.query("SELECT * FROM kb_article WHERE article_id = $1", [article_id], res => {
+        return db.query("SELECT *, to_char(a.article_last_updated, $1) as last_updated FROM kb_article a WHERE a.article_id = $2", [displayDateFormat, article_id], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem getting the requested article");
             }
@@ -212,6 +213,31 @@ exports.addArticle = (request, response, next) => {
         return db.query("INSERT INTO kb_article (section_id, article_name, article_content, article_author, article_last_updated, article_visibility) VALUES ($1, $2, $3, $4, $5, $6)", [article_section, article_name, article_content, request.decodedToken.evaluator_id, new Date(), article_visibility], res => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem creating this article");
+            }
+            successMsg(response);
+        });
+    } else {
+        return handleNext(next, 403, "Insufficient access");
+    }
+};
+
+exports.editArticle = (request, response, next) => {
+    let {
+        article_id,
+        article_name,
+        article_content,
+        article_visibility,
+        article_section,
+        is_published
+    } = request.body;
+    let {
+        is_admin
+    } = request.decodedToken;
+    
+    if (is_admin) {
+        return db.query("UPDATE kb_article SET section_id = $1, article_name = $2, article_content = $3, article_author = $4, article_last_updated = $5, article_visibility = $6, is_published = $7 WHERE article_id = $8", [article_section, article_name, article_content, request.decodedToken.evaluator_id, new Date(), article_visibility, is_published, article_id], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem editing this article");
             }
             successMsg(response);
         });
