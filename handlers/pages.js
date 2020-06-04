@@ -178,17 +178,40 @@ exports.kbHome = (request, response, next) => {
 
 exports.kbArticle = (request, response, next) => {
     let articleId = parseInt(request.params.articleId);
-    if (request.decodedToken) {
-        return response.render("pages/knowledge-base/article", {
-            article_id: articleId,
-            logged_in: true,
-            is_admin: request.decodedToken.is_admin
+
+    // Check that the article exists and the user can view it
+    return db.query("SELECT COUNT(*) FROM kb_article WHERE article_id = $1", [articleId], res => {
+        if (res.error) {
+            return handleNext(next, 400, "There was a problem getting the article");
+        }
+
+        if (res.rows[0].count === "0") {
+            response.redirect("/kb");
+        }
+
+        return db.query("SELECT article_visibility FROM kb_article WHERE article_id = $1", [articleId], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem getting the article");
+            }
+
+            if ((!request.decodedToken && res.rows[0].article_visibility !== "Public") ||
+                (!request.decodedToken.is_admin && res.rows[0].article_visibility === "Admins Only")) {
+                response.redirect("/kb");
+            }
+
+            if (request.decodedToken) {
+                return response.render("pages/knowledge-base/article", {
+                    article_id: articleId,
+                    logged_in: true,
+                    is_admin: request.decodedToken.is_admin
+                });
+            }
+            response.render("pages/knowledge-base/article", {
+                article_id: articleId,
+                logged_in: false,
+                is_admin: false
+            });
         });
-    }
-    response.render("pages/knowledge-base/article", {
-        article_id: articleId,
-        logged_in: false,
-        is_admin: false
     });
 }
 

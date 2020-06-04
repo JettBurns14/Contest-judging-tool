@@ -239,7 +239,7 @@ exports.editArticle = (request, response, next) => {
             if (res.error) {
                 return handleNext(next, 400, "There was a problem editing this article");
             }
-            redirect("/kb");
+            successMsg(response);
         });
     } else {
         return handleNext(next, 403, "Insufficient access");
