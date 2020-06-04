@@ -76,6 +76,28 @@ exports.getSection = (request, response, next) => {
     }
 };
 
+exports.addSection = (request, response, next) => {
+    let {
+        section_name,
+        section_description,
+        section_visibility
+    } = request.body;
+    let {
+        is_admin
+    } = request.decodedToken;
+
+    if (is_admin) {
+        return db.query("INSERT INTO kb_section (section_name, section_description, section_visibility) VALUES ($1, $2, $3)", [section_name, section_description, section_visibility], res => {
+            if (res.error) {
+                return handleNext(next, 400, "There was a problem creating this section");
+            }
+            successMsg(response);
+        });
+    } else {
+        return handleNext(next, 403, "Insufficient access");
+    }
+};
+
 exports.editSection = (request, response, next) => {
     let {
         section_id,
@@ -99,20 +121,18 @@ exports.editSection = (request, response, next) => {
     }
 };
 
-exports.addSection = (request, response, next) => {
+exports.deleteSection = (request, response, next) => {
     let {
-        section_name,
-        section_description,
-        section_visibility
+        section_id
     } = request.body;
     let {
         is_admin
     } = request.decodedToken;
 
     if (is_admin) {
-        return db.query("INSERT INTO kb_section (section_name, section_description, section_visibility) VALUES ($1, $2, $3)", [section_name, section_description, section_visibility], res => {
+        return db.query("DELETE FROM kb_section WHERE section_id = $1", [section_id], res => {
             if (res.error) {
-                return handleNext(next, 400, "There was a problem creating this section");
+                return handleNext(next, 400, "There was a problem deleting this section");
             }
             successMsg(response);
         });

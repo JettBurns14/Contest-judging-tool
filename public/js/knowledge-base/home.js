@@ -12,7 +12,7 @@ request("get", "/api/internal/kb/sections", null, (data) => {
                     ${data.is_admin
                         ?`<span class="admin-controls">
                             <i class="control-btn far fa-edit" onclick="showEditSectionForm(${s.section_id})"></i>
-                            <i class="control-btn red far fa-trash-alt" onclick="todo"></i>
+                            <i class="control-btn red far fa-trash-alt" onclick="deleteSection(${s.section_id})"></i>
                         </span>`
                         : ""
                     }
@@ -78,6 +78,21 @@ let editSection = (e) => {
             alert(data.error.message);
         }
     });
+}
+
+let deleteSection = (id) => {
+    let shouldDelete = confirm("Are you sure you want to delete this section?");
+
+    if (shouldDelete) {
+        let body = {section_id: id};
+        request("delete", "/api/internal/kb/sections", body, (data) => {
+            if (!data.error) {
+                window.setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.error.message);
+            }
+        });
+    }
 }
 
 let createArticle = (e) => {
