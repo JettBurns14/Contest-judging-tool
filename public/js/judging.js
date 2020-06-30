@@ -148,7 +148,7 @@ let submitEvaluation = (e) => {
     delete body[""];
     request("post", "/api/internal/judging/submit", body, (data) => {
         if (!data.error) {
-            window.setTimeout(() => window.location.reload(), 1000);
+            window.setTimeout(() => window.location.reload(true), 1000);
         } else {
             alert(data.error.message);
         }
@@ -160,7 +160,7 @@ let flagEntry = (id) => {
         let body = {entry_id: id};
         request("put", "/api/internal/entries/flag", body, (data) => {
             if (!data.error) {
-                window.setTimeout(() => window.location.reload(), 1000);
+                window.setTimeout(() => window.location.reload(true), 1000);
             } else {
                 alert(data.error.message);
             }
